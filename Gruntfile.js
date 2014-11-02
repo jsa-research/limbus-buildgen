@@ -24,7 +24,7 @@ module.exports = function(grunt) {
                     banner: "// This file is generated. Do not edit directly!\nDuktape.modSearch = function (id) {\n",
                     process: function (source, filepath) {
                         return '  if (id === "' + filepath.replace('.js', '') + '") {\n' +
-                               '    return "' + source.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r\n?/g, '\\n') + '";\n' +
+                               '    return "' + source.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, '\\n') + '";\n' +
                                '  }\n';
                     },
                     footer: "  throw new Error('module not found: ' + id);\n};\n"
