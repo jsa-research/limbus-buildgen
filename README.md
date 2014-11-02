@@ -47,7 +47,7 @@ To use, just run:
 ./duk sea-strap.js freebsd > Makefile.freebsd
 ```
 
-(_Note: At the moment this only builds a bootstrap makefiles for itself. Not very useful..._)
+(_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
 
 ## Test
 As sea-strap.js uses mocha to perform unit-testing,
