@@ -21,11 +21,16 @@ Fetch non-npm dependencies using `dependencies/fetch_dependencies.sh`
 ### Windows
 TODO
 
+### Manually download dependencies
+Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.0`.
+Currently version 1.0.0 is used.
+
 ## Compile
 sea-strap.js uses mocha & should.js to perform unit-testing.
-Grunt is currently just used to boostrap the library as duktype
+Grunt is currently just used to boostrap the library as duktape
 doesn't provide file I/O.
 
+### Linux/OS X
 Use `make ; grunt` to build the project.
 
 ## Use
