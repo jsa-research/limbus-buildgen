@@ -25,15 +25,17 @@ To use, just run:
 ./duk sea-strap.js > Makefile
 ```
 
-(*Note:* At the moment this only builds a bootstrap makefile for itself. Not very useful...)
+(_Note: At the moment this only builds a bootstrap makefile for itself. Not very useful..._)
 
 ## Test
-As sea-strap.js uses Mocha as its test runner, first make sure it is installed with `npm install -g mocha`
+As sea-strap.js uses Mocha as its test runner,
+first make sure it is installed with `npm install -g mocha`
 
 Then run the tests using `mocha`
 
 ## Copyright
 sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
+
 Written in 2014 by Jesper Oskarsson jesosk@gmail.com
 
 To the extent possible under law, the author(s) have dedicated all copyright
