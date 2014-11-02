@@ -1,0 +1,35 @@
+{
+  "name": "sea-strap",
+  "version": "0.1.0",
+  "description": "A \"build anywhere\" build system.",
+  "main": "duk sea-strap.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.0",
+    "should": "^4.1.0"
+  },
+  "scripts": {
+    "test": "mocha",
+    "postinstall": "dependencies/fetch_dependencies.sh ; make ; grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redien/sea-strap"
+  },
+  "keywords": [
+    "build",
+    "system",
+    "make",
+    "project",
+    "generator"
+  ],
+  "author": "Jesper Oskarsson <jesosk@gmail.com>",
+  "license": "Public Domain",
+  "bugs": {
+    "url": "https://github.com/redien/sea-strap/issues"
+  },
+  "homepage": "https://github.com/redien/sea-strap"
+}
