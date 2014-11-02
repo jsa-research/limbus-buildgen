@@ -13,7 +13,9 @@
     "should": "^4.1.0"
   },
   "scripts": {
-    "test": "mocha unit ; mocha integration"
+    "test": "npm run-script unit-test ; npm run-script integration-test",
+    "unit-test": "mocha \"**/*.unit.js\"",
+    "integration-test": "mocha \"**/*.feature.js\""
   },
   "repository": {
     "type": "git",
