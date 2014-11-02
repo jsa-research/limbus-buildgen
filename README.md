@@ -17,7 +17,7 @@ npm install
 
 You also need to fetch some additional non-npm dependencies:
 
-#### Linux/OS X
+#### Linux/OS X/FreeBSD
 Fetch non-npm dependencies using `dependencies/fetch_dependencies.sh`
 
 #### Windows
@@ -33,6 +33,9 @@ doesn't provide file I/O.
 
 #### Linux/OS X
 Use `make ; grunt` to build the project.
+
+#### FreeBSD
+Use `make -f Makefile.freebsd ; grunt` to build the project.
 
 #### Windows
 TODO
