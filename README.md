@@ -11,7 +11,7 @@ C/C++ code-bases.
 The following commands will install some dependencies from npm:
 
 ```
-npm install -g grunt
+npm install -g grunt-cli
 npm install
 ```
 
