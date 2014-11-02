@@ -28,11 +28,9 @@ To use, just run:
 (*Note:* At the moment this only builds a bootstrap makefile for itself. Not very useful...)
 
 ## Test
-As sea-strap.js uses Mocha as its test runner, first make sure it is installed:
-`npm install -g mocha`
+As sea-strap.js uses Mocha as its test runner, first make sure it is installed with `npm install -g mocha`
 
-Then run the tests:
-`mocha`
+Then run the tests using `mocha`
 
 ## Copyright
 sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
