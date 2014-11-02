@@ -31,7 +31,8 @@ describe('makefile-generator-simple', function () {
         util.compileAndRunConfig({
             files: [
                 'simple.c'
-            ]
+            ],
+            host: process.platform
         }, './simple', done);
     });
 
@@ -40,6 +41,7 @@ describe('makefile-generator-simple', function () {
             files: [
                 'simple.c'
             ],
+            host: process.platform,
             outputName: 'my_executable'
         }, './my_executable', done);
     });

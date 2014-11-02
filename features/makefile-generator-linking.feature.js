@@ -32,6 +32,12 @@ describe('makefile-generator-linking', function () {
             +"}\n").to("source/mylibrary.c");
 
             ("int add(int a, int b);\n").to("include/mylibrary.h");
+
+            /* Check for libm */
+            ("#include <math.h>\n"
+            +"int main(int argc, char** argv) {\n"
+            +"  return ceil(0.5f) - 1;\n"
+            +"}\n").to("math.c");
             
             done();
         });
@@ -45,9 +51,19 @@ describe('makefile-generator-linking', function () {
                 'linked.c',
                 'source/mylibrary.c'
             ],
+            host: process.platform,
             includePaths: [
                 'include'
             ]
         }, './linked', done);
+    });
+
+    it('should link with libm by default', function (done) {
+        util.compileAndRunConfig({
+            files: [
+                'math.c'
+            ],
+            host: process.platform
+        }, './math', done);
     });
 });

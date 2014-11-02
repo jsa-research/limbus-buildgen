@@ -130,7 +130,7 @@ describe('makefile-generator', function () {
                 files: [
                     'test.c'
                 ],
-                host: 'osx'
+                host: 'darwin'
             });
             makefile.should.equal(simpleMakefile('clang', 'test.c', 'test'));
 
@@ -145,7 +145,8 @@ describe('makefile-generator', function () {
         it('should throw "invalid_host" if host is not one of the predefined hosts', function () {
             [
                 'made up host',
-                'osx-gcc'
+                'darwin-gcc',
+                'osx'
 
             ].forEach(function (host) {
                 (function () {
@@ -158,8 +159,9 @@ describe('makefile-generator', function () {
 
         it('should not throw "invalid_host" if host is one of the predefined hosts', function () {
             [
-                'osx',
-                'osx-clang',
+                'darwin',
+                'darwin-clang',
+                'freebsd',
                 'linux',
                 'linux-gcc',
                 'linux-clang'

@@ -22,7 +22,7 @@ var standardFlags = {
 };
 
 var compilerByHost = function (host) {
-    if (host === 'osx' || host === 'osx-clang' || host === 'linux-clang' || host === 'freebsd') {
+    if (host === 'darwin' || host === 'darwin-clang' || host === 'linux-clang' || host === 'freebsd') {
         return 'clang';
     } else if (host === 'linux' || host === 'linux-gcc') {
         return 'gcc';
@@ -36,8 +36,8 @@ var getCompiler = function (host) {
 };
 
 var isHostValid = function(host) {
-    return host === 'osx'
-        || host === 'osx-clang'
+    return host === 'darwin'
+        || host === 'darwin-clang'
         || host === 'freebsd'
         || host === 'linux'
         || host === 'linux-clang'
