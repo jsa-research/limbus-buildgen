@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <duktape.h>
 
+char** arguments;
+int argument_count;
+
 static int get_stack_trace(duk_context* context) {
     if (duk_is_object(context, -1) && duk_has_prop_string(context, -1, "stack")) {
         duk_get_prop_string(context, -1, "stack");
@@ -14,6 +17,14 @@ static int get_stack_trace(duk_context* context) {
 static int compile_and_execute(duk_context* context) {
     duk_compile(context, 0);
     duk_push_global_object(context);
+    
+    duk_push_array(context);
+    for (int i = 0; i < argument_count; ++i) {
+        duk_push_string(context, arguments[i]);
+        duk_put_prop_index(context, -2, i);
+    }
+    duk_put_prop_string(context, -2, "arguments");
+
     duk_call_method(context, 0);
     duk_pop(context);
     return 0;
@@ -70,6 +81,9 @@ int main(int argc, char* argv[]) {
         duk_push_lstring(context, source, size);
         duk_push_string(context, argv[1]);
         free(source);
+        
+        arguments = argv;
+        argument_count = argc;
 
         int status = duk_safe_call(context, compile_and_execute, 2, 1);
         if (status != DUK_EXEC_SUCCESS) {

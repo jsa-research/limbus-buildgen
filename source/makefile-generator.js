@@ -17,8 +17,12 @@ var executableNameFromSourceFile = function (sourceFile) {
     return matchedName[1];
 };
 
+var standardFlags = {
+    freebsd: "-lm"
+};
+
 var compilerByHost = function (host) {
-    if (host === 'osx' || host === 'osx-clang' || host === 'linux-clang') {
+    if (host === 'osx' || host === 'osx-clang' || host === 'linux-clang' || host === 'freebsd') {
         return 'clang';
     } else if (host === 'linux' || host === 'linux-gcc') {
         return 'gcc';
@@ -34,6 +38,7 @@ var getCompiler = function (host) {
 var isHostValid = function(host) {
     return host === 'osx'
         || host === 'osx-clang'
+        || host === 'freebsd'
         || host === 'linux'
         || host === 'linux-clang'
         || host === 'linux-gcc';
@@ -54,11 +59,10 @@ exports.generate = function (config) {
 
     var extraFlags = "";
     if (config.includePaths) {
-        extraFlags += "-I" + config.includePaths.join(' -I');
+        extraFlags += " -I" + config.includePaths.join(' -I');
     }
-    
-    if (extraFlags.length > 0) {
-        extraFlags = " " + extraFlags;
+    if (standardFlags[config.host]) {
+        extraFlags += " " + standardFlags[config.host];
     }
 
     var makefile =

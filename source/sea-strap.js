@@ -11,13 +11,48 @@
 
 var makefile_generator = require('source/makefile-generator');
 
-print(makefile_generator.generate({
-    files: [
-        'dependencies/duktape-1.0.0/src/duktape.c',
-        'source/duk.c'
-    ],
-    includePaths: [
-        'dependencies/duktape-1.0.0/src/'
-    ],
-    outputName: 'duk'
-}));
+/* Standard values */
+var files = [
+    'dependencies/duktape-1.0.0/src/duktape.c',
+    'source/duk.c'
+];
+var includePaths = [
+    'dependencies/duktape-1.0.0/src/'
+];
+var outputName = 'duk';
+
+var configs = {
+    generic: {
+        files: files,
+        includePaths: includePaths,
+        outputName: outputName
+    },
+    freebsd: {
+        files: files,
+        includePaths: includePaths,
+        outputName: outputName,
+        host: 'freebsd'
+    }
+};
+
+var printConfigs = function () {
+    print("\nCan be one of the following:");
+    for (var key in configs) {
+        print("  * " + key);
+    }
+    print("");
+};
+
+if (arguments.length < 3) {
+    print("Missing config name\n");
+    printConfigs();
+} else {
+    var config_name = arguments[2];
+
+    if (configs[config_name] !== undefined) {
+        print(makefile_generator.generate(configs[config_name]));
+    } else {
+        print("Invalid config");
+        printConfigs();
+    }
+}

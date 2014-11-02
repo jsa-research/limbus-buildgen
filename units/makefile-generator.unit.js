@@ -200,4 +200,17 @@ describe('makefile-generator', function () {
             makefile.should.equal(simpleMakefile('gcc', 'test.c', 'test', '-Iincludes/'));
         });
     });
+    
+    describe('makefile where host is freebsd', function () {
+        it('should compile with libm by default', function () {
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                host: 'freebsd'
+            });
+
+            makefile.should.equal(simpleMakefile('clang', 'test.c', 'test', '-lm'));
+        });
+    });
 });
