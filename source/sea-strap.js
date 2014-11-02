@@ -14,7 +14,7 @@ var makefile_generator = require('source/makefile-generator');
 print(makefile_generator.generate({
     files: [
         'dependencies/duktape-1.0.0/src/duktape.c',
-        'dependencies/duktape-1.0.0/examples/cmdline/duk_cmdline.c'
+        'source/duk.c'
     ],
     includePaths: [
         'dependencies/duktape-1.0.0/src/'
