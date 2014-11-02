@@ -43,10 +43,11 @@ TODO
 ## Use
 To use, just run:
 ```
-./duk sea-strap.js > Makefile
+./duk sea-strap.js generic > Makefile
+./duk sea-strap.js freebsd > Makefile.freebsd
 ```
 
-(_Note: At the moment this only builds a bootstrap makefile for itself. Not very useful..._)
+(_Note: At the moment this only builds a bootstrap makefiles for itself. Not very useful..._)
 
 ## Test
 As sea-strap.js uses mocha to perform unit-testing,
