@@ -18,7 +18,7 @@ else
     WGET_OUT="-O"
 fi
 
-function extract_tar_xz {
+extract_tar_xz() {
     tar -xJf "$1.tar.xz"
     rm "$1.tar.xz"
 }
