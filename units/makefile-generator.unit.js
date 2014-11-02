@@ -116,36 +116,65 @@ describe('makefile-generator', function () {
         });
     });
 
-    describe('makefile configured with a compiler', function () {
-        it('should compile with the specified compiler', function () {
+    describe('makefile configured with a host', function () {
+        it('should compile with the correct compiler for the specified host', function () {
             var makefile = makefile_generator.generate({
                 files: [
                     'test.c'
                 ],
-                compiler: 'gcc'
+                host: 'linux'
             });
-
             makefile.should.equal(simpleMakefile('gcc', 'test.c', 'test'));
 
             makefile = makefile_generator.generate({
                 files: [
                     'test.c'
                 ],
-                compiler: 'clang'
+                host: 'osx'
             });
+            makefile.should.equal(simpleMakefile('clang', 'test.c', 'test'));
 
+            makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                host: 'linux-clang'
+            });
             makefile.should.equal(simpleMakefile('clang', 'test.c', 'test'));
         });
-        it('should throw "invalid_compiler" if compiler is not gcc or clang', function () {
-            (function () {
-                makefile_generator.generate({
-                    compiler: 'made up compiler'
-                });
-            }).should.throw('invalid_compiler');
+        it('should throw "invalid_host" if host is not one of the predefined hosts', function () {
+            [
+                'made up host',
+                'osx-gcc'
+
+            ].forEach(function (host) {
+                (function () {
+                    makefile_generator.generate({
+                        host: host
+                    });
+                }).should.throw('invalid_host');
+            });
+        });
+
+        it('should not throw "invalid_host" if host is one of the predefined hosts', function () {
+            [
+                'osx',
+                'osx-clang',
+                'linux',
+                'linux-gcc',
+                'linux-clang'
+            
+            ].forEach(function (host) {
+                (function () {
+                    makefile_generator.generate({
+                        host: host
+                    });
+                }).should.not.throw('invalid_host');
+            });
         });
     });
 
-    describe('makefile configured without a compiler', function () {
+    describe('makefile configured without a host', function () {
         it('should compile with gcc by default', function () {
             var makefile = makefile_generator.generate({
                 files: [

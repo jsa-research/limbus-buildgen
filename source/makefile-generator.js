@@ -17,25 +17,38 @@ var executableNameFromSourceFile = function (sourceFile) {
     return matchedName[1];
 };
 
-var getCompiler = function (config) {
-    return config.compiler || "gcc";
+var compilerByHost = function (host) {
+    if (host === 'osx' || host === 'osx-clang' || host === 'linux-clang') {
+        return 'clang';
+    } else if (host === 'linux' || host === 'linux-gcc') {
+        return 'gcc';
+    } else {
+        return null;
+    }
 };
 
-var isCompilerValid = function(compiler) {
-    return compiler === "gcc"
-        || compiler === "clang";
+var getCompiler = function (host) {
+    return compilerByHost(host) || "gcc";
+};
+
+var isHostValid = function(host) {
+    return host === 'osx'
+        || host === 'osx-clang'
+        || host === 'linux'
+        || host === 'linux-clang'
+        || host === 'linux-gcc';
 };
 
 exports.generate = function (config) {
-    var compiler = getCompiler(config);
-    if (!isCompilerValid(compiler)) {
-        throw new Error('invalid_compiler');
+    var compiler = getCompiler(config.host);
+    if (config.host !== undefined && !isHostValid(config.host)) {
+        throw new Error('invalid_host');
     }
 
     if (config.files === undefined || config.files.length === 0) {
         throw new Error('no_source_files');
     }
-    
+
     var sourceFiles = config.files.join(' ');
     var executableName = config.outputName || executableNameFromSourceFile(config.files[0]);
 
