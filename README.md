@@ -28,7 +28,6 @@ Download and extract Duktape from `http://duktape.org/` and extract into `depend
 Currently version 1.0.0 is used.
 
 ## Compile
-sea-strap.js uses mocha & should.js to perform unit-testing.
 Grunt is currently just used to boostrap the library as duktape
 doesn't provide file I/O.
 
@@ -44,7 +43,7 @@ To use, just run:
 (_Note: At the moment this only builds a bootstrap makefile for itself. Not very useful..._)
 
 ## Test
-As sea-strap.js uses Mocha as its test runner,
+As sea-strap.js uses mocha to perform unit-testing,
 first make sure it is installed with `npm install -g mocha`
 
 Then run the tests using `mocha`
