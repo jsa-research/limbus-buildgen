@@ -29,19 +29,15 @@ describe('makefile-generator', function () {
         shell.rm('-Rf', 'temp');
     });
     
-    it('compile single files', function (done) {
-        makefile_generator.generate({
-            files: [
-                'simple.c'
-            ]
-        }).to('Makefile');
+    var compileAndRunConfig = function (config, runCommand, done) {
+        makefile_generator.generate(config).to('Makefile');
         
         shell.exec('make', {silent: true}, function (returnValue, output) {
             if (returnValue !== 0) {
                 throw new Error(output);
             }
             
-            shell.exec('./simple', {silent: true}, function (returnValue, output) {
+            shell.exec(runCommand, {silent: true}, function (returnValue, output) {
                 if (returnValue !== 0) {
                     throw new Error(output);
                 }
@@ -49,5 +45,22 @@ describe('makefile-generator', function () {
                 done();
             });
         });
+    };
+    
+    it('should compile a single file', function (done) {
+        compileAndRunConfig({
+            files: [
+                'simple.c'
+            ]
+        }, './simple', done);
+    });
+    
+    it('should compile to an outputName executable', function (done) {
+        compileAndRunConfig({
+            files: [
+                'simple.c'
+            ],
+            outputName: 'my_executable'
+        }, './my_executable', done);
     });
 });
