@@ -33,7 +33,7 @@ first make sure it is installed with `npm install -g mocha`
 
 Then run the tests using `mocha`
 
-## Copying
+## Copy
 sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
 
 Written in 2014 by Jesper Oskarsson jesosk@gmail.com
