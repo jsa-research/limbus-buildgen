@@ -7,19 +7,28 @@ C/C++ code-bases.
 
 *Currently bootstrapping itself and as such is not very useful...*
 
+## Dependencies
+The following commands will install all dependencies and build the necessary files.
+
+```
+npm install -g grunt
+npm install
+```
+
+### Linux/OS X
+Fetch non-npm dependencies using `dependencies/fetch_dependencies.sh`
+
+### Windows
+TODO
+
 ## Compile
 sea-strap.js uses mocha & should.js to perform unit-testing.
 Grunt is currently just used to boostrap the library as duktype
 doesn't provide file I/O.
 
-The following commands will install all dependencies and build the necessary files.
-```
-npm install -g grunt-cli
-npm install
-```
+Use `make ; grunt` to build the project.
 
 ## Use
-
 To use, just run:
 ```
 ./duk sea-strap.js > Makefile

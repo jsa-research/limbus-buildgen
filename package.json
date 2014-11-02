@@ -12,8 +12,7 @@
     "should": "^4.1.0"
   },
   "scripts": {
-    "test": "mocha",
-    "postinstall": "dependencies/fetch_dependencies.sh ; make ; grunt"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
