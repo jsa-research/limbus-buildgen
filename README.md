@@ -55,7 +55,7 @@ first make sure it is installed with `npm install -g mocha`
 
 Then run both unit- and integration tests using `npm test`
 
-To run each separately, use `npm run-script unit-test`for unit tests and `npm run-script integration-test"` for integration tests.
+To run each separately, use `npm run-script unit-test`for unit tests and `npm run-script integration-test` for integration tests.
 
 ## Copy
 sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
