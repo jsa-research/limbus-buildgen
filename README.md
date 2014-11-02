@@ -21,9 +21,9 @@ You also need to fetch some additional non-npm dependencies:
 Fetch non-npm dependencies using `dependencies/fetch_dependencies.sh`
 
 #### Windows
-TODO
+See [Download dependencies manually](#dependencies-manual)
 
-#### Manually download dependencies
+#### <a name="dependencies-manual"></a>Download dependencies manually
 Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.0`.
 Currently version 1.0.0 is used.
 
@@ -33,6 +33,9 @@ doesn't provide file I/O.
 
 #### Linux/OS X
 Use `make ; grunt` to build the project.
+
+#### Windows
+TODO
 
 ## Use
 To use, just run:
