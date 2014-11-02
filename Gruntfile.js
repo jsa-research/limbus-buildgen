@@ -30,13 +30,13 @@ module.exports = function(grunt) {
                     footer: "  throw new Error('module not found: ' + id);\n};\n"
                 },
                 src: [
-                    'source/*-generator.js',
+                    'source/*-generator.js'
                 ],
                 dest: 'modules.js'
             },
             'final-build': {
                 options: {
-                    banner: "// This file is generated. Do not edit directly!\n",
+                    banner: "// This file is generated. Do not edit directly!\n"
                 },
                 src: [
                     'modules.js',
