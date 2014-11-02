@@ -49,7 +49,9 @@ To use, just run:
 As sea-strap.js uses mocha to perform unit-testing,
 first make sure it is installed with `npm install -g mocha`
 
-Then run the tests using `mocha`
+Then run both unit- and integration tests using `npm test`
+
+To run each separately, use `mocha unit`for unit tests and `mocha integration` for integration tests.
 
 ## Copy
 sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
