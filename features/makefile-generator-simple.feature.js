@@ -17,8 +17,7 @@ describe('makefile-generator-simple', function () {
     beforeEach(function (done) {
         util.setupEnvironment(function () {
             /* Single file */
-            ("#include <stdio.h>\n"
-            +"int main(int argc, char** argv) {\n"
+            ("int main(int argc, char** argv) {\n"
             +"  return 0;\n"
             +"}\n").to("simple.c");
             

@@ -20,13 +20,13 @@ describe('makefile-generator-linking', function () {
             shell.mkdir('source');
 
             /* Includes and linking */
-            ("#include <stdio.h>\n"
-            +"#include <mylibrary.h>\n"
+            ("#include <mylibrary.h>\n"
             +"int main(int argc, char** argv) {\n"
             +"  return (add(23, 88) == 111) ? 0 : -1;\n"
             +"}\n").to("linked.c");
 
-            ("#include \"../include/mylibrary.h\"\n"
+            ("#include <stdio.h>\n"
+            +"#include \"../include/mylibrary.h\"\n"
             +"int add(int a, int b) {\n"
             +"  return a + b;\n"
             +"}\n").to("source/mylibrary.c");
