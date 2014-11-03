@@ -10,7 +10,7 @@
     "should": "^4.1.0"
   },
   "scripts": {
-    "test": "npm run-script unit-test ; npm run-script integration-test",
+    "test": "mocha \"**/*.unit.js\" ; mocha \"**/*.feature.js\"",
     "unit-test": "mocha \"**/*.unit.js\"",
     "integration-test": "mocha \"**/*.feature.js\""
   },
