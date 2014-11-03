@@ -1,5 +1,6 @@
 
 PLATFORM := Unknown
+DEPENDENCY_FETCH := echo "No dependencies fetched"
 
 ifeq ($(OS), Windows_NT)
     PLATFORM = win32
@@ -14,7 +15,10 @@ else
     ifeq ($(SHELL_UNAME), FreeBSD)
         PLATFORM = freebsd
     endif
+    
+    DEPENDENCY_FETCH = dependencies/fetch_dependencies.sh
 endif
 
 all:
+	$(DEPENDENCY_FETCH)
 	$(MAKE) -f Makefile.$(PLATFORM)

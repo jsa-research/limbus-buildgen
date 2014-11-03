@@ -18,7 +18,7 @@ npm install
 You also need to fetch some additional non-npm dependencies:
 
 #### Linux/OS X/FreeBSD
-Fetch non-npm dependencies using `dependencies/fetch_dependencies.sh`
+_Dependencies are fetched automatically before building_
 
 #### Windows
 See [Download dependencies manually](#download-dependencies-manually)
@@ -32,7 +32,7 @@ Grunt is currently just used to boostrap the library as duktape
 doesn't provide file I/O.
 
 #### Linux/OS X/FreeBSD
-Use `make ; grunt` to build the project.
+Run `make ; grunt` to build the project.
 
 #### Windows
 TODO
