@@ -43,6 +43,7 @@ void* sea_platform_buffer_data_as_c_pointer(void* buffer);
 
 /* Reads the contents of the file at filepath and returns it in a buffer.
  * returns an invalid buffer if an error occured, otherwise a buffer object with the contents.
+ * The buffer object should be destructed after use with sea_platform_buffer_destruct if valid.
  */
 void* sea_platform_read_file(const char* filepath);
 

@@ -9,6 +9,17 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+Duktape.modSearch = function (id) {
+    var fileBuffer = sea_platform.read_file(id + '.js');
+    if (sea_platform.buffer_is_valid(fileBuffer)) {
+        var source = sea_platform.buffer_data_to_string(fileBuffer);
+        sea_platform.buffer_destruct(fileBuffer);
+        return source;
+    } else {
+        throw new Error('module not found: ' + id);
+    }
+};
+
 var makefile_generator = require('source/makefile-generator');
 
 var printHosts = function () {

@@ -12,5 +12,3 @@
 rm -fR node_modules/
 rm -fR dependencies/duktape-*/
 rm -f duk
-rm -f modules.js
-rm -f sea-strap.js

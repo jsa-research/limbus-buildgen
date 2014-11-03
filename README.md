@@ -8,17 +8,10 @@ C/C++ code-bases.
 *Currently bootstrapping itself and as such is not very useful...*
 
 ## Dependencies
-The following commands will install some dependencies from npm:
-
-```
-npm install -g grunt-cli
-npm install
-```
-
-You also need to fetch some additional non-npm dependencies:
+sea-strap.js depends on some other open source projects to build.
 
 #### Linux/OS X/FreeBSD
-_Dependencies are fetched automatically before building_
+_Dependencies are fetched automatically before building so no manual install in neccessary._
 
 #### Windows
 See [Download dependencies manually](#download-dependencies-manually)
@@ -28,11 +21,10 @@ Download and extract Duktape from `http://duktape.org/` and extract into `depend
 Currently version 1.0.0 is used.
 
 ## Compile
-Grunt is currently just used to boostrap the library as duktape
-doesn't provide file I/O.
+sea-strap.js uses build files that it generated to compile itself. The build process tries to follow the conventions of the platform.
 
 #### Linux/OS X/FreeBSD
-Run `make ; grunt` to build the project.
+Run `make` to build the project.
 
 #### Windows
 TODO
@@ -48,8 +40,12 @@ To use, just run:
 (_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
 
 ## Test
-As sea-strap.js uses mocha to perform testing,
-first make sure it is installed with `npm install -g mocha`
+As sea-strap.js uses mocha and should.js to perform testing,
+first make sure they are installed with:
+```
+npm install -g mocha
+npm install
+```
 
 Then run both unit- and integration tests using `npm test`
 

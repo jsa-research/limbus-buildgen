@@ -12,6 +12,4 @@
 /dependencies/duktape-*/
 /node_modules/
 
-/modules.js
 /duk
-/sea-strap.js
