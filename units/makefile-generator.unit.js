@@ -12,16 +12,6 @@
 var should = require('should');
 var makefile_generator = require('../source/makefile-generator');
 
-var simpleMakefile = function(compiler, files, outputFile, extraFlags) {
-    if (extraFlags) {
-        extraFlags = " " + extraFlags;
-    } else {
-        extraFlags = "";
-    }
-    return "all:\n"
-         + "\t" + compiler + " " + files + extraFlags + " -o " + outputFile + "\n";
-};
-
 describe('makefile-generator', function () {
     it('should create an executable in the current directory by default', function () {
         var makefile = makefile_generator.generate({
@@ -30,7 +20,7 @@ describe('makefile-generator', function () {
             ]
         });
 
-        makefile.should.equal(simpleMakefile('gcc', 'source/files/test.c', 'test'));
+        makefile.should.match(/-o test/);
 
         makefile = makefile_generator.generate({
             files: [
@@ -39,11 +29,11 @@ describe('makefile-generator', function () {
             outputName: 'executable'
         });
 
-        makefile.should.equal(simpleMakefile('gcc', 'source/files/test.c', 'executable'));
+        makefile.should.match(/-o executable/);
     });
 
     describe('makefile configured without any files', function () {
-        var no_source_files_error = "no_source_files";
+        var no_source_files_error = 'no_source_files';
         
         it('should throw "no_source_files" when files is undefined', function () {
             (function () {
@@ -69,7 +59,7 @@ describe('makefile-generator', function () {
                 ]
             });
 
-            makefile.should.equal(simpleMakefile('gcc', 'file_a.c file_b.c file_c.c', 'file_a'));
+            makefile.should.match(/file_a\.c file_b\.c file_c\.c/);
         });
     });
 
@@ -79,10 +69,10 @@ describe('makefile-generator', function () {
                 files: [
                     'test.c'
                 ],
-                outputName: 'executable'
+                outputName: 'executable.exe'
             });
 
-            makefile.should.equal(simpleMakefile('gcc', 'test.c', 'executable'));
+            makefile.should.match(/-o executable\.exe\n/);
         });
     });
 
@@ -90,11 +80,12 @@ describe('makefile-generator', function () {
         it('should name the resulting executable using the first given file without the extension by default', function () {
             var makefile = makefile_generator.generate({
                 files: [
-                    'another_executable.c'
+                    'another_executable.c',
+                    'test.c'
                 ]
             });
 
-            makefile.should.equal(simpleMakefile('gcc', 'another_executable.c', 'another_executable'));
+            makefile.should.match(/-o another_executable\n/);
 
             makefile = makefile_generator.generate({
                 files: [
@@ -102,7 +93,7 @@ describe('makefile-generator', function () {
                 ]
             });
 
-            makefile.should.equal(simpleMakefile('gcc', 'file.with.many.dots.c', 'file.with.many.dots'));
+            makefile.should.match(/-o file.with.many.dots\n/);
         });
 
         it('should throw "given_source_file_without_extension" if the first source file is missing an extension', function () {
@@ -124,7 +115,7 @@ describe('makefile-generator', function () {
                 ],
                 host: 'linux'
             });
-            makefile.should.equal(simpleMakefile('gcc', 'test.c', 'test'));
+            makefile.should.match(/\tgcc /);
 
             makefile = makefile_generator.generate({
                 files: [
@@ -132,7 +123,7 @@ describe('makefile-generator', function () {
                 ],
                 host: 'darwin'
             });
-            makefile.should.equal(simpleMakefile('clang', 'test.c', 'test'));
+            makefile.should.match(/\tclang /);
 
             makefile = makefile_generator.generate({
                 files: [
@@ -140,7 +131,7 @@ describe('makefile-generator', function () {
                 ],
                 host: 'linux-clang'
             });
-            makefile.should.equal(simpleMakefile('clang', 'test.c', 'test'));
+            makefile.should.match(/\tclang /);
         });
         it('should throw "invalid_host" if host is not one of the predefined hosts', function () {
             [
@@ -184,12 +175,12 @@ describe('makefile-generator', function () {
                 ]
             });
 
-            makefile.should.equal(simpleMakefile('gcc', 'test.c', 'test'));
+            makefile.should.match(/\tgcc /);
         });
     });
 
     describe('makefile configured with include path', function () {
-        it('should add the correct flags', function () {
+        it('should add the correct flag', function () {
             var makefile = makefile_generator.generate({
                 files: [
                     'test.c'
@@ -199,10 +190,10 @@ describe('makefile-generator', function () {
                 ]
             });
 
-            makefile.should.equal(simpleMakefile('gcc', 'test.c', 'test', '-Iincludes/'));
+            makefile.should.match(/ -Iincludes\/ /);
         });
     });
-    
+
     describe('makefile where host is freebsd', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
@@ -212,7 +203,7 @@ describe('makefile-generator', function () {
                 host: 'freebsd'
             });
 
-            makefile.should.equal(simpleMakefile('clang', 'test.c', 'test', '-lm'));
+            makefile.should.match(/ -lm /);
         });
     });
 });

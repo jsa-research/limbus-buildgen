@@ -52,7 +52,7 @@ var compilerByHost = function (host) {
     }
 };
 
-var isHostValid = function(host) {
+var isHostValid = function (host) {
     for (var compiler in hostsPerCompiler) {
         if (hostsPerCompiler[compiler].indexOf(host) != -1) {
             return true;
