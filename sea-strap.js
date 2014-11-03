@@ -9,6 +9,9 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+var duktape_version = "1.0.1";
+
+
 Duktape.modSearch = function (id) {
     var fileBuffer = sea_platform.read_file(id + '.js');
     if (sea_platform.buffer_is_valid(fileBuffer)) {
@@ -41,12 +44,12 @@ if (arguments.length < 3) {
     if (makefile_generator.supportedHosts.indexOf(host) !== -1) {
         print(makefile_generator.generate({
             files: [
-                'dependencies/duktape-1.0.0/src/duktape.c',
+                'dependencies/duktape-' + duktape_version + '/src/duktape.c',
                 'source/duk.c',
                 'source/platform.c'
             ],
             includePaths: [
-                'dependencies/duktape-1.0.0/src/'
+                'dependencies/duktape-' + duktape_version + '/src/'
             ],
             outputName: 'duk',
             host: host

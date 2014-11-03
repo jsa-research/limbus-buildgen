@@ -17,8 +17,8 @@ _Dependencies are fetched automatically before building so no manual install is 
 See [Download dependencies manually](#download-dependencies-manually)
 
 #### Download dependencies manually
-Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.0`.
-Version 1.0.0 is currently used.
+Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.1`.
+Version 1.0.1 is currently used.
 
 ## Compile
 sea-strap.js compiles using build files that it generated itself. The build process tries to follow the conventions of the platform.

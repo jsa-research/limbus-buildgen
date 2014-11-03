@@ -9,6 +9,9 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+duktape_version="1.0.1"
+
+
 unamestr=`uname`
 if test "$unamestr" = 'Darwin' -o "$unamestr" = 'FreeBSD'
 then
@@ -26,16 +29,6 @@ extract_tar_xz() {
 
 # Make sure we don't install this in the root directory by mistake
 cd dependencies 2> /dev/null
-
-
-# The specific version of Duktape used can be specified
-#echo -n "Which Duktape version do you want to use? (1.0.0) "
-#read duktape_version
-
-if test -z "$duktape_version"
-then
-    duktape_version="1.0.0"
-fi
 
 if test ! -d "duktape-$duktape_version"
 then
