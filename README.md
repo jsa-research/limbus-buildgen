@@ -11,20 +11,20 @@ C/C++ code-bases.
 sea-strap.js depends on some other open source projects to build.
 
 #### Linux/OS X/FreeBSD
-_Dependencies are fetched automatically before building so no manual install in neccessary._
+_Dependencies are fetched automatically before building so no manual install is neccessary._
 
 #### Windows
 See [Download dependencies manually](#download-dependencies-manually)
 
 #### Download dependencies manually
 Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.0`.
-Currently version 1.0.0 is used.
+Version 1.0.0 is currently used.
 
 ## Compile
-sea-strap.js uses build files that it generated to compile itself. The build process tries to follow the conventions of the platform.
+sea-strap.js compiles using build files that it generated itself. The build process tries to follow the conventions of the platform.
 
 #### Linux/OS X/FreeBSD
-Run `make` to build the project.
+Run `make` in the root folder to build the project.
 
 #### Windows
 TODO
