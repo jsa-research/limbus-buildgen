@@ -55,7 +55,8 @@ To run each separately, use `npm run-script unit-test`for unit tests and `npm ru
 These are things that are planned for a 0.2 version:
 
 * A Visual Studio 2013 project generator.
-* Cross compilation to Android and iOS on supported platforms.
+* Cross compilation to Android on supported platforms.
+* A Xcode project generator for iOS.
 
 ## Copy
 sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
