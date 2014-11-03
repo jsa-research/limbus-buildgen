@@ -14,13 +14,14 @@ var makefile_generator = require('../source/makefile-generator');
 
 describe('makefile-generator', function () {
     it('should have a list with the supported hosts', function () {
-        makefile_generator.supportedHosts.length.should.equal(6);
+        makefile_generator.supportedHosts.length.should.equal(7);
         makefile_generator.supportedHosts.should.containEql('darwin');
         makefile_generator.supportedHosts.should.containEql('darwin-clang');
         makefile_generator.supportedHosts.should.containEql('linux');
         makefile_generator.supportedHosts.should.containEql('linux-gcc');
         makefile_generator.supportedHosts.should.containEql('linux-clang');
         makefile_generator.supportedHosts.should.containEql('freebsd');
+        makefile_generator.supportedHosts.should.containEql('win32-cl');
     });
 
     it('should create an executable in the current directory by default', function () {
@@ -142,6 +143,14 @@ describe('makefile-generator', function () {
                 host: 'linux-clang'
             });
             makefile.should.match(/\tclang /);
+
+            makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                host: 'win32-cl'
+            });
+            makefile.should.match(/\tcl /);
         });
         it('should throw "invalid_host" if host is not one of the predefined hosts', function () {
             [
@@ -227,6 +236,67 @@ describe('makefile-generator', function () {
             });
 
             makefile.should.match(/ -lm /);
+        });
+    });
+
+    describe('makefile where host is linux', function () {
+        it('should compile with libm by default', function () {
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                host: 'linux'
+            });
+
+            makefile.should.match(/ -lm /);
+        });
+    });
+
+    describe('makefile where host is win32-cl', function () {
+        it('should use the correct flags', function () {
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                host: 'win32-cl'
+            });
+
+            makefile.should.match(/ \/Fetest/);
+
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                includePaths: [
+                    'includes'
+                ],
+                host: 'win32-cl'
+            });
+
+            makefile.should.match(/ \/Iincludes /);
+        });
+
+        it('should convert paths to use backslashes instead of forward ones', function () {
+            var makefile = makefile_generator.generate({
+                files: [
+                    'in/some/path/test.c'
+                ],
+                host: 'win32-cl'
+            });
+
+            makefile.should.match(/in\\some\\path\\test.c/);
+
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                includePaths: [
+                    'include/some/directory/'
+                ],
+                host: 'win32-cl'
+            });
+
+            makefile.should.match(/include\\some\\directory\\/);
         });
     });
 });

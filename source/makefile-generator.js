@@ -9,7 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var executableNameFromSourceFile = function (sourceFile) {
+var outputNameFromSourceFile = function (sourceFile) {
     var matchedName = sourceFile.match(/([^\/]+)\.\w+$/);
     if (matchedName === null) {
         throw new Error('given_source_file_without_extension');
@@ -22,23 +22,38 @@ var standardFlags = {
     linux: '-lm'
 };
 
-var hostsPerCompiler = {
-    clang: [
-        'darwin',
-        'darwin-clang',
-        'linux-clang',
-        'freebsd'
-    ],
-    gcc: [
-        'linux',
-        'linux-gcc'
-    ]
+var compilerInfoTable = {
+    clang: {
+        hosts: [
+            'darwin',
+            'darwin-clang',
+            'linux-clang',
+            'freebsd'
+        ],
+        outputNameFlag: '-o ',
+        includePathFlag: '-I'
+    },
+    gcc: {
+        hosts: [
+            'linux',
+            'linux-gcc'
+        ],
+        outputNameFlag: '-o ',
+        includePathFlag: '-I'
+    },
+    cl: {
+        hosts: [
+            'win32-cl'
+        ],
+        outputNameFlag: '/Fe',
+        includePathFlag: '/I'
+    }
 };
 
 exports.supportedHosts = [];
 (function () {
-    for (var compiler in hostsPerCompiler) {
-        hostsPerCompiler[compiler].forEach(function (host) {
+    for (var compiler in compilerInfoTable) {
+        compilerInfoTable[compiler].hosts.forEach(function (host) {
             exports.supportedHosts.push(host);
         });
     }
@@ -47,9 +62,8 @@ exports.supportedHosts = [];
 var compilerByHost = function (host) {
     if (host !== undefined) {
         var compilerFound;
-        for (var compiler in hostsPerCompiler) {
-            var hosts = hostsPerCompiler[compiler];
-            hosts.forEach(function (hostInList) {
+        for (var compiler in compilerInfoTable) {
+            compilerInfoTable[compiler].hosts.forEach(function (hostInList) {
                 if (hostInList === host) {
                     compilerFound = compiler;
                 }
@@ -63,8 +77,8 @@ var compilerByHost = function (host) {
 };
 
 var isHostValid = function (host) {
-    for (var compiler in hostsPerCompiler) {
-        if (hostsPerCompiler[compiler].indexOf(host) != -1) {
+    for (var compiler in compilerInfoTable) {
+        if (compilerInfoTable[compiler].hosts.indexOf(host) != -1) {
             return true;
         }
     }
@@ -72,22 +86,46 @@ var isHostValid = function (host) {
     return false;
 };
 
+var processPath = function (compiler, path) {
+    if (compiler === 'cl') {
+        return path.replace(/\//g, '\\');
+    } else {
+        return path;
+    }
+};
+
+var joinPaths = function (compiler, paths, prefix) {
+    prefix = prefix || '';
+    var joinedPaths = prefix;
+    paths.forEach(function (path, i) {
+        if (i != 0) {
+            joinedPaths += " " + prefix;
+        }
+        joinedPaths += processPath(compiler, path);
+    });
+    return joinedPaths;
+};
+
 exports.generate = function (config) {
     var compiler = compilerByHost(config.host);
     if (config.host !== undefined && !isHostValid(config.host)) {
         throw new Error('invalid_host');
     }
+    
+    var compilerInfo = compilerInfoTable[compiler];
+    var outputNameFlag = compilerInfo.outputNameFlag;
+    var includePathFlag = compilerInfo.includePathFlag;
 
     if (config.files === undefined || config.files.length === 0) {
         throw new Error('no_source_files');
     }
 
-    var sourceFiles = config.files.join(' ');
-    var executableName = config.outputName || executableNameFromSourceFile(config.files[0]);
+    var sourceFiles = joinPaths(compiler, config.files);
+    var outputName = config.outputName || outputNameFromSourceFile(config.files[0]);
 
     var extraFlags = '';
     if (config.includePaths) {
-        extraFlags += ' -I' + config.includePaths.join(' -I');
+        extraFlags += " " + joinPaths(compiler, config.includePaths, includePathFlag);
     }
     if (standardFlags[config.host]) {
         extraFlags += ' ' + standardFlags[config.host];
@@ -95,7 +133,7 @@ exports.generate = function (config) {
 
     var makefile =
         'all:\n' + 
-        '\t' + compiler + ' ' + sourceFiles + extraFlags + ' -o ' + executableName + '\n';
+        '\t' + compiler + ' ' + sourceFiles + extraFlags + ' ' + outputNameFlag + outputName + '\n';
 
     return makefile;
 };
