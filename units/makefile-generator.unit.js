@@ -156,6 +156,7 @@ describe('makefile-generator', function () {
             [
                 'made up host',
                 'darwin-gcc',
+                'darw',
                 'osx'
 
             ].forEach(function (host) {
@@ -168,15 +169,7 @@ describe('makefile-generator', function () {
         });
 
         it('should not throw "invalid_host" if host is one of the predefined hosts', function () {
-            [
-                'darwin',
-                'darwin-clang',
-                'freebsd',
-                'linux',
-                'linux-gcc',
-                'linux-clang'
-            
-            ].forEach(function (host) {
+            makefile_generator.supportedHosts.forEach(function (host) {
                 (function () {
                     makefile_generator.generate({
                         host: host
@@ -220,19 +213,6 @@ describe('makefile-generator', function () {
                     'test.c'
                 ],
                 host: 'freebsd'
-            });
-
-            makefile.should.match(/ -lm /);
-        });
-    });
-
-    describe('makefile where host is linux', function () {
-        it('should compile with libm by default', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'linux'
             });
 
             makefile.should.match(/ -lm /);
