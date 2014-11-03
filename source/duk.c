@@ -27,11 +27,12 @@ static int get_stack_trace(duk_context* context) {
 }
 
 static int compile_and_execute(duk_context* context) {
+    int i;
     duk_compile(context, 0);
     duk_push_global_object(context);
     
     duk_push_array(context);
-    for (int i = 0; i < argument_count; ++i) {
+    for (i = 0; i < argument_count; ++i) {
         duk_push_string(context, arguments[i]);
         duk_put_prop_index(context, -2, i);
     }
@@ -157,13 +158,16 @@ static void register_platform(duk_context* context) {
 }
 
 int main(int argc, char* argv[]) {
+    void* source;
+    
     if (argc < 2) {
         fprintf(stderr, "No input file\n");
         return -1;
     }
     
-    void* source = sea_platform_read_file(argv[1]);
+    source = sea_platform_read_file(argv[1]);
     if (sea_platform_buffer_is_valid(source)) {
+        int status;
         duk_context* context = duk_create_heap_default();
         duk_push_lstring(context,
                          sea_platform_buffer_data_as_c_pointer(source),
@@ -176,7 +180,7 @@ int main(int argc, char* argv[]) {
         arguments = argv;
         argument_count = argc;
 
-        int status = duk_safe_call(context, compile_and_execute, 2, 1);
+        status = duk_safe_call(context, compile_and_execute, 2, 1);
         if (status != DUK_EXEC_SUCCESS) {
             (void)duk_safe_call(context, get_stack_trace, 1, 1);
             fprintf(stderr, "%s\n", duk_safe_to_string(context, -1));
