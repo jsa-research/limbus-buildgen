@@ -13,3 +13,4 @@ all:
 	@dependencies/fetch_dependencies.sh
 	@echo Compiling...
 	@./make_proxy.sh
+    @echo Done.
