@@ -49,19 +49,6 @@ int sea_platform_buffer_is_valid(void* buffer) {
     return buffer != NULL;
 }
 
-int sea_platform_buffer_resize(void* voidp_buffer, unsigned long size) {
-    Buffer* buffer = (Buffer*)voidp_buffer;
-    
-    void* resized_buffer = realloc(buffer->data, size);
-    if (resized_buffer) {
-        buffer->data = resized_buffer;
-        buffer->size = size;
-        return 1;
-    }
-    
-    return 0;
-}
-
 unsigned long sea_platform_buffer_size(void* voidp_buffer) {
     Buffer* buffer = (Buffer*)voidp_buffer;
     return buffer->size;

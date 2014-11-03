@@ -71,14 +71,6 @@ static int duk_sea_platform_buffer_is_valid(duk_context* context) {
     duk_push_int(context, result);
     return 1;
 }
-static int duk_sea_platform_buffer_resize(duk_context* context) {
-    void* buffer = duk_require_pointer(context, 0);
-    duk_double_t size = duk_require_number(context, 1);
-
-    int result = sea_platform_buffer_resize(buffer, (unsigned long)size);
-    duk_push_int(context, result);
-    return 1;
-}
 static int duk_sea_platform_buffer_size(duk_context* context) {
     void* buffer = duk_require_pointer(context, 0);
 
@@ -133,9 +125,6 @@ static void register_platform(duk_context* context) {
     
     duk_push_c_function(context, duk_sea_platform_buffer_is_valid, 1);
     duk_put_prop_string(context, -2, "buffer_is_valid");
-    
-    duk_push_c_function(context, duk_sea_platform_buffer_resize, 2);
-    duk_put_prop_string(context, -2, "buffer_resize");
     
     duk_push_c_function(context, duk_sea_platform_buffer_size, 1);
     duk_put_prop_string(context, -2, "buffer_size");

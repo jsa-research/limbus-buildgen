@@ -23,11 +23,6 @@ void sea_platform_buffer_destruct(void* buffer);
  */
 int sea_platform_buffer_is_valid(void* buffer);
 
-/* Resizes the buffer to the specified size.
- * returns 1 if the buffer was successfully resized, otherwise 0.
- */
-int sea_platform_buffer_resize(void* buffer, unsigned long size_in_bytes);
-
 /* Returns the size of the buffer in bytes
  * returns the size of the buffer in bytes.
  */
