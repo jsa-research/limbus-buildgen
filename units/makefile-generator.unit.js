@@ -13,6 +13,16 @@ var should = require('should');
 var makefile_generator = require('../source/makefile-generator');
 
 describe('makefile-generator', function () {
+    it('should have a list with the supported hosts', function () {
+        makefile_generator.supportedHosts.length.should.equal(6);
+        makefile_generator.supportedHosts.should.containEql('darwin');
+        makefile_generator.supportedHosts.should.containEql('darwin-clang');
+        makefile_generator.supportedHosts.should.containEql('linux');
+        makefile_generator.supportedHosts.should.containEql('linux-gcc');
+        makefile_generator.supportedHosts.should.containEql('linux-clang');
+        makefile_generator.supportedHosts.should.containEql('freebsd');
+    });
+
     it('should create an executable in the current directory by default', function () {
         var makefile = makefile_generator.generate({
             files: [

@@ -34,6 +34,15 @@ var hostsPerCompiler = {
     ]
 };
 
+exports.supportedHosts = [];
+(function () {
+    for (var compiler in hostsPerCompiler) {
+        hostsPerCompiler[compiler].forEach(function (host) {
+            exports.supportedHosts.push(host);
+        });
+    }
+})();
+
 var compilerByHost = function (host) {
     if (host !== undefined) {
         var compilerFound;
