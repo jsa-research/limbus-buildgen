@@ -10,7 +10,8 @@
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 unamestr=`uname`
-if [ "$unamestr" == 'Darwin' -o "$unamestr" == 'FreeBSD' ]; then
+if test "$unamestr" = 'Darwin' -o "$unamestr" = 'FreeBSD'
+then
     WGET="curl -s "
     WGET_OUT="-o"
 else
@@ -31,11 +32,13 @@ cd dependencies 2> /dev/null
 #echo -n "Which Duktape version do you want to use? (1.0.0) "
 #read duktape_version
 
-if [ -z "$duktape_version" ]; then
+if test -z "$duktape_version"
+then
     duktape_version="1.0.0"
 fi
 
-if [ ! -d "duktape-$duktape_version" ]; then
+if test ! -d "duktape-$duktape_version"
+then
     echo Fetching Duktape $duktape_version...
     $WGET "http://duktape.org/duktape-$duktape_version.tar.xz" $WGET_OUT "duktape-$duktape_version.tar.xz"
 
