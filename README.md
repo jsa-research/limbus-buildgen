@@ -51,6 +51,12 @@ Then run both unit- and integration tests using `npm test`
 
 To run each separately, use `npm run-script unit-test`for unit tests and `npm run-script integration-test` for integration tests.
 
+## Roadmap
+These are things that are planned for a 0.2 version:
+
+* A Visual Studio 2013 project generator.
+* Cross compilation to Android and iOS on supported platforms.
+
 ## Copy
 sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
 
