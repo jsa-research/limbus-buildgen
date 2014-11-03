@@ -12,7 +12,7 @@
 var executableNameFromSourceFile = function (sourceFile) {
     var matchedName = sourceFile.match(/([^\/]+)\.\w+$/);
     if (matchedName === null) {
-        throw new Error("given_source_file_without_extension");
+        throw new Error('given_source_file_without_extension');
     }
     return matchedName[1];
 };
@@ -21,31 +21,49 @@ var standardFlags = {
     freebsd: "-lm"
 };
 
+var hostsPerCompiler = {
+    clang: [
+        'darwin',
+        'darwin-clang',
+        'linux-clang',
+        'freebsd'
+    ],
+    gcc: [
+        'linux',
+        'linux-gcc'
+    ]
+};
+
 var compilerByHost = function (host) {
-    if (host === 'darwin' || host === 'darwin-clang' || host === 'linux-clang' || host === 'freebsd') {
-        return 'clang';
-    } else if (host === 'linux' || host === 'linux-gcc') {
-        return 'gcc';
+    if (host !== undefined) {
+        var compilerFound;
+        for (var compiler in hostsPerCompiler) {
+            var hosts = hostsPerCompiler[compiler];
+            hosts.forEach(function (hostInList) {
+                if (hostInList === host) {
+                    compilerFound = compiler;
+                }
+            });
+        }
+        return compilerFound;
+    
     } else {
-        return null;
+        return 'gcc';
     }
 };
 
-var getCompiler = function (host) {
-    return compilerByHost(host) || "gcc";
-};
-
 var isHostValid = function(host) {
-    return host === 'darwin'
-        || host === 'darwin-clang'
-        || host === 'freebsd'
-        || host === 'linux'
-        || host === 'linux-clang'
-        || host === 'linux-gcc';
+    for (var compiler in hostsPerCompiler) {
+        if (hostsPerCompiler[compiler].indexOf(host) != -1) {
+            return true;
+        }
+    }
+    
+    return false;
 };
 
 exports.generate = function (config) {
-    var compiler = getCompiler(config.host);
+    var compiler = compilerByHost(config.host);
     if (config.host !== undefined && !isHostValid(config.host)) {
         throw new Error('invalid_host');
     }
@@ -57,12 +75,12 @@ exports.generate = function (config) {
     var sourceFiles = config.files.join(' ');
     var executableName = config.outputName || executableNameFromSourceFile(config.files[0]);
 
-    var extraFlags = "";
+    var extraFlags = '';
     if (config.includePaths) {
-        extraFlags += " -I" + config.includePaths.join(' -I');
+        extraFlags += ' -I' + config.includePaths.join(' -I');
     }
     if (standardFlags[config.host]) {
-        extraFlags += " " + standardFlags[config.host];
+        extraFlags += ' ' + standardFlags[config.host];
     }
 
     var makefile =
