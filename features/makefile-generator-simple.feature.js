@@ -33,7 +33,7 @@ describe('makefile-generator-simple', function () {
                 'simple.c'
             ],
             host: process.platform
-        }, './simple', done);
+        }, 'simple', done);
     });
 
     it('should compile to an executable with outputName', function (done) {
@@ -43,6 +43,6 @@ describe('makefile-generator-simple', function () {
             ],
             host: process.platform,
             outputName: 'my_executable'
-        }, './my_executable', done);
+        }, 'my_executable', done);
     });
 });

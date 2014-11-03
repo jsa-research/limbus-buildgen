@@ -55,7 +55,7 @@ describe('makefile-generator-linking', function () {
             includePaths: [
                 'include'
             ]
-        }, './linked', done);
+        }, 'linked', done);
     });
 
     it('should link with libm by default', function (done) {
@@ -64,6 +64,6 @@ describe('makefile-generator-linking', function () {
                 'math.c'
             ],
             host: process.platform
-        }, './math', done);
+        }, 'math', done);
     });
 });

@@ -15,7 +15,15 @@ var shell = require('shelljs');
 exports.shouldCompileAndRun = function (config, runCommand, done) {
     makefile_generator.generate(config).to('Makefile');
 
-    shell.exec('make', {silent: true}, function (returnValue, output) {
+    var make;
+    if (config.host === 'win32') {
+        make = 'nmake /f Makefile';
+    } else {
+        make = 'make'
+        runCommand += './';
+    }
+
+    shell.exec(make, {silent: true}, function (returnValue, output) {
         if (returnValue !== 0) {
             throw new Error(output);
         }
@@ -37,7 +45,9 @@ exports.setupEnvironment = function (done) {
 };
 
 exports.teardownEnvironment = function (done) {
-    shell.cd('..');
-    shell.rm('-Rf', 'temp');
-    done();
+    setTimeout(function () {
+        shell.cd('..');
+        shell.rm('-Rf', 'temp');
+        done();
+    }, 500);
 };

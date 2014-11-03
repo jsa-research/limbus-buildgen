@@ -43,6 +43,7 @@ var compilerInfoTable = {
     },
     cl: {
         hosts: [
+            'win32',
             'win32-cl'
         ],
         outputNameFlag: '/Fe',
