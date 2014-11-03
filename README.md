@@ -31,11 +31,8 @@ Currently version 1.0.0 is used.
 Grunt is currently just used to boostrap the library as duktape
 doesn't provide file I/O.
 
-#### Linux/OS X
+#### Linux/OS X/FreeBSD
 Use `make ; grunt` to build the project.
-
-#### FreeBSD
-Use `make -f Makefile.freebsd ; grunt` to build the project.
 
 #### Windows
 TODO
@@ -43,14 +40,15 @@ TODO
 ## Use
 To use, just run:
 ```
-./duk sea-strap.js generic > Makefile
 ./duk sea-strap.js freebsd > Makefile.freebsd
+./duk sea-strap.js linux > Makefile.linux
+./duk sea-strap.js darwin > Makefile.darwin
 ```
 
 (_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
 
 ## Test
-As sea-strap.js uses mocha to perform unit-testing,
+As sea-strap.js uses mocha to perform testing,
 first make sure it is installed with `npm install -g mocha`
 
 Then run both unit- and integration tests using `npm test`
