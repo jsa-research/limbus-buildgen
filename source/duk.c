@@ -12,8 +12,8 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <duktape.h>
+#include "platform.h"
 
 char** arguments;
 int argument_count;
@@ -42,57 +42,20 @@ static int compile_and_execute(duk_context* context) {
     return 0;
 }
 
-static char* read_file(char* filepath, unsigned long* final_size) {
-    FILE* file = fopen(filepath, "rb");
-    if (file) {
-        unsigned long file_size = 0;
-        unsigned long buffer_size = 1024;
-        char* buffer = (char*)malloc(buffer_size);
-        
-        /* Read until EOF */
-        while (feof(file) == 0) {
-            int read_bytes = fread(buffer + file_size, 1, buffer_size - file_size, file);
-            file_size += read_bytes;
-            
-            /* Buffer is full, we need to resize it */
-            if (file_size == buffer_size) {
-                buffer_size *= 1.6f; // Magic number
-                char* resized_buffer = (char*)realloc(buffer, buffer_size);
-
-                if (!resized_buffer) {
-                    free(buffer);
-                    fclose(file);
-                    fprintf(stderr, "Out of memory\n");
-                    return NULL;
-                } else {
-                    buffer = resized_buffer;
-                }
-            }
-        }
-        
-        *final_size = file_size;
-        fclose(file);
-        return buffer;
-        
-    } else {
-        fprintf(stderr, "Unable to open file %s\n", filepath);
-        return NULL;
-    }
-}
-
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         fprintf(stderr, "No input file\n");
         return -1;
     }
     
-    unsigned long size;
-    char* source = read_file(argv[1], &size);
-    if (source) {
+    void* source = sea_platform_read_file(argv[1]);
+    if (sea_platform_buffer_is_valid(source)) {
         duk_context* context = duk_create_heap_default();
-        duk_push_lstring(context, source, size);
+        duk_push_lstring(context,
+                         sea_platform_buffer_data_as_c_pointer(source),
+                         sea_platform_buffer_size(source));
         duk_push_string(context, argv[1]);
-        free(source);
+        sea_platform_buffer_destruct(source);
         
         arguments = argv;
         argument_count = argc;

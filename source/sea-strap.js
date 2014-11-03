@@ -31,7 +31,8 @@ if (arguments.length < 3) {
         print(makefile_generator.generate({
             files: [
                 'dependencies/duktape-1.0.0/src/duktape.c',
-                'source/duk.c'
+                'source/duk.c',
+                'source/platform.c'
             ],
             includePaths: [
                 'dependencies/duktape-1.0.0/src/'
