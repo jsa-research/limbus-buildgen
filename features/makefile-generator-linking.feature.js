@@ -46,7 +46,7 @@ describe('makefile-generator-linking', function () {
     afterEach(util.teardownEnvironment);
 
     it('should compile and link correctly given several source files and includes', function (done) {
-        util.compileAndRunConfig({
+        util.shouldCompileAndRun({
             files: [
                 'linked.c',
                 'source/mylibrary.c'
@@ -59,7 +59,7 @@ describe('makefile-generator-linking', function () {
     });
 
     it('should link with libm by default', function (done) {
-        util.compileAndRunConfig({
+        util.shouldCompileAndRun({
             files: [
                 'math.c'
             ],

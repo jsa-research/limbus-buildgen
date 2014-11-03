@@ -12,7 +12,7 @@
 var makefile_generator = require('../source/makefile-generator');
 var shell = require('shelljs');
 
-exports.compileAndRunConfig = function (config, runCommand, done) {
+exports.shouldCompileAndRun = function (config, runCommand, done) {
     makefile_generator.generate(config).to('Makefile');
 
     shell.exec('make', {silent: true}, function (returnValue, output) {

@@ -28,7 +28,7 @@ describe('makefile-generator-simple', function () {
     afterEach(util.teardownEnvironment);
 
     it('should compile a single file', function (done) {
-        util.compileAndRunConfig({
+        util.shouldCompileAndRun({
             files: [
                 'simple.c'
             ],
@@ -37,7 +37,7 @@ describe('makefile-generator-simple', function () {
     });
 
     it('should compile to an executable with outputName', function (done) {
-        util.compileAndRunConfig({
+        util.shouldCompileAndRun({
             files: [
                 'simple.c'
             ],
