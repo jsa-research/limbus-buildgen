@@ -18,7 +18,8 @@ var executableNameFromSourceFile = function (sourceFile) {
 };
 
 var standardFlags = {
-    freebsd: "-lm"
+    freebsd: '-lm',
+    linux: '-lm'
 };
 
 var hostsPerCompiler = {

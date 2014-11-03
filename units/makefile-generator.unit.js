@@ -216,4 +216,17 @@ describe('makefile-generator', function () {
             makefile.should.match(/ -lm /);
         });
     });
+
+    describe('makefile where host is linux', function () {
+        it('should compile with libm by default', function () {
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                host: 'linux'
+            });
+
+            makefile.should.match(/ -lm /);
+        });
+    });
 });
