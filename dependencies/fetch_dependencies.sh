@@ -10,7 +10,7 @@
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 unamestr=`uname`
-if [ "$unamestr" == 'Darwin' ] || [ "$unamestr" == 'FreeBSD' ]; then
+if [ "$unamestr" == 'Darwin' -o "$unamestr" == 'FreeBSD' ]; then
     WGET="curl -s "
     WGET_OUT="-o"
 else
