@@ -3,9 +3,9 @@ _A "build anywhere" C/C++ makefile/project generator._
 
 [![travis-ci build status](https://travis-ci.org/redien/sea-strap.js.svg?branch=master)](https://travis-ci.org/redien/sea-strap.js)
 
-The goal of the project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases.
+The goal of the project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases. The aim is to keep the code-base small and as such features will be added only if there is a real need for something that would be used by most projects.
 
-It consists of a collection of Common.js modules that generate different types of build files. It also has a small command-line front-end that can be used to generate build files without writing additional code.
+The library consists of a collection of Common.js modules that generate different types of build files. There is also a small command-line front-end that can be used to generate build files without writing additional code.
 
 *Currently bootstrapping itself and as such is not very useful...*
 
@@ -60,7 +60,7 @@ npm install -g mocha
 npm install
 ```
 
-Then run both unit- and integration tests using `npm test` (_Currently this is broken on Windows. Run the tests separately instead._)
+Then run both unit- and integration tests using `npm test`
 
 To run each separately, use `npm run-script unit-test` for unit tests and `npm run-script integration-test` for integration tests.
 
@@ -80,8 +80,10 @@ Version 1.0.1 is currently used.
 
 ## Roadmap
 These are things that are planned for a 0.2 version:
-
 * A Visual Studio 2013 project generator.
+* Research continous integration on all supported platforms
+
+Towards a 1.0 release, these features planned:
 * Cross compilation to Android on supported platforms.
 * A Xcode 6 project generator for iOS cross compilation.
 
