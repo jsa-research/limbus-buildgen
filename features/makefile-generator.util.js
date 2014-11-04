@@ -20,7 +20,7 @@ exports.shouldCompileAndRun = function (config, runCommand, done) {
         make = 'nmake /f Makefile';
     } else {
         make = 'make'
-        runCommand += './';
+        runCommand = './' + runCommand;
     }
 
     shell.exec(make, {silent: true}, function (returnValue, output) {
@@ -49,5 +49,5 @@ exports.teardownEnvironment = function (done) {
         shell.cd('..');
         shell.rm('-Rf', 'temp');
         done();
-    }, 500);
+    }, process.platform === 'win32' ? 500 : 0);
 };
