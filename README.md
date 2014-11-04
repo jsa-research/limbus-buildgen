@@ -70,7 +70,7 @@ To produce a report, run:
 npm run-script coverage
 ```
 
-This will generate `coverage.html` that can be viewed in a browser.
+This will generate `coverage.html` which can be viewed in a browser.
 
 ## Download dependencies manually
 Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.1`.
