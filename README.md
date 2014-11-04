@@ -29,17 +29,6 @@ To use, just run:
 
 (_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
 
-## Test
-As sea-strap.js uses mocha and should.js to perform testing, first make sure they are installed with:
-```
-npm install -g mocha
-npm install
-```
-
-Then run both unit- and integration tests using `npm test` (_Currently this is broken on Windows. Run the tests separately instead._)
-
-To run each separately, use `npm run-script unit-test`for unit tests and `npm run-script integration-test` for integration tests.
-
 ## API
 #### Generate Makefiles
 ```javascript
@@ -61,6 +50,27 @@ var makefile = makefile_generator.generate({
   outputName: 'my-application'
 });
 ```
+
+## Test
+As sea-strap.js uses mocha and should.js to perform testing, first make sure they are installed with:
+```
+npm install -g mocha
+npm install
+```
+
+Then run both unit- and integration tests using `npm test` (_Currently this is broken on Windows. Run the tests separately instead._)
+
+To run each separately, use `npm run-script unit-test`for unit tests and `npm run-script integration-test` for integration tests.
+
+## Code coverage
+To analyze code coverage of the unit tests, sea-strap.js uses blanket.js.
+
+To produce a report, run:
+```
+npm run-script coverage
+```
+
+This will generate `coverage.html` that can be viewed in a browser.
 
 ## Download dependencies manually
 Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.1`.
