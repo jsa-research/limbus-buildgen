@@ -83,7 +83,7 @@ These are things that are planned for a 0.2 version:
 * A Visual Studio 2013 project generator.
 * Research continous integration on all supported platforms
 
-Towards a 1.0 release, these features planned:
+Towards a 1.0 release, these features are planned:
 * Cross compilation to Android on supported platforms.
 * A Xcode 6 project generator for iOS cross compilation.
 
