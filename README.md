@@ -16,7 +16,7 @@ Run `make` in the root folder to build the project.
 #### Windows
 You will need to download some dependencies manually, see [Download dependencies manually](#download-dependencies-manually).
 
-When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.mak`
+When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.mak` in the root folder.
 
 ## Use
 To use, just run:
@@ -24,6 +24,7 @@ To use, just run:
 ./duk sea-strap.js freebsd > Makefile.freebsd
 ./duk sea-strap.js linux > Makefile.linux
 ./duk sea-strap.js darwin > Makefile.darwin
+./duk sea-strap.js win32 > Makefile.mak
 ```
 
 (_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
