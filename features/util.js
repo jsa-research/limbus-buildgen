@@ -10,34 +10,14 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var makefile_generator = require('../source/makefile-generator');
-var exec = require('child_process').exec;
+var shell = require('../source/shell');
 var fs = require('fs');
 
-exports.mkdir = function (path, workingDirectory, performAction, callback) {
-    exec('mkdir ' + path, {cwd: workingDirectory}, function (error, stdout, stderr) {
-        if (error === null) {
-            var completionHandler = function (result) {
-                exec('rm -Rf ' + path, {cwd: workingDirectory}, function (error, stdout, stderr) {
-                    if (error === null) {
-                        return callback(result);
-                    } else {
-                        return callback(error);
-                    }
-                });
-            };
-
-            return performAction(completionHandler);
-        } else {
-            return callback(error);
-        }
-    });
-};
-
 var setupTestEnvironment = function (performWork, callback) {
-    exports.mkdir('temp', null, function (callback) {
-        return exports.mkdir('source', 'temp', function (callback) {
-            return exports.mkdir('include', 'temp', function (callback) {
-                return exec('cp source/*.js temp/source/', null, function (error, stdout, stderr) {
+    shell.mkdirClean('temp', null, function (callback) {
+        return shell.mkdirClean('source', 'temp', function (callback) {
+            return shell.mkdirClean('include', 'temp', function (callback) {
+                return shell.cp('source/*.js', 'temp/source/', null, function (error) {
                     if (error !== null) {
                         return callback(error);
                     } else {
@@ -49,22 +29,22 @@ var setupTestEnvironment = function (performWork, callback) {
     }, callback);
 };
 
-var compileAndRun = function (host, command, workingDirectory, callback) {
+var compileAndRun = function (command, workingDirectory, callback) {
     var make;
     var relativeExecutablePrefix = '';
-    if (host === 'win32') {
+    if (process.platform === 'win32') {
         make = 'nmake /f Makefile';
     } else {
         make = 'make'
         relativeExecutablePrefix = './';
     }
 
-    return exec(make, {cwd: workingDirectory}, function (error, stdout, stderr) {
+    return shell.exec(make, {cwd: workingDirectory}, function (error, stdout, stderr) {
         if (error !== null) {
             return callback(error);
         }
 
-        return exec(relativeExecutablePrefix + command, {cwd: workingDirectory}, function (error, stdout, stderr) {
+        return shell.exec(shell.pathForPlatform(relativeExecutablePrefix) + command, {cwd: workingDirectory}, function (error, stdout, stderr) {
             if (error !== null) {
                 return callback(error);
             }
@@ -86,7 +66,7 @@ exports.generateCompileAndRun = function (config, done) {
         
         fs.writeFileSync('temp/build_config.json', buildConfig);
 
-        return exec('../duk ../sea-strap.js ' + (config.parameters || '') + ' build_config.json', {cwd: 'temp'}, function (error, stdout, stderr) {
+        return shell.exec(shell.pathForPlatform('../duk ../sea-strap.js ') + (config.parameters || '') + ' build_config.json', {cwd: 'temp'}, function (error, stdout, stderr) {
             if (error !== null) {
                 return callback(error);
             }
@@ -97,7 +77,7 @@ exports.generateCompileAndRun = function (config, done) {
                 return callback(e);
             }
 
-            return compileAndRun(config.config.host, config.command, 'temp', callback);
+            return compileAndRun(config.command, 'temp', callback);
         });
     }, done);
 };
