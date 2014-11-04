@@ -7,18 +7,18 @@ The goal of the project is to have a javascript library and companioning command
 
 The library consists of a collection of Common.js modules that generate different types of build files. There is also a small command-line front-end that can be used to generate build files without writing additional code.
 
-*Currently bootstrapping itself and as such is not very useful...*
+**Currently bootstrapping itself and as such is not very useful...**
 
 ## Compile
 sea-strap.js compiles using build files that it generated itself. The build process tries to follow the conventions of the platform.
 
 #### Linux/OS X/FreeBSD
-Run `make` in the root folder to build the project.
+Run `make` in the project root directory to build.
 
 #### Windows
 You will need to download some dependencies manually, see [Download dependencies manually](#download-dependencies-manually).
 
-When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.mak` in the root folder.
+When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.mak` in the project root directory.
 
 ## Use
 To use, just run:
@@ -65,14 +65,14 @@ Then run both unit- and integration tests using `npm test`
 To run each separately, use `npm run-script unit-test` for unit tests and `npm run-script integration-test` for integration tests.
 
 ## Code coverage
-To analyze code coverage of the unit tests, sea-strap.js uses blanket.js.
+sea-strap.js analyzes code coverage using blanket.js.
 
 To produce a report, run:
 ```
 npm run-script coverage
 ```
 
-This will generate `coverage.html` which can be viewed in a browser.
+This will generate a file named `coverage.html` in the project root directory which can be viewed in a browser.
 
 ## Download dependencies manually
 Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.1`.
