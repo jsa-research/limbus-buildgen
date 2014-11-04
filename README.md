@@ -1,6 +1,8 @@
 # sea-strap.js
 _A "build anywhere" C/C++ makefile/project generator._
 
+![travis-ci build status](https://travis-ci.org/redien/sea-strap.js.svg?branch=master)
+
 The goal of the project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases.
 
 It consists of a collection of Common.js modules that generate different types of build files. It also has a small command-line front-end that can be used to generate build files without writing additional code.
