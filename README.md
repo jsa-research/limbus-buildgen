@@ -60,7 +60,7 @@ npm install
 
 Then run both unit- and integration tests using `npm test` (_Currently this is broken on Windows. Run the tests separately instead._)
 
-To run each separately, use `npm run-script unit-test`for unit tests and `npm run-script integration-test` for integration tests.
+To run each separately, use `npm run-script unit-test` for unit tests and `npm run-script integration-test` for integration tests.
 
 ## Code coverage
 To analyze code coverage of the unit tests, sea-strap.js uses blanket.js.
