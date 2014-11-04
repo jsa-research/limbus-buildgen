@@ -7,19 +7,6 @@ C/C++ code-bases.
 
 *Currently bootstrapping itself and as such is not very useful...*
 
-## Dependencies
-sea-strap.js depends on some other open source projects to build.
-
-#### Linux/OS X/FreeBSD
-_Dependencies are fetched automatically before building so no manual install is neccessary._
-
-#### Windows
-See [Download dependencies manually](#download-dependencies-manually)
-
-#### Download dependencies manually
-Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.1`.
-Version 1.0.1 is currently used.
-
 ## Compile
 sea-strap.js compiles using build files that it generated itself. The build process tries to follow the conventions of the platform.
 
@@ -27,7 +14,9 @@ sea-strap.js compiles using build files that it generated itself. The build proc
 Run `make` in the root folder to build the project.
 
 #### Windows
-TODO
+You will need to download some dependencies manually, see [Download dependencies manually](#download-dependencies-manually).
+
+When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.mak`
 
 ## Use
 To use, just run:
@@ -47,9 +36,13 @@ npm install -g mocha
 npm install
 ```
 
-Then run both unit- and integration tests using `npm test`
+Then run both unit- and integration tests using `npm test` (_Currently this is broken on Windows. Run the tests separately instead._)
 
 To run each separately, use `npm run-script unit-test`for unit tests and `npm run-script integration-test` for integration tests.
+
+## Download dependencies manually
+Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.1`.
+Version 1.0.1 is currently used.
 
 ## Roadmap
 These are things that are planned for a 0.2 version:
