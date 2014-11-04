@@ -1,9 +1,9 @@
 # sea-strap.js
 _A "build anywhere" C/C++ makefile/project generator._
 
-The goal of the project is to have a javascript library and companioning command-line application
-that can generate build files for a wide variety of platforms to build small and portable
-C/C++ code-bases.
+The goal of the project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases.
+
+It consists of a collection of Common.js modules that generate different types of build files. It also has a small command-line front-end that can be used to generate build files without writing additional code.
 
 *Currently bootstrapping itself and as such is not very useful...*
 
@@ -30,8 +30,7 @@ To use, just run:
 (_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
 
 ## Test
-As sea-strap.js uses mocha and should.js to perform testing,
-first make sure they are installed with:
+As sea-strap.js uses mocha and should.js to perform testing, first make sure they are installed with:
 ```
 npm install -g mocha
 npm install
@@ -40,6 +39,26 @@ npm install
 Then run both unit- and integration tests using `npm test` (_Currently this is broken on Windows. Run the tests separately instead._)
 
 To run each separately, use `npm run-script unit-test`for unit tests and `npm run-script integration-test` for integration tests.
+
+## API
+#### Generate Makefiles
+```javascript
+var makefile_generator = require('source/makefile-generator');
+
+// Returns a string with the generated makefile.
+var makefile = makefile_generator.generate({
+  // Specifies a list of source files
+  files: [
+    'main.c'
+  ],
+  // Specifies where to find header files to include
+  includePaths: [
+    'include/'
+  ],
+  // Specifies the target host, i.e. the desired platform that the makefile should compile with
+  host: 'darwin-clang'
+});
+```
 
 ## Download dependencies manually
 Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.1`.
