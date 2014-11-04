@@ -10,8 +10,8 @@
         "should": "4.1.0"
     },
     "scripts": {
-        "test": "npm run-script unit-test ; npm run-script integration-test",
-        "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" > coverage.html",
+        "test": "mocha \"**/*.unit.js\" \"**/*.feature.js\"",
+        "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" \"**/*.feature.js\" > coverage.html",
         "unit-test": "mocha \"**/*.unit.js\"",
         "integration-test": "mocha \"**/*.feature.js\""
     },
@@ -34,7 +34,11 @@
     "homepage": "https://github.com/redien/sea-strap.js",
     "config": {
         "blanket": {
-            "pattern": "source"
+            "pattern": [
+                "/source/",
+                "/features/",
+                "/units/"
+            ]
         }
     }
 }
