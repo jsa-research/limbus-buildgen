@@ -15,3 +15,5 @@
 /duk
 /duk.exe
 /*.obj
+
+coverage.html

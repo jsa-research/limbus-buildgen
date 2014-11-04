@@ -1,34 +1,40 @@
 {
-  "name": "sea-strap.js",
-  "version": "0.1.0",
-  "description": "A \"build anywhere\" build system.",
-  "main": "duk sea-strap.js",
-  "directories": {
-  },
-  "devDependencies": {
-    "shelljs": "^0.3.0",
-    "should": "^4.1.0"
-  },
-  "scripts": {
-    "test": "npm run-script unit-test ; npm run-script integration-test",
-    "unit-test": "mocha \"**/*.unit.js\"",
-    "integration-test": "mocha \"**/*.feature.js\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/redien/sea-strap.js"
-  },
-  "keywords": [
-    "build",
-    "system",
-    "make",
-    "project",
-    "generator"
-  ],
-  "author": "Jesper Oskarsson <jesosk@gmail.com>",
-  "license": "Public Domain",
-  "bugs": {
-    "url": "https://github.com/redien/sea-strap.js/issues"
-  },
-  "homepage": "https://github.com/redien/sea-strap.js"
+    "name": "sea-strap.js",
+    "version": "0.1.0",
+    "description": "A \"build anywhere\" build system.",
+    "main": "duk sea-strap.js",
+    "directories": {},
+    "devDependencies": {
+        "blanket": "1.1.6",
+        "shelljs": "0.3.0",
+        "should": "4.1.0"
+    },
+    "scripts": {
+        "test": "npm run-script unit-test ; npm run-script integration-test",
+        "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" > coverage.html",
+        "unit-test": "mocha \"**/*.unit.js\"",
+        "integration-test": "mocha \"**/*.feature.js\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/redien/sea-strap.js"
+    },
+    "keywords": [
+        "build",
+        "system",
+        "make",
+        "project",
+        "generator"
+    ],
+    "author": "Jesper Oskarsson <jesosk@gmail.com>",
+    "license": "Public Domain",
+    "bugs": {
+        "url": "https://github.com/redien/sea-strap.js/issues"
+    },
+    "homepage": "https://github.com/redien/sea-strap.js",
+    "config": {
+        "blanket": {
+            "pattern": "source"
+        }
+    }
 }
