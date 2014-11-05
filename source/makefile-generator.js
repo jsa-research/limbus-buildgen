@@ -131,6 +131,9 @@ exports.generate = function (config) {
     if (standardFlags[config.host]) {
         extraFlags += ' ' + standardFlags[config.host];
     }
+    if (config.compilerFlags) {
+        extraFlags += ' ' + config.compilerFlags;
+    }
 
     var makefile =
         'all:\n' + 

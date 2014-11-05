@@ -49,7 +49,9 @@ var makefile = makefile_generator.generate({
   // Specifies the target host, i.e. the desired platform that the makefile should compile with
   host: 'darwin-clang',
   // Specifies the name of the final executable
-  outputName: 'my-application'
+  outputName: 'my-application',
+  // Specifies any extra compiler flags that will be passed to the compiler as is
+  compilerFlags: '-g -O0 -coverage'
 });
 ```
 

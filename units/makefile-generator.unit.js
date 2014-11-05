@@ -207,6 +207,30 @@ describe('makefile-generator', function () {
         });
     });
 
+    describe('makefile configured with extra compiler flags', function () {
+        it('should add the flag string as is, no matter which compiler is used', function () {
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                compilerFlags: '-some-super-cool-flag',
+                host: 'linux'
+            });
+
+            makefile.should.match(/ -some-super-cool-flag /);
+
+            makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                compilerFlags: '-some-super-cool-flag',
+                host: 'win32'
+            });
+
+            makefile.should.match(/ -some-super-cool-flag /);
+        });
+    });
+
     describe('makefile where host is freebsd', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
