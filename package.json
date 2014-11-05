@@ -6,6 +6,8 @@
   "directories": {},
   "devDependencies": {
     "blanket": "1.1.6",
+    "coveralls": "2.11.2",
+    "mocha-lcov-reporter": "0.0.1",
     "shelljs": "0.3.0",
     "should": "4.1.0",
     "travis-cov": "0.2.5"
@@ -13,6 +15,7 @@
   "scripts": {
     "test": "mocha \"**/*.unit.js\" \"**/*.feature.js\"",
     "coverage-travis-ci": "mocha --require blanket -R travis-cov \"**/*.unit.js\" \"**/*.feature.js\"",
+    "coverage-coveralls-io": "mocha --require blanket -R mocha-lcov-reporter \"**/*.unit.js\" \"**/*.feature.js\" | ./node_modules/coveralls/bin/coveralls.js",
     "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" \"**/*.feature.js\" > coverage.html",
     "unit-test": "mocha \"**/*.unit.js\"",
     "integration-test": "mocha \"**/*.feature.js\""
@@ -43,7 +46,7 @@
       ]
     },
     "travis-cov": {
-        "threshold": 90
+      "threshold": 90
     }
   }
 }
