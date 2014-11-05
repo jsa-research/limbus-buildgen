@@ -3,7 +3,7 @@ _A "build anywhere" C/C++ makefile/project generator._
 
 [![travis-ci build status](https://travis-ci.org/redien/sea-strap.js.svg?branch=master)](https://travis-ci.org/redien/sea-strap.js)
 
-The goal of the project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases. The aim is to keep the code-base small and as such features will be added only if there is a real need for something that would be used by most projects.
+The goal of this project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases. The aim is to keep the code-base small and as such features will be added only if there is a real need for something that would be used by most projects.
 
 The library consists of a collection of Common.js modules that generate different types of build files. There is also a small command-line front-end that can be used to generate build files without writing additional code.
 
@@ -75,8 +75,7 @@ npm run-script coverage
 This will generate a file named `coverage.html` in the project root directory which can be viewed in a browser.
 
 ## Download dependencies manually
-Download and extract Duktape from `http://duktape.org/` and extract into `dependencies/duktape-1.0.1`.
-Version 1.0.1 is currently used.
+sea-strap.js uses Duktape as its Javascript interpreter. You can download Duktape from `http://duktape.org/` and extract it into `dependencies/duktape-1.0.1`. Version 1.0.1 is currently used.
 
 ## Roadmap
 These are things that are planned for a 0.2 version:
