@@ -30,13 +30,14 @@ static int compile_and_execute(duk_context* context) {
     int i;
     duk_compile(context, 0);
     duk_push_global_object(context);
-    
+    duk_push_object(context);
     duk_push_array(context);
     for (i = 0; i < argument_count; ++i) {
         duk_push_string(context, arguments[i]);
         duk_put_prop_index(context, -2, i);
     }
-    duk_put_prop_string(context, -2, "arguments");
+    duk_put_prop_string(context, -2, "argv");
+    duk_put_prop_string(context, -2, "process");
 
     duk_call_method(context, 0);
     duk_pop(context);
@@ -146,6 +147,37 @@ static void register_platform(duk_context* context) {
     duk_pop(context);
 }
 
+static const char* module_loader = "\
+Duktape.modSearch = function (id) {\
+    var fileBuffer = sea_platform.read_file(id + '.js');\
+    if (sea_platform.buffer_is_valid(fileBuffer)) {\
+        var source = sea_platform.buffer_data_to_string(fileBuffer);\
+        sea_platform.buffer_destruct(fileBuffer);\
+        return source;\
+    } else {\
+        throw new Error('module not found: ' + id);\
+    }\
+};\
+\
+console = {\
+    log: print\
+};\
+print = undefined;";
+
+static void compile_and_execute_module_loader(duk_context* context) {
+    int status;
+    duk_push_string(context, module_loader);
+    duk_push_string(context, "duk.c");
+
+    status = duk_safe_call(context, compile_and_execute, 2, 1);
+    if (status != DUK_EXEC_SUCCESS) {
+        (void)duk_safe_call(context, get_stack_trace, 1, 1);
+        fprintf(stderr, "%s\n", duk_safe_to_string(context, -1));
+    } else {
+        duk_pop(context);
+    }
+}
+
 int main(int argc, char* argv[]) {
     void* source;
     
@@ -165,6 +197,7 @@ int main(int argc, char* argv[]) {
         sea_platform_buffer_destruct(source);
         
         register_platform(context);
+        compile_and_execute_module_loader(context);
         
         arguments = argv;
         argument_count = argc;

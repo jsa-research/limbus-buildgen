@@ -10,39 +10,26 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var duktape_version = "1.0.1";
-
-
-Duktape.modSearch = function (id) {
-    var fileBuffer = sea_platform.read_file(id + '.js');
-    if (sea_platform.buffer_is_valid(fileBuffer)) {
-        var source = sea_platform.buffer_data_to_string(fileBuffer);
-        sea_platform.buffer_destruct(fileBuffer);
-        return source;
-    } else {
-        throw new Error('module not found: ' + id);
-    }
-};
-
-var makefile_generator = require('source/makefile-generator');
+var makefile_generator = require('./source/makefile-generator');
 
 var printHosts = function () {
-    print("\nSupported hosts are:");
+    console.log("\nSupported hosts are:");
 
     makefile_generator.supportedHosts.forEach(function (host) {
-        print("  * " + host);
+        console.log("  * " + host);
     });
 
-    print("");
+    console.log("");
 };
 
-if (arguments.length < 3) {
-    print("Missing host");
+if (process.argv.length < 3) {
+    console.log("Missing host");
     printHosts();
 } else {
-    var host = arguments[2];
+    var host = process.argv[2];
 
     if (makefile_generator.supportedHosts.indexOf(host) !== -1) {
-        print(makefile_generator.generate({
+        console.log(makefile_generator.generate({
             files: [
                 'dependencies/duktape-' + duktape_version + '/src/duktape.c',
                 'source/duk.c',
@@ -55,7 +42,7 @@ if (arguments.length < 3) {
             host: host
         }));
     } else {
-        print("Invalid host");
+        console.log("Invalid host");
         printHosts();
     }
 }
