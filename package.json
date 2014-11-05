@@ -1,44 +1,49 @@
 {
-    "name": "sea-strap.js",
-    "version": "0.1.0",
-    "description": "A \"build anywhere\" build system.",
-    "main": "duk sea-strap.js",
-    "directories": {},
-    "devDependencies": {
-        "blanket": "1.1.6",
-        "shelljs": "0.3.0",
-        "should": "4.1.0"
+  "name": "sea-strap.js",
+  "version": "0.1.0",
+  "description": "A \"build anywhere\" build system.",
+  "main": "duk sea-strap.js",
+  "directories": {},
+  "devDependencies": {
+    "blanket": "1.1.6",
+    "shelljs": "0.3.0",
+    "should": "4.1.0",
+    "travis-cov": "0.2.5"
+  },
+  "scripts": {
+    "test": "mocha \"**/*.unit.js\" \"**/*.feature.js\"",
+    "coverage-travis-ci": "mocha --require blanket -R travis-cov \"**/*.unit.js\" \"**/*.feature.js\"",
+    "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" \"**/*.feature.js\" > coverage.html",
+    "unit-test": "mocha \"**/*.unit.js\"",
+    "integration-test": "mocha \"**/*.feature.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redien/sea-strap.js"
+  },
+  "keywords": [
+    "build",
+    "system",
+    "make",
+    "project",
+    "generator"
+  ],
+  "author": "Jesper Oskarsson <jesosk@gmail.com>",
+  "license": "Public Domain",
+  "bugs": {
+    "url": "https://github.com/redien/sea-strap.js/issues"
+  },
+  "homepage": "https://github.com/redien/sea-strap.js",
+  "config": {
+    "blanket": {
+      "pattern": [
+        "/source/",
+        "/features/",
+        "/units/"
+      ]
     },
-    "scripts": {
-        "test": "mocha \"**/*.unit.js\" \"**/*.feature.js\"",
-        "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" \"**/*.feature.js\" > coverage.html",
-        "unit-test": "mocha \"**/*.unit.js\"",
-        "integration-test": "mocha \"**/*.feature.js\""
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/redien/sea-strap.js"
-    },
-    "keywords": [
-        "build",
-        "system",
-        "make",
-        "project",
-        "generator"
-    ],
-    "author": "Jesper Oskarsson <jesosk@gmail.com>",
-    "license": "Public Domain",
-    "bugs": {
-        "url": "https://github.com/redien/sea-strap.js/issues"
-    },
-    "homepage": "https://github.com/redien/sea-strap.js",
-    "config": {
-        "blanket": {
-            "pattern": [
-                "/source/",
-                "/features/",
-                "/units/"
-            ]
-        }
+    "travis-cov": {
+        "threshold": 90
     }
+  }
 }
