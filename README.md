@@ -1,7 +1,7 @@
 # sea-strap.js
 _A "build anywhere" C/C++ makefile/project generator._
 
-[![travis-ci build status](https://travis-ci.org/redien/sea-strap.js.svg?branch=master)](https://travis-ci.org/redien/sea-strap.js) [![Coverage Status](https://img.shields.io/coveralls/redien/sea-strap.js.svg)](https://coveralls.io/r/redien/sea-strap.js) [![Dependencies](https://david-dm.org/redien/sea-strap.js.svg)](https://david-dm.org/redien/sea-strap.js) [![devDependencies](https://david-dm.org/redien/sea-strap.js/dev-status.svg)](https://david-dm.org/redien/sea-strap.js#info=devDependencies)
+[![travis-ci build status](https://travis-ci.org/redien/sea-strap.js.svg?branch=master)](https://travis-ci.org/redien/sea-strap.js) [![Coverage Status](https://img.shields.io/coveralls/redien/sea-strap.js.svg)](https://coveralls.io/r/redien/sea-strap.js) [![Dependencies](https://david-dm.org/redien/sea-strap.js.svg)](https://david-dm.org/redien/sea-strap.js) [![devDependencies](https://david-dm.org/redien/sea-strap.js/dev-status.svg)](https://david-dm.org/redien/sea-strap.js#info=devDependencies) [![Public Domain](http://img.shields.io/badge/public%20domain%3F-yes-blue.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
 
 The goal of this project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases. The aim is to keep the code-base small and as such features will be added only if there is a real need for something that would be used by most projects.
 
