@@ -23,10 +23,7 @@ When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" an
 ## Use
 To use, just run:
 ```
-./duk sea-strap.js freebsd > Makefile.freebsd
-./duk sea-strap.js linux > Makefile.linux
-./duk sea-strap.js darwin > Makefile.darwin
-./duk sea-strap.js win32 > Makefile.mak
+./duk sea-strap.js [target host] > [output Makefile]
 ```
 
 (_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
