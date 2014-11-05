@@ -80,7 +80,11 @@ sea-strap.js uses Duktape as its Javascript interpreter. You can download Duktap
 ## Roadmap
 These are things that are planned for a 0.2 version:
 * A Visual Studio 2013 project generator.
-* Research continous integration on all supported platforms
+* Research continous integration on all supported platforms.
+* Make front-end usable by letting the user specify a config file.
+* Provide an integrated executable for the front-end.
+* To be useful for building libraries, we need to be able to actually link as libraries.
+* Linking to other libraries.
 
 Towards a 1.0 release, these features are planned:
 * Cross compilation to Android on supported platforms.
@@ -96,4 +100,4 @@ and related and neighboring rights to this software to the public domain worldwi
 This software is distributed without any warranty.
 
 You should have received a copy of the CC0 Public Domain Dedication along with this software.
-If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+If not, see <[http://creativecommons.org/publicdomain/zero/1.0/](http://creativecommons.org/publicdomain/zero/1.0/)>.
