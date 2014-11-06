@@ -21,5 +21,5 @@ lcov --extract c-coverage.info "`pwd -P`/source/*" -o c-coverage.info
 mocha --require blanket -R mocha-lcov-reporter "**/*.unit.js" "**/*.feature.js" > javascript-coverage.info
 
 # Merge coverage files
-./node_modules/lcov-result-merger/bin/lcov-result-merger.js *-coverage.info coverage.info
+./node_modules/lcov-result-merger/bin/lcov-result-merger.js '*-coverage.info' 'coverage.info'
 cat coverage.info | ./node_modules/coveralls/bin/coveralls.js
