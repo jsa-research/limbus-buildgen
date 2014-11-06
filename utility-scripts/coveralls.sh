@@ -11,7 +11,7 @@
 
 # Install dependencies
 sudo apt-get update
-sudo apt-get install lcov ruby rubygems
+sudo apt-get install lcov ruby1.9.3
 sudo gem install coveralls-lcov
 
 # C coverage

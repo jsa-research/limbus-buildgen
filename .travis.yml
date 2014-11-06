@@ -13,6 +13,4 @@ install: npm install -g mocha ; npm install
 language: node_js
 node_js:
     - "0.10"
-rvm:
-    - "1.8.7"
 script: make ; npm test ; npm run-script coverage-travis-ci ; npm run-script coverage-coveralls-io
