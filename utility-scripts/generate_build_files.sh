@@ -13,4 +13,6 @@
 ./duk sea-strap.js linux > Makefile.linux
 ./duk sea-strap.js darwin > Makefile.darwin
 ./duk sea-strap.js win32 > Makefile.mak
-./duk sea-strap.js linux -g -O0 -coverage > Makefile.coverage
+
+# This is used for sending coverage information from the C sources to coveralls.io
+./duk sea-strap.js linux -g -O0 --coverage > Makefile.coverage
