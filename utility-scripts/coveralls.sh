@@ -9,6 +9,8 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+sudo apt-get install lcov
+
 # C coverage
 make -f Makefile.coverage
 ./duk sea-strap.js linux
