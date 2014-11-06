@@ -10,6 +10,7 @@
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 # Install dependencies
+sudo apt-get update
 sudo apt-get install lcov ruby rubygems
 sudo gem install coveralls-lcov
 
