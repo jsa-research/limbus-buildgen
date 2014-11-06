@@ -11,14 +11,14 @@
 
 # Install dependencies
 sudo apt-get update
-sudo apt-get install lcov ruby1.9.3
+sudo apt-get install lcov ruby2.0.0
 sudo gem install coveralls-lcov
 
 # C coverage
 make -f Makefile.coverage
 ./duk sea-strap.js linux
 lcov -b . -d . -c -o duk.info
-lcov --extract duk.info \"`pwd -P`/source/*\" -o duk.info
+lcov --extract duk.info "`pwd -P`/source/*" -o duk.info
 coveralls-lcov -n -v duk.info > duk.json
 
 # Javascript coverage
