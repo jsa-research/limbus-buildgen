@@ -10,17 +10,19 @@
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 # Install dependencies
-sudo apt-get install lcov
+sudo apt-get install lcov ruby rubygems
 sudo gem install coveralls-lcov
 
 # C coverage
 make -f Makefile.coverage
-npm test
+./duk sea-strap.js linux
 lcov -b . -d . -c -o duk.info
 lcov --extract duk.info \"`pwd -P`/source/*\" -o duk.info
 coveralls-lcov -n -v duk.info > duk.json
 
 # Javascript coverage
 mocha --require blanket -R mocha-lcov-reporter \"**/*.unit.js\" \"**/*.feature.js\" > c-coverage.json
+
+# Merge coverage files
 node ./utility-scripts/merge-coverage.js javascript-coverage.json duk.json > coverage.json
 cat coverage.json | ./node_modules/coveralls/bin/coveralls.js
