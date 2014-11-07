@@ -13,22 +13,18 @@ var should = require('should');
 var shell = require('shelljs');
 var util = require('./makefile-generator.util.js');
 
-describe('makefile-generator-simple', function () {
-    beforeEach(function (done) {
-        util.setupEnvironment(function () {
-            /* Single file */
-            ("int main(int argc, char** argv) {\n"
-            +"  return 0;\n"
-            +"}\n").to("simple.c");
-            
-            done();
-        });
-    });
-    
-    afterEach(util.teardownEnvironment);
+var setup = function (done) {
+    /* Single file */
+    ("int main(int argc, char** argv) {\n"
+    +"  return 0;\n"
+    +"}\n").to("simple.c");
 
+    done();
+};
+
+describe('makefile-generator-simple', function () {
     it('should compile a single file', function (done) {
-        util.shouldCompileAndRun({
+        util.shouldCompileAndRun(setup, {
             files: [
                 'simple.c'
             ],
@@ -37,7 +33,7 @@ describe('makefile-generator-simple', function () {
     });
 
     it('should compile to an executable with outputName', function (done) {
-        util.shouldCompileAndRun({
+        util.shouldCompileAndRun(setup, {
             files: [
                 'simple.c'
             ],

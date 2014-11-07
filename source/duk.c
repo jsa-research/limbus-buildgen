@@ -149,6 +149,19 @@ static void register_platform(duk_context* context) {
 
 static const char* module_loader = "\
 Duktape.modSearch = function (id) {\
+    if (id === 'fs') {\
+        return \"\\\
+exports.readFileSync = function (filepath) {\\\
+    var fileBuffer = sea_platform.read_file(filepath);\\\
+    if (sea_platform.buffer_is_valid(fileBuffer)) {\\\
+        var data = sea_platform.buffer_data_to_string(fileBuffer);\\\
+        sea_platform.buffer_destruct(fileBuffer);\\\
+        return data;\\\
+    } else {\\\
+        throw new Error('Could not read file: ' + filepath);\\\
+    }\\\
+}\";\
+    }\
     var fileBuffer = sea_platform.read_file(id + '.js');\
     if (sea_platform.buffer_is_valid(fileBuffer)) {\
         var source = sea_platform.buffer_data_to_string(fileBuffer);\
@@ -162,6 +175,7 @@ Duktape.modSearch = function (id) {\
 console = {\
     log: print\
 };\
+\
 print = undefined;";
 
 static void compile_and_execute_module_loader(duk_context* context) {

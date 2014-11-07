@@ -12,42 +12,58 @@
 var makefile_generator = require('../source/makefile-generator');
 var shell = require('shelljs');
 
-exports.shouldCompileAndRun = function (config, runCommand, done) {
-    makefile_generator.generate(config).to('Makefile');
-
-    var make;
-    if (config.host === 'win32') {
-        make = 'nmake /f Makefile';
-    } else {
-        make = 'make'
-        runCommand = './' + runCommand;
-    }
-
-    shell.exec(make, {silent: true}, function (returnValue, output) {
-        if (returnValue !== 0) {
-            throw new Error(output);
+exports.hygenicFolder = function (config, performAction, callback) {
+    shell.exec('mkdir ' + config.path, {silent: true}, function (returnValue, output) {
+        if (config.changeDirectory) {
+            shell.cd(config.path);
         }
-
-        shell.exec(runCommand, {silent: true}, function (returnValue, output) {
-            if (returnValue !== 0) {
-                throw new Error(output);
+        performAction(function () {
+            if (config.changeDirectory) {
+                shell.cd(config.path.replace(/[^\/]+/, '..'));
             }
-
-            done();
+            shell.rm('-Rf', config.path);
+            callback();
         });
     });
 };
 
-exports.setupEnvironment = function (done) {
-    shell.mkdir('temp');
-    shell.cd('temp');
-    done();
-};
+exports.shouldCompileAndRun = function (setup, config, runCommand, done) {
+    exports.hygenicFolder({path: 'temp', changeDirectory: true}, function (done) {
+        JSON.stringify(config).to('build_config.json');
 
-exports.teardownEnvironment = function (done) {
-    setTimeout(function () {
-        shell.cd('..');
-        shell.rm('-Rf', 'temp');
-        done();
-    }, process.platform === 'win32' ? 500 : 0);
+        var make;
+        var relativeExecutablePrefix = '';
+        if (config.host === 'win32') {
+            make = 'nmake /f Makefile';
+        } else {
+            make = 'make'
+            relativeExecutablePrefix = './';
+        }
+
+        exports.hygenicFolder({path: 'source'}, function (done) {
+            shell.cp('../source/*.js', './source/');
+
+            shell.exec('../duk ../sea-strap.js build_config.json > Makefile', {silent: true}, function (returnValue, output) {
+                if (returnValue !== 0) {
+                    throw new Error(output);
+                }
+
+                setup(function () {
+                    shell.exec(make, {silent: true}, function (returnValue, output) {
+                        if (returnValue !== 0) {
+                            throw new Error(output);
+                        }
+
+                        shell.exec(relativeExecutablePrefix + runCommand, {silent: true}, function (returnValue, output) {
+                            if (returnValue !== 0) {
+                                throw new Error(output);
+                            }
+
+                            done();
+                        });
+                    });
+                });
+            });
+        }, done);
+    }, done);
 };

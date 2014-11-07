@@ -13,40 +13,35 @@ var should = require('should');
 var shell = require('shelljs');
 var util = require('./makefile-generator.util.js');
 
+var setup = function (done) {
+    shell.mkdir('include');
+
+    /* Includes and linking */
+    ("#include <mylibrary.h>\n"
+    +"int main(int argc, char** argv) {\n"
+    +"  return (add(23, 88) == 111) ? 0 : -1;\n"
+    +"}\n").to("linked.c");
+
+    ("#include <stdio.h>\n"
+    +"#include \"../include/mylibrary.h\"\n"
+    +"int add(int a, int b) {\n"
+    +"  return a + b;\n"
+    +"}\n").to("source/mylibrary.c");
+
+    ("int add(int a, int b);\n").to("include/mylibrary.h");
+
+    /* Check for libm */
+    ("#include <math.h>\n"
+    +"int main(int argc, char** argv) {\n"
+    +"  return ceil(0.5f) - 1;\n"
+    +"}\n").to("math.c");
+
+    done();
+};
+
 describe('makefile-generator-linking', function () {
-    beforeEach(function (done) {
-        util.setupEnvironment(function () {
-            shell.mkdir('include');
-            shell.mkdir('source');
-
-            /* Includes and linking */
-            ("#include <mylibrary.h>\n"
-            +"int main(int argc, char** argv) {\n"
-            +"  return (add(23, 88) == 111) ? 0 : -1;\n"
-            +"}\n").to("linked.c");
-
-            ("#include <stdio.h>\n"
-            +"#include \"../include/mylibrary.h\"\n"
-            +"int add(int a, int b) {\n"
-            +"  return a + b;\n"
-            +"}\n").to("source/mylibrary.c");
-
-            ("int add(int a, int b);\n").to("include/mylibrary.h");
-
-            /* Check for libm */
-            ("#include <math.h>\n"
-            +"int main(int argc, char** argv) {\n"
-            +"  return ceil(0.5f) - 1;\n"
-            +"}\n").to("math.c");
-            
-            done();
-        });
-    });
-
-    afterEach(util.teardownEnvironment);
-
     it('should compile and link correctly given several source files and includes', function (done) {
-        util.shouldCompileAndRun({
+        util.shouldCompileAndRun(setup, {
             files: [
                 'linked.c',
                 'source/mylibrary.c'
@@ -59,7 +54,7 @@ describe('makefile-generator-linking', function () {
     });
 
     it('should link with libm by default', function (done) {
-        util.shouldCompileAndRun({
+        util.shouldCompileAndRun(setup, {
             files: [
                 'math.c'
             ],

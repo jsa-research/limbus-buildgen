@@ -11,44 +11,16 @@
 
 var duktape_version = '1.0.1';
 var makefile_generator = require('./source/makefile-generator');
-
-var printHosts = function () {
-    console.log('\nSupported hosts are:');
-
-    makefile_generator.supportedHosts.forEach(function (host) {
-        console.log('  * ' + host);
-    });
-
-    console.log('');
-};
+var fs = require('fs');
 
 if (process.argv.length < 3) {
-    console.log('Missing host');
-    printHosts();
+    console.log('Missing config file');
 } else {
-    var host = process.argv[2];
+    var configPath = process.argv[2];
     
-    var compilerFlags;
-    if (process.argv.length > 3) {
-        compilerFlags = process.argv.slice(3).join(' ');
-    }
-
-    if (makefile_generator.supportedHosts.indexOf(host) !== -1) {
-        console.log(makefile_generator.generate({
-            files: [
-                'dependencies/duktape-' + duktape_version + '/src/duktape.c',
-                'source/duk.c',
-                'source/platform.c'
-            ],
-            includePaths: [
-                'dependencies/duktape-' + duktape_version + '/src/'
-            ],
-            outputName: 'duk',
-            compilerFlags: compilerFlags,
-            host: host
-        }));
+    if (process.argv.length > 4) {
+        console.log('Too many arguments!');
     } else {
-        console.log('Invalid host');
-        printHosts();
+        console.log(makefile_generator.generate(JSON.parse(fs.readFileSync(configPath))));
     }
 }
