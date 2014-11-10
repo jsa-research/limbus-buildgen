@@ -59,6 +59,14 @@ static int duk_sea_platform_buffer_construct_with_buffer(duk_context* context) {
     duk_push_pointer(context, buffer);
     return 1;
 }
+static int duk_sea_platform_buffer_construct_with_string(duk_context* context) {
+    duk_size_t size;
+    const char* data = duk_require_lstring(context, 0, &size);
+
+    void* buffer = sea_platform_buffer_construct_with_buffer((void*)data, size);
+    duk_push_pointer(context, buffer);
+    return 1;
+}
 static int duk_sea_platform_buffer_destruct(duk_context* context) {
     void* buffer = duk_require_pointer(context, 0);
 
@@ -121,6 +129,9 @@ static void register_platform(duk_context* context) {
     duk_push_c_function(context, duk_sea_platform_buffer_construct_with_buffer, 2);
     duk_put_prop_string(context, -2, "buffer_construct_with_buffer");
     
+    duk_push_c_function(context, duk_sea_platform_buffer_construct_with_string, 2);
+    duk_put_prop_string(context, -2, "buffer_construct_with_string");
+    
     duk_push_c_function(context, duk_sea_platform_buffer_destruct, 1);
     duk_put_prop_string(context, -2, "buffer_destruct");
     
@@ -160,7 +171,12 @@ exports.readFileSync = function (filepath) {\\\
     } else {\\\
         throw new Error('Could not read file: ' + filepath);\\\
     }\\\
-}\";\
+};\\\
+exports.writeFileSync = function (filepath, data) {\\\
+    var buffer = sea_platform.buffer_construct_with_string(data);\\\
+    sea_platform.write_file(filepath, buffer);\\\
+    sea_platform.buffer_destruct(buffer);\\\
+};\";\
     }\
     var fileBuffer = sea_platform.read_file(id + '.js');\
     if (sea_platform.buffer_is_valid(fileBuffer)) {\
