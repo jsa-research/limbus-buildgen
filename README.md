@@ -25,16 +25,16 @@ To use, just run:
 ```
 
 #### Flags
-* **--host [host]** *Specifies the target host for the generated build files.*
-* **--buildFile [path]** *Specifies the path and filename for the generated build file.*
+* **--host [host]** Overrides the target host for the generated build files.
+* **--buildFile [path]** Specifies the path and filename for the generated build file. (defaults to `Makefile`)
 
 ## Configure
 The JSON configuration files support the following properties: 
-* **files** *Specifies a list of source files*
-* **includePaths** *Specifies where to find header files to include*
-* **host** *Specifies the target host, i.e. the desired platform that the makefile should compile with*
-* **outputName** *Specifies the name of the final executable*
-* **compilerFlags** *Specifies any extra compiler flags that will be passed to the compiler as is*
+* **files** Specifies a list of source files
+* **includePaths** Specifies where to find header files to include
+* **host** Specifies the target host, i.e. the desired platform that the makefile should compile with
+* **outputName** Specifies the name of the final executable
+* **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is
 
 #### Example configuration file
 ```javascript
