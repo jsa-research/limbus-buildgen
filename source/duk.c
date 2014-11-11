@@ -104,12 +104,6 @@ static void register_platform(duk_context* context) {
     duk_push_global_object(context);
     duk_push_object(context);
 
-    duk_push_c_function(context, duk_sea_platform_buffer_construct, 1);
-    duk_put_prop_string(context, -2, "buffer_construct");
-    
-    duk_push_c_function(context, duk_sea_platform_buffer_construct_with_buffer, 2);
-    duk_put_prop_string(context, -2, "buffer_construct_with_buffer");
-    
     duk_push_c_function(context, duk_sea_platform_buffer_construct_with_string, 2);
     duk_put_prop_string(context, -2, "buffer_construct_with_string");
     
@@ -118,12 +112,6 @@ static void register_platform(duk_context* context) {
     
     duk_push_c_function(context, duk_sea_platform_buffer_is_valid, 1);
     duk_put_prop_string(context, -2, "buffer_is_valid");
-    
-    duk_push_c_function(context, duk_sea_platform_buffer_size, 1);
-    duk_put_prop_string(context, -2, "buffer_size");
-    
-    duk_push_c_function(context, duk_sea_platform_buffer_data_as_c_pointer, 1);
-    duk_put_prop_string(context, -2, "buffer_data_as_c_pointer");
     
     duk_push_c_function(context, duk_sea_platform_read_file, 1);
     duk_put_prop_string(context, -2, "read_file");
