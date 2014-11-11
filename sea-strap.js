@@ -15,7 +15,7 @@ var fs = require('fs');
 
 if (process.argv.length < 3) {
     console.log('Missing config file');
-    process.exit(1);
+    process.exit(-1);
 } else {
     var configPath = process.argv[process.argv.length - 1];
     var flags = process.argv.slice(2, -1);
@@ -27,7 +27,7 @@ if (process.argv.length < 3) {
 
         if (i + 1 >= flags.length) {
             console.log('Flag missing value');
-            process.exit(2);
+            process.exit(-1);
 
         } else {
             var value = flags[i + 1];
@@ -36,7 +36,7 @@ if (process.argv.length < 3) {
                 config.host = value;
             } else {
                 console.log('Unknown flag', flag);
-                process.exit(3);
+                process.exit(-1);
             }
         }
     }
