@@ -23,10 +23,37 @@ When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" an
 ## Use
 To use, just run:
 ```
-./duk sea-strap.js [target host] > [output Makefile]
+./duk sea-strap.js --host [target host] [config JSON file]
 ```
 
 (_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
+
+## Configure
+The JSON configuration files support the following properties: 
+
+#### Configuration flags
+
+**files** *Specifies a list of source files*
+**includePaths** *Specifies where to find header files to include*
+**host** *Specifies the target host, i.e. the desired platform that the makefile should compile with*
+**outputName** *Specifies the name of the final executable*
+**compilerFlags** *Specifies any extra compiler flags that will be passed to the compiler as is*
+
+#### Example
+
+```javascript
+{
+  "files": [
+    "main.c"
+  ],
+  "includePaths": [
+    "include/"
+  ],
+  "host": "darwin-clang",
+  "outputName": "my-application",
+  "compilerFlags": "-g -O0 -coverage"
+}
+```
 
 ## API
 #### Generate Makefiles
