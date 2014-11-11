@@ -29,13 +29,13 @@ var setupTestEnvironment = function (performWork, callback) {
     }, callback);
 };
 
-var compileAndRun = function (command, workingDirectory, callback) {
+var compileAndRun = function (config, workingDirectory, callback) {
     var make;
     var relativeExecutablePrefix = '';
     if (process.platform === 'win32') {
-        make = 'nmake /f Makefile';
+        make = 'nmake /f ' + (config.makefile || 'Makefile');
     } else {
-        make = 'make'
+        make = 'make -f ' + (config.makefile || 'Makefile')
         relativeExecutablePrefix = './';
     }
 
@@ -44,7 +44,7 @@ var compileAndRun = function (command, workingDirectory, callback) {
             return callback(error);
         }
 
-        return shell.exec(shell.pathForPlatform(relativeExecutablePrefix) + command, {cwd: workingDirectory}, function (error, stdout, stderr) {
+        return shell.exec(shell.pathForPlatform(relativeExecutablePrefix) + config.command, {cwd: workingDirectory}, function (error, stdout, stderr) {
             if (error !== null) {
                 return callback(error);
             }
@@ -77,7 +77,7 @@ exports.generateCompileAndRun = function (config, done) {
                 return callback(e);
             }
 
-            return compileAndRun(config.command, 'temp', callback);
+            return compileAndRun(config, 'temp', callback);
         });
     }, done);
 };

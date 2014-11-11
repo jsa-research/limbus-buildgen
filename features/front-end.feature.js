@@ -38,6 +38,21 @@ describe('Front-end', function () {
         }, done);
     });
 
+    it('should take a parameter to specify the output build file name', function (done) {
+        util.generateCompileAndRun({
+            setup: setup,
+            config: {
+                files: [
+                    'simple.c'
+                ],
+                host: process.platform
+            },
+            makefile: 'Makefile.platform',
+            command: 'simple',
+            parameters: '--buildFile Makefile.platform'
+        }, done);
+    });
+
     it('should fail if not all flags match up with values', function (done) {
         util.generateCompileAndRun({
             setup: setup,

@@ -21,6 +21,7 @@ if (process.argv.length < 3) {
     var flags = process.argv.slice(2, -1);
 
     var config = JSON.parse(fs.readFileSync(configPath));
+    var makefile;
 
     for (var i = 0; i < flags.length; i += 2) {
         var flag = flags[i];
@@ -34,6 +35,8 @@ if (process.argv.length < 3) {
 
             if (flag === '--host') {
                 config.host = value;
+            } else if (flag === '--buildFile') {
+                makefile = value;
             } else {
                 console.log('Unknown flag', flag);
                 process.exit(-1);
@@ -41,5 +44,5 @@ if (process.argv.length < 3) {
         }
     }
 
-    fs.writeFileSync("Makefile", makefile_generator.generate(config));
+    fs.writeFileSync(makefile || "Makefile", makefile_generator.generate(config));
 }
