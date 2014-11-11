@@ -30,16 +30,13 @@ To use, just run:
 
 ## Configure
 The JSON configuration files support the following properties: 
-
-#### Configuration flags
 * **files** *Specifies a list of source files*
 * **includePaths** *Specifies where to find header files to include*
 * **host** *Specifies the target host, i.e. the desired platform that the makefile should compile with*
 * **outputName** *Specifies the name of the final executable*
 * **compilerFlags** *Specifies any extra compiler flags that will be passed to the compiler as is*
 
-#### Example
-
+#### Example configuration file
 ```javascript
 {
   "files": [
