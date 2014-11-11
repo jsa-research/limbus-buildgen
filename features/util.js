@@ -76,7 +76,15 @@ var compileAndRun = function (host, command, workingDirectory, callback) {
 
 exports.generateCompileAndRun = function (config, done) {
     setupTestEnvironment(function (callback) {
-        fs.writeFileSync('temp/build_config.json', JSON.stringify(config.config));
+        var buildConfig;
+        
+        if (typeof config.config === 'string') {
+            buildConfig = config.config;
+        } else {
+            buildConfig = JSON.stringify(config.config);
+        }
+        
+        fs.writeFileSync('temp/build_config.json', buildConfig);
 
         return exec('../duk ../sea-strap.js ' + (config.parameters || '') + ' build_config.json', {cwd: 'temp'}, function (error, stdout, stderr) {
             if (error !== null) {

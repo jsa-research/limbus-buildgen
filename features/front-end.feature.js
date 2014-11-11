@@ -53,4 +53,15 @@ describe('Front-end', function () {
             done();
         });
     });
+
+    it('should fail if the config file is malformed', function (done) {
+        util.generateCompileAndRun({
+            setup: setup,
+            config: "{ files: }",
+            command: 'simple'
+        }, function (error) {
+            (error === undefined).should.be.false;
+            done();
+        });
+    });
 });
