@@ -32,15 +32,6 @@ static void* sea_platform_buffer_construct_with_buffer_no_copy(void* data, unsig
     return buffer;
 }
 
-void* sea_platform_buffer_construct(unsigned long size) {
-    void* data = malloc(size);
-    if (data) {
-        return sea_platform_buffer_construct_with_buffer(data, size);
-    } else {
-        return NULL;
-    }
-}
-
 void* sea_platform_buffer_construct_with_buffer(void* data, unsigned long size) {
     void* copy = malloc(size);
     if (copy) {
@@ -93,7 +84,6 @@ void* sea_platform_read_file(const char* filepath) {
                 if (!resized_buffer) {
                     free(buffer);
                     fclose(file);
-                    fprintf(stderr, "Out of memory\n");
                     return NULL;
                 } else {
                     buffer = resized_buffer;
@@ -105,7 +95,6 @@ void* sea_platform_read_file(const char* filepath) {
         return sea_platform_buffer_construct_with_buffer(buffer, file_size);
         
     } else {
-        fprintf(stderr, "Unable to open file %s\n", filepath);
         return NULL;
     }
 }

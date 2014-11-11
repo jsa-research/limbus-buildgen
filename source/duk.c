@@ -54,21 +54,6 @@ static int compile_and_execute(duk_context* context) {
     return 0;
 }
 
-static int duk_sea_platform_buffer_construct(duk_context* context) {
-    duk_double_t size = duk_require_number(context, 0);
-    
-    void* buffer = sea_platform_buffer_construct((unsigned long)size);
-    duk_push_pointer(context, buffer);
-    return 1;
-}
-static int duk_sea_platform_buffer_construct_with_buffer(duk_context* context) {
-    void* data = duk_require_pointer(context, 0);
-    duk_double_t size = duk_require_number(context, 1);
-
-    void* buffer = sea_platform_buffer_construct_with_buffer(data, (unsigned long)size);
-    duk_push_pointer(context, buffer);
-    return 1;
-}
 static int duk_sea_platform_buffer_construct_with_string(duk_context* context) {
     duk_size_t size;
     const char* data = duk_require_lstring(context, 0, &size);
@@ -88,20 +73,6 @@ static int duk_sea_platform_buffer_is_valid(duk_context* context) {
 
     int result = sea_platform_buffer_is_valid(buffer);
     duk_push_int(context, result);
-    return 1;
-}
-static int duk_sea_platform_buffer_size(duk_context* context) {
-    void* buffer = duk_require_pointer(context, 0);
-
-    unsigned long size = sea_platform_buffer_size(buffer);
-    duk_push_number(context, (duk_double_t)size);
-    return 1;
-}
-static int duk_sea_platform_buffer_data_as_c_pointer(duk_context* context) {
-    void* buffer = duk_require_pointer(context, 0);
-
-    void* data = sea_platform_buffer_data_as_c_pointer(buffer);
-    duk_push_pointer(context, data);
     return 1;
 }
 static int duk_sea_platform_read_file(duk_context* context) {
