@@ -13,7 +13,7 @@ sudo apt-get install lcov
 
 # C coverage
 make -f Makefile.coverage
-./duk sea-strap.js linux
+./duk sea-strap.js --buildFile Makefile.coverage build_configs/coverage.json
 lcov -b . -d . -c -o c-coverage.info
 lcov --extract c-coverage.info "`pwd -P`/source/*" -o c-coverage.info
 
