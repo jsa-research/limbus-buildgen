@@ -23,16 +23,17 @@ When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" an
 ## Use
 To use, just run:
 ```
-./duk sea-strap.js --host [target host] [config JSON file]
+./duk sea-strap.js [flags] [path to JSON configuration file]
 ```
 
-(_Note: At the moment this only builds bootstrap makefiles for itself. Not very useful..._)
+#### Flags
+* **--host [host]** *Specifies the target host for the generated build files.*
+* **--buildFile [path]** *Specifies the path and filename for the generated build file.*
 
 ## Configure
 The JSON configuration files support the following properties: 
 
 #### Configuration flags
-
 * **files** *Specifies a list of source files*
 * **includePaths** *Specifies where to find header files to include*
 * **host** *Specifies the target host, i.e. the desired platform that the makefile should compile with*
@@ -107,7 +108,6 @@ sea-strap.js uses Duktape as its Javascript interpreter. You can download Duktap
 These are things that are planned for a 0.2 version:
 * A Visual Studio 2013 project generator.
 * Research continous integration on all supported platforms.
-* Make front-end usable by letting the user specify a config file.
 * Provide an integrated executable for the front-end.
 * To be useful for building libraries, we need to be able to actually link as libraries.
 * Linking to other libraries.
