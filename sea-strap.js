@@ -15,12 +15,28 @@ var fs = require('fs');
 
 if (process.argv.length < 3) {
     console.log('Missing config file');
+    process.exit(1);
 } else {
-    var configPath = process.argv[2];
-    
-    if (process.argv.length > 4) {
-        console.log('Too many arguments!');
-    } else {
-        console.log(makefile_generator.generate(JSON.parse(fs.readFileSync(configPath))));
+    var configPath = process.argv[process.argv.length - 1];
+    var flags = process.argv.slice(2, -1);
+
+    var config = JSON.parse(fs.readFileSync(configPath));
+
+    for (var i = 0; i < flags.length; i += 2) {
+        var flag = flags[i];
+
+        if (i + 1 >= flags.length) {
+            console.log('Flag missing value');
+            process.exit(2);
+
+        } else {
+            var value = flags[i + 1];
+
+            if (flag === '--host') {
+                config.host = value;
+            }
+        }
     }
+
+    fs.writeFileSync("Makefile", makefile_generator.generate(config));
 }
