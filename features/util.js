@@ -71,12 +71,7 @@ exports.generateCompileAndRun = function (config, done) {
                 return callback(error);
             }
 
-            try {
-                config.setup();
-            } catch (e) {
-                return callback(e);
-            }
-
+            config.setup();
             return compileAndRun(config, 'temp', callback);
         });
     }, done);
