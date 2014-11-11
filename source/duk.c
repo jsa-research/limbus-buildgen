@@ -26,6 +26,12 @@ static int get_stack_trace(duk_context* context) {
     return 1;
 }
 
+static int duk_process_exit(duk_context* context) {
+    int exitCode = duk_require_number(context, 0);
+    exit(exitCode);
+    return 0;
+}
+
 static int compile_and_execute(duk_context* context) {
     int i;
     duk_compile(context, 0);
@@ -37,6 +43,10 @@ static int compile_and_execute(duk_context* context) {
         duk_put_prop_index(context, -2, i);
     }
     duk_put_prop_string(context, -2, "argv");
+
+    duk_push_c_function(context, duk_process_exit, 1);
+    duk_put_prop_string(context, -2, "exit");
+    
     duk_put_prop_string(context, -2, "process");
 
     duk_call_method(context, 0);
@@ -210,6 +220,7 @@ static void compile_and_execute_module_loader(duk_context* context) {
 
 int main(int argc, char* argv[]) {
     void* source;
+    int errorCode = -1;
     
     if (argc < 2) {
         fprintf(stderr, "No input file\n");
@@ -238,10 +249,11 @@ int main(int argc, char* argv[]) {
             fprintf(stderr, "%s\n", duk_safe_to_string(context, -1));
         } else {
             duk_pop(context);
+            errorCode = 0;
         }
 
         duk_destroy_heap(context);
     }
 
-    return 0;
+    return errorCode;
 }
