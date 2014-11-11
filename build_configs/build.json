@@ -7,6 +7,5 @@
     "includePaths": [
         "dependencies/duktape-1.0.1/src/"
     ],
-    "outputName": "duk",
-    "host": "freebsd"
+    "outputName": "duk"
 }
