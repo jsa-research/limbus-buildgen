@@ -33,7 +33,7 @@ var compileAndRun = function (config, workingDirectory, callback) {
     var make;
     var relativeExecutablePrefix = '';
     if (process.platform === 'win32') {
-        make = 'nmake /f ' + (config.makefile || 'Makefile');
+        make = 'nmake /f ' + (config.makefile || 'Makefile');
     } else {
         make = 'make -f ' + (config.makefile || 'Makefile')
         relativeExecutablePrefix = './';
