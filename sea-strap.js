@@ -34,6 +34,9 @@ if (process.argv.length < 3) {
 
             if (flag === '--host') {
                 config.host = value;
+            } else {
+                console.log('Unknown flag', flag);
+                process.exit(3);
             }
         }
     }

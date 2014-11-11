@@ -64,4 +64,20 @@ describe('Front-end', function () {
             done();
         });
     });
+
+    it('should fail if given unknown flag', function (done) {
+        util.generateCompileAndRun({
+            setup: setup,
+            config: {
+                files: [
+                    'simple.c'
+                ]
+            },
+            command: 'simple',
+            parameters: '--some-flag value'
+        }, function (error) {
+            (error === undefined).should.be.false;
+            done();
+        });
+    });
 });
