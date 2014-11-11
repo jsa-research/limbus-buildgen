@@ -26,6 +26,12 @@ static int get_stack_trace(duk_context* context) {
     return 1;
 }
 
+static int duk_process_exit(duk_context* context) {
+    int exitCode = duk_require_number(context, 0);
+    exit(exitCode);
+    return 0;
+}
+
 static int compile_and_execute(duk_context* context) {
     int i;
     duk_compile(context, 0);
@@ -37,6 +43,10 @@ static int compile_and_execute(duk_context* context) {
         duk_put_prop_index(context, -2, i);
     }
     duk_put_prop_string(context, -2, "argv");
+
+    duk_push_c_function(context, duk_process_exit, 1);
+    duk_put_prop_string(context, -2, "exit");
+    
     duk_put_prop_string(context, -2, "process");
 
     duk_call_method(context, 0);
@@ -56,6 +66,14 @@ static int duk_sea_platform_buffer_construct_with_buffer(duk_context* context) {
     duk_double_t size = duk_require_number(context, 1);
 
     void* buffer = sea_platform_buffer_construct_with_buffer(data, (unsigned long)size);
+    duk_push_pointer(context, buffer);
+    return 1;
+}
+static int duk_sea_platform_buffer_construct_with_string(duk_context* context) {
+    duk_size_t size;
+    const char* data = duk_require_lstring(context, 0, &size);
+
+    void* buffer = sea_platform_buffer_construct_with_buffer((void*)data, size);
     duk_push_pointer(context, buffer);
     return 1;
 }
@@ -121,6 +139,9 @@ static void register_platform(duk_context* context) {
     duk_push_c_function(context, duk_sea_platform_buffer_construct_with_buffer, 2);
     duk_put_prop_string(context, -2, "buffer_construct_with_buffer");
     
+    duk_push_c_function(context, duk_sea_platform_buffer_construct_with_string, 2);
+    duk_put_prop_string(context, -2, "buffer_construct_with_string");
+    
     duk_push_c_function(context, duk_sea_platform_buffer_destruct, 1);
     duk_put_prop_string(context, -2, "buffer_destruct");
     
@@ -160,7 +181,12 @@ exports.readFileSync = function (filepath) {\\\
     } else {\\\
         throw new Error('Could not read file: ' + filepath);\\\
     }\\\
-}\";\
+};\\\
+exports.writeFileSync = function (filepath, data) {\\\
+    var buffer = sea_platform.buffer_construct_with_string(data);\\\
+    sea_platform.write_file(filepath, buffer);\\\
+    sea_platform.buffer_destruct(buffer);\\\
+};\";\
     }\
     var fileBuffer = sea_platform.read_file(id + '.js');\
     if (sea_platform.buffer_is_valid(fileBuffer)) {\
@@ -194,6 +220,7 @@ static void compile_and_execute_module_loader(duk_context* context) {
 
 int main(int argc, char* argv[]) {
     void* source;
+    int errorCode = -1;
     
     if (argc < 2) {
         fprintf(stderr, "No input file\n");
@@ -222,10 +249,11 @@ int main(int argc, char* argv[]) {
             fprintf(stderr, "%s\n", duk_safe_to_string(context, -1));
         } else {
             duk_pop(context);
+            errorCode = 0;
         }
 
         duk_destroy_heap(context);
     }
 
-    return 0;
+    return errorCode;
 }
