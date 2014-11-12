@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
     if (argc < 2) {
         fprintf(stderr, "No input file\n");
         return -1;
-    }
+    }s
     
     source = sea_platform_read_file(argv[1]);
     if (sea_platform_buffer_is_valid(source)) {
