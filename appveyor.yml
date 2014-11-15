@@ -1,0 +1,10 @@
+
+version: 0.2.{build}
+install:
+    - npm install -g mocha
+    - npm install
+branches:
+  only:
+    - 0.2.0
+build_script:
+    - nmake /f Makefile.mak && npm test
