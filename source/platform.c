@@ -78,7 +78,7 @@ void* sea_platform_read_file(const char* filepath) {
             
             /* Buffer is full, we need to resize it */
             if (file_size == buffer_size) {
-                buffer_size *= 1.6f; // Magic number
+                buffer_size *= 1.6f; /* Magic number */
                 char* resized_buffer = (char*)realloc(buffer, buffer_size);
 
                 if (!resized_buffer) {
