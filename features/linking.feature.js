@@ -53,14 +53,21 @@ var setup = function () {
 
          "#include \"../include/mydynamiclibrary.h\"\n"
         +"extern int add(int, int);"
-        +"int subtract(int a, int b) {\n"
+        +"DLLEXPORT int subtract(int a, int b) {\n"
         +"  return add(a, -b);\n"
         +"}\n");
 
     fs.writeFileSync(
         "temp/include/mydynamiclibrary.h",
 
-        "int subtract(int a, int b);\n");
+         "#ifdef _WIN32\n"
+        +"#define DLLEXPORT __declspec(dllexport)\n"
+        +"#define DLLIMPORT __declspec(dllimport)\n"
+        +"#else\n"
+        +"#define DLLEXPORT\n"
+        +"#define DLLIMPORT\n"
+        +"#endif\n"
+        +"DLLIMPORT int subtract(int a, int b);\n");
 
     /* Check for libm */
     fs.writeFileSync(
