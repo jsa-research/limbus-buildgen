@@ -14,7 +14,7 @@ sea-strap.js compiles using build files that it generated itself. The build proc
 Run `make` in the project root directory to build.
 
 #### Windows
-You will need to download some dependencies manually, see [Download dependencies manually](#download-dependencies-manually).
+You will need to download some dependencies. If you have PowerShell 3.0 installed you can run the script `dependencies\fetch_dependencies.ps1` in the project root directory and it will download the required dependencies. Otherwise, you can download them manually, see [Download dependencies manually](#download-dependencies-manually).
 
 When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.mak` in the project root directory.
 
@@ -104,6 +104,7 @@ These are things that are planned for a 0.2 version:
 * A Visual Studio 2013 project generator.
 * To be useful for building libraries, we need to be able to actually link as libraries.
 * Linking to other libraries.
+* Create release bundled with dependencies.
 
 Towards a 1.0 release, these features are planned:
 * Continous integration on all supported platforms.
