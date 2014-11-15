@@ -1,20 +1,31 @@
 
 version: 0.2.0+{build}
+
 install:
+    - ps: Install-Product node $env:nodejs_version
     - npm install -g mocha
     - npm install
     - Powershell.exe -executionpolicy remotesigned -File dependencies\fetch_dependencies.ps1
     - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /%target_arch%'
+
 branches:
   only:
     - 0.2.0
+
 build_script:
     - nmake /f Makefile.mak && npm test
 
 environment:
     matrix:
         - nodejs_version: 0.10
+          target_arch: x64
         - nodejs_version: 0.8
+          target_arch: x64
         - nodejs_version: 0.11
-        - target_arch: x86
-        - target_arch: x64
+          target_arch: x64
+
+        - nodejs_version: 0.10
+          target_arch: x86
+
+matrix:
+    fast_finish: true
