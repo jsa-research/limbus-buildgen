@@ -1,4 +1,8 @@
 
-(new-object net.webclient).DownloadFile('https://github.com/svaarala/duktape/archive/v1.0.1.zip', 'dependencies\duktape-1.0.1.zip')
+Invoke-WebRequest "https://github.com/redien/duktape/releases/download/v1.0.1/duktape-1.0.1.zip" -OutFile ".\dependencies\duktape-1.0.1.zip"
 [System.Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem')
-[System.IO.Compression.ZipFile]::ExtractToDirectory('dependencies\duktape-1.0.1.zip', 'dependencies\duktape-1.0.1')
+if (Test-Path .\dependencies\duktape-1.0.1) {
+    Remove-Item .\dependencies\duktape-1.0.1 -Force -Recurse
+}
+[System.IO.Compression.ZipFile]::ExtractToDirectory((Get-Location).ToString() + '\dependencies\duktape-1.0.1.zip', (Get-Location).ToString() + '\dependencies')
+Remove-Item .\dependencies\duktape-1.0.1.zip -Force
