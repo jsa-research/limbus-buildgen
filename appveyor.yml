@@ -3,9 +3,7 @@ version: 0.2.0+{build}
 install:
     - npm install -g mocha
     - npm install
-    - ps: (new-object net.webclient).DownloadFile('https://github.com/svaarala/duktape/archive/v1.0.1.zip', 'dependencies\duktape-1.0.1.zip')
-    - ps: [System.Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem')
-    - ps: [System.IO.Compression.ZipFile]::ExtractToDirectory('dependencies\duktape-1.0.1.zip', 'dependencies\duktape-1.0.1')
+    - Powershell.exe -executionpolicy remotesigned -File  dependencies\fetch_dependencies.ps1
     - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64'
 branches:
   only:
