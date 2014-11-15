@@ -1,8 +1,9 @@
 
-version: 0.2.{build}
+version: 0.2.0+{build}
 install:
     - npm install -g mocha
     - npm install
+    - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64'
 branches:
   only:
     - 0.2.0
