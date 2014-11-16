@@ -3,7 +3,6 @@ version: 0.2.0+{build}
 
 install:
     - ps: Install-Product node $env:nodejs_version
-    - npm --version
     - npm install -g mocha
     - npm install
     - Powershell.exe -executionpolicy remotesigned -File dependencies\fetch_dependencies.ps1
