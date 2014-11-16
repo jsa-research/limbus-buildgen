@@ -1,7 +1,7 @@
 # limbus-buildgen
 _A "build anywhere" C/C++ makefile/project generator._
 
-[![appveyor build status](https://ci.appveyor.com/api/projects/status/seltnbq40v7fv4du/branch/master?svg=true)](https://ci.appveyor.com/project/redien/sea-strap-js/branch/master) [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) [![Coverage Status](https://img.shields.io/coveralls/redien/limbus-buildgen.svg)](https://coveralls.io/r/redien/limbus-buildgen?branch=master) [![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies) [![Public Domain](http://img.shields.io/badge/public%20domain%3F-yes-blue.svg)](http://creativecommons.org/publicdomain/zero/1.0/) [![SemVer](http://img.shields.io/badge/SemVer-2.0.0-blue.svg)](http://semver.org/spec/v2.0.0.html) ![version](http://img.shields.io/badge/version-0.1.0-blue.svg) ![development stage](http://img.shields.io/badge/development%20stage-alpha-orange.svg)
+[![appveyor build status](https://ci.appveyor.com/api/projects/status/seltnbq40v7fv4du/branch/master?svg=true)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) [![Coverage Status](https://img.shields.io/coveralls/redien/limbus-buildgen.svg)](https://coveralls.io/r/redien/limbus-buildgen?branch=master) [![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies) [![Public Domain](http://img.shields.io/badge/public%20domain%3F-yes-blue.svg)](http://creativecommons.org/publicdomain/zero/1.0/) [![SemVer](http://img.shields.io/badge/SemVer-2.0.0-blue.svg)](http://semver.org/spec/v2.0.0.html) ![version](http://img.shields.io/badge/version-0.1.0-blue.svg) ![development stage](http://img.shields.io/badge/development%20stage-alpha-orange.svg)
 
 The goal of this project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases. The aim is to keep the code-base small and as such features will be added only if there is a real need for something that would be used by most projects.
 
@@ -102,8 +102,8 @@ The unit- & integration tests are automatically run against several combinations
 #### Target platforms
 | Target-Tuple  | Build Status | Built Configurations | Node.js versions   |
 | :------------ | :----------: | :------------------- | :----------------- |
-| win32-cl | [![appveyor build status](https://ci.appveyor.com/api/projects/status/seltnbq40v7fv4du/branch/master?svg=true)](https://ci.appveyor.com/project/redien/sea-strap-js/branch/master) | x86 Release, x64 Release | 0.10, 0.11 |
-| linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/sea-strap.js.svg?branch=master)](https://travis-ci.org/redien/sea-strap.js) | x64 | 0.10, 0.11 |
+| win32-cl | [![appveyor build status](https://ci.appveyor.com/api/projects/status/seltnbq40v7fv4du/branch/master?svg=true)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x86 Release, x64 Release | 0.10, 0.11 |
+| linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 0.10, 0.11 |
 | linux-clang | | | |
 | darwin-clang  | | | |
 | freebsd-clang | | | |
