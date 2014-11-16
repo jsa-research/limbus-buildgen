@@ -96,6 +96,18 @@ npm run-script coverage
 
 This will generate a file named `coverage.html` in the project root directory which can be viewed in a browser.
 
+## Support
+The unit- & integration tests are automatically run against several combinations of target tuples, architectures and Node.js versions at every commit. The integration tests generate test build files using the compiled front-end, try to build them and then run the compiled executable and see if it returns the correct result.
+
+#### Target platforms
+| Target-Tuple  | Build Status | Built Configurations | Node.js versions   |
+| :------------ | :----------: | :------------------- | :----------------- |
+| win32-cl | [![appveyor build status](https://ci.appveyor.com/api/projects/status/seltnbq40v7fv4du/branch/master?svg=true)](https://ci.appveyor.com/project/redien/sea-strap-js/branch/master) | x86 Release, x64 Release | 0.10, 0.11 |
+| linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/sea-strap.js.svg?branch=master)](https://travis-ci.org/redien/sea-strap.js) | x64 | 0.10, 0.11 |
+| linux-clang | | | |
+| darwin-clang  | | | |
+| freebsd-clang | | | |
+
 ## Download dependencies manually
 sea-strap.js uses Duktape as its Javascript interpreter. You can download Duktape from `http://duktape.org/` and extract it into `dependencies/duktape-1.0.1`. Version 1.0.1 is currently used.
 
