@@ -26,14 +26,8 @@ environment:
           target_arch: x86
           target_config: Release
         - nodejs_version: 0.10
-          target_arch: x86
-          target_config: Debug
-        - nodejs_version: 0.10
           target_arch: x64
           target_config: Release
-        - nodejs_version: 0.10
-          target_arch: x64
-          target_config: Debug
 
 matrix:
     fast_finish: true
