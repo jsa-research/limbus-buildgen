@@ -22,14 +22,14 @@ describe('cl-compiler-generator', function () {
 
             compilerCommand.should.match(/^cl \/c /);
             compilerCommand.should.containEql('test.c');
-            compilerCommand.should.containEql('/Fetest.obj');
+            compilerCommand.should.containEql('/Fotest.obj');
 
             var compilerCommand = ClCompilerGenerator.compilerCommand({
                 file: 'anotherFile.c'
             });
 
             compilerCommand.should.containEql('anotherFile.c');
-            compilerCommand.should.containEql('/FeanotherFile.obj');
+            compilerCommand.should.containEql('/FoanotherFile.obj');
         });
 
         it('should add any specified include paths in includePaths', function () {

@@ -77,7 +77,7 @@ describe('README Examples', function () {
         var usageCommand = shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --help';
         it('should match the output of `' + usageCommand + '`', function (done) {
             shell.exec(usageCommand, {cwd: null}, function (error, stdout, stderr) {
-                usageInformation.should.containEql(stdout.replace(/\r\n/g, '\n'));
+                usageInformation.replace(/\r\n/g, '\n').should.containEql(stdout.replace(/\r\n/g, '\n'));
                 done();
             });
         });
