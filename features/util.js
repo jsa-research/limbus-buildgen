@@ -1,5 +1,5 @@
 
-// sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
+// limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
 // Written in 2014 by Jesper Oskarsson jesosk@gmail.com
 //
 // To the extent possible under law, the author(s) have dedicated all copyright
@@ -66,7 +66,7 @@ exports.generateCompileAndRun = function (config, done) {
         
         fs.writeFileSync('temp/build_config.json', buildConfig);
 
-        return shell.exec(shell.pathForPlatform('../duk ../sea-strap.js ') + (config.parameters || '') + ' build_config.json', {cwd: 'temp'}, function (error, stdout, stderr) {
+        return shell.exec(shell.pathForPlatform('../duk ../limbus-buildgen.js ') + (config.parameters || '') + ' build_config.json', {cwd: 'temp'}, function (error, stdout, stderr) {
             if (error !== null) {
                 return callback(error);
             }
