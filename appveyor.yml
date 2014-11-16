@@ -9,10 +9,6 @@ install:
     - 'Powershell.exe -executionpolicy remotesigned -File dependencies\fetch_dependencies.ps1'
     - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /%target_arch% /%target_config%'
 
-branches:
-  only:
-    - 0.2.0
-
 build_script:
     - nmake /f Makefile.mak && npm test
 
