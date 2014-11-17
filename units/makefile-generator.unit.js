@@ -44,6 +44,17 @@ describe('makefile-generator', function () {
         makefile.should.match(/-o executable/);
     });
 
+    it('should throw "unknown_config_property" if the provided config object has an unknown property', function () {
+        (function () {
+            makefile_generator.generate({
+                files: [
+                    'simple.c'
+                ],
+                someUnknownProperty: 'this should throw an error'
+            });
+        }).should.throw('unknown_config_property');
+    });
+
     describe('makefile configured without any files', function () {
         var no_source_files_error = 'no_source_files';
         
@@ -153,6 +164,7 @@ describe('makefile-generator', function () {
             });
             makefile.should.match(/\tcl /);
         });
+
         it('should throw "invalid_host" if host is not one of the predefined hosts', function () {
             [
                 'made up host',

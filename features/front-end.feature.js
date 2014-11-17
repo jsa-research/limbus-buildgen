@@ -80,6 +80,22 @@ describe('Front-end', function () {
         });
     });
 
+    it('should fail if the config file contains unknown properties', function (done) {
+        util.generateCompileAndRun({
+            setup: setup,
+            config: {
+                files: [
+                    'simple.c'
+                ],
+                someUnknownParameter: 'this should fail'
+            },
+            command: 'simple'
+        }, function (error) {
+            (error === undefined).should.be.false;
+            done();
+        });
+    });
+
     it('should fail if given unknown flag', function (done) {
         util.generateCompileAndRun({
             setup: setup,

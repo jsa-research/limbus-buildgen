@@ -107,7 +107,25 @@ var joinPaths = function (compiler, paths, prefix) {
     return joinedPaths;
 };
 
+var validConfigProperty = [
+    'files',
+    'outputName',
+    'compilerFlags',
+    'includePaths',
+    'host'
+];
+
+var validateConfig = function (config) {
+    for (var property in config) {
+        if (validConfigProperty.indexOf(property) === -1) {
+            throw new Error('unknown_config_property');
+        }
+    }
+};
+
 exports.generate = function (config) {
+    validateConfig(config);
+    
     var compiler = compilerByHost(config.host);
     if (config.host !== undefined && !isHostValid(config.host)) {
         throw new Error('invalid_host');
