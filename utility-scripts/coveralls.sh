@@ -9,14 +9,26 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-sudo apt-get install lcov
+# Get the position in the job list
+job_version=`echo $TRAVIS_JOB_NUMBER | egrep -o "\.[0-9]$" | egrep -o [0-9]`
 
-make -f Makefile.coverage
-mocha --require blanket -R mocha-lcov-reporter "**/*.unit.js" "**/*.feature.js" > javascript-coverage.info
+# If we're the first job for this build, send coverage information.
+# We need to test this as sending the coverage information multiple times
+# produces an error in some cases.
+if test "$job_version" = "1"
+then
+    # Install lcov
+    sudo apt-get install lcov
 
-# Merge coverage files
-lcov -b . -d . -c -o c-coverage.info
-lcov --extract c-coverage.info "`pwd -P`/source/*" -o c-coverage.info
+    # Cover tests
+    make -f Makefile.coverage
+    mocha --require blanket -R mocha-lcov-reporter "**/*.unit.js" "**/*.feature.js" > javascript-coverage.info
 
-./node_modules/lcov-result-merger/bin/lcov-result-merger.js '*-coverage.info' 'coverage.info'
-cat coverage.info | ./node_modules/coveralls/bin/coveralls.js
+    # Merge coverage files
+    lcov -b . -d . -c -o c-coverage.info
+    lcov --extract c-coverage.info "`pwd -P`/source/*" -o c-coverage.info
+    ./node_modules/lcov-result-merger/bin/lcov-result-merger.js '*-coverage.info' 'coverage.info'
+    
+    # Send to coveralls.io
+    cat coverage.info | ./node_modules/coveralls/bin/coveralls.js
+fi
