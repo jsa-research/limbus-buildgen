@@ -3,12 +3,12 @@ _A "build anywhere" C/C++ makefile/project generator._
 
 [![appveyor build status](https://ci.appveyor.com/api/projects/status/seltnbq40v7fv4du/branch/master?svg=true)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) [![Coverage Status](https://img.shields.io/coveralls/redien/limbus-buildgen.svg)](https://coveralls.io/r/redien/limbus-buildgen?branch=master) [![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies) [![Public Domain](http://img.shields.io/badge/public%20domain%3F-yes-blue.svg)](http://creativecommons.org/publicdomain/zero/1.0/) [![SemVer](http://img.shields.io/badge/SemVer-2.0.0-blue.svg)](http://semver.org/spec/v2.0.0.html) ![version](http://img.shields.io/badge/version-0.1.0-blue.svg) ![development stage](http://img.shields.io/badge/development%20stage-alpha-orange.svg)
 
-The goal of this project is to have a javascript library and companioning command-line application that can generate build files for a wide variety of platforms to build small and portable C/C++ code-bases. The aim is to keep the code-base small and as such features will be added only if there is a real need for something that would be used by most projects.
+limbus-buildgen builds small and portable C/C++ code-bases that do not need a very complicated build process. Thus the project can be kept small and easy to test and port to other platforms.
 
-The library consists of a collection of Common.js modules that generate different types of build files. There is also a small command-line front-end that can be used to generate build files without writing additional code.
+The project consists of a set of Common.js modules writtin in pure ECMAScript that can be used as a library. A CLI front-end is also available to generate build files without additional code.
 
 ## Compile
-limbus-buildgen compiles using build files that it generated itself. The build process tries to follow the conventions of the platform.
+limbus-buildgen compiles using build files that it generated itself.
 
 #### Linux/OS X/FreeBSD
 Run `make` in the project root directory to build.
@@ -19,14 +19,15 @@ You will need to download some dependencies. If you have PowerShell 3.0 installe
 When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.mak` in the project root directory.
 
 ## Use
-To use, just run:
 ```
-./duk limbus-buildgen.js [flags] [path to JSON configuration file]
-```
+Usage: ./duk limbus-buildgen.js [flags] [path to JSON configuration file]
 
-#### Flags
-* **--host [host]** Overrides the target host for the generated build files.
-* **--buildFile [path]** Specifies the path and filename for the generated build file. (defaults to `Makefile`)
+Options:
+
+  --host <host>                   override the target host for the generated build files
+  --buildFile <path>              specify the path and filename for the generated
+                                  build file (default: ./Makefile)
+```
 
 ## Configure
 The JSON configuration files support the following properties: 
@@ -76,7 +77,9 @@ var makefile = makefile_generator.generate({
 ```
 
 ## Test
-As limbus-buildgen uses mocha and should.js to perform testing, first make sure they are installed with:
+limbus-buildgen performs testing using mocha and should.js.
+
+To test, first install the required dependencies:
 ```
 npm install -g mocha
 npm install
@@ -97,10 +100,10 @@ npm run-script coverage
 This will generate a file named `coverage.html` in the project root directory which can be viewed in a browser.
 
 ## Support
-The unit- & integration tests are automatically run against several combinations of target tuples, architectures and Node.js versions at every commit. The integration tests generate test build files using the compiled front-end, try to build them and then run the compiled executable and see if it returns the correct result.
+The unit- & integration tests are automatically run against several combinations of target hosts, architectures and Node.js versions at every commit.
 
 #### Target platforms
-| Target-Tuple  | Build Status | Built Configurations | Node.js versions   |
+| Target Host   | Build Status | Built Configurations | Node.js Versions   |
 | :------------ | :----------: | :------------------- | :----------------- |
 | win32-cl | [![appveyor build status](https://ci.appveyor.com/api/projects/status/seltnbq40v7fv4du/branch/master?svg=true)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x86 Release, x64 Release | 0.10, 0.11 |
 | linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 0.10, 0.11 |
@@ -109,16 +112,16 @@ The unit- & integration tests are automatically run against several combinations
 | freebsd-clang | | | |
 
 ## Download dependencies manually
-limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape from `http://duktape.org/` and extract it into `dependencies/duktape-1.0.1`. Version 1.0.1 is currently used.
+limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape 1.0.1 from `http://duktape.org/` and extract it into `dependencies/duktape-1.0.1`.
 
 ## Roadmap
-These are things that are planned for a 0.2 version:
+Planned for a 0.2 version:
 * A Visual Studio 2013 project generator.
 * To be useful for building libraries, we need to be able to actually link as libraries.
 * Linking to other libraries.
 * Create release bundled with dependencies.
 
-Towards a 1.0 release, these features are planned:
+Towards a 1.0 release:
 * Continous integration on all supported platforms.
 * Provide an integrated executable for the front-end.
 * Cross compilation to Android on supported platforms.
