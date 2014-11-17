@@ -37,29 +37,34 @@ var setup = function () {
         +"}\n");
 };
 
-describe('README Examples', function () {
-    it('should compile and run all examples successfully', function (done) {
-        util.forEachAsync(javascript_examples, function (example, index, done) {
-            shell.mkdirClean('temp', null, function (done) {
-                fs.writeFileSync('temp/example.js', example);
-                shell.exec(shell.path('./duk') + ' ' + shell.path('temp/example.js'), {cwd: null}, done);
-            }, done);
-        }, function (error) {
-            if (error) {
-                return done(error);
-            } else {
-                util.forEachAsync(json_examples, function (example, index, done) {
-                    var config = JSON.parse(example);
-                    config.outputName = 'example';
-                    config.host = process.platform;
+var generateWithExample = function (example, done) {
+    shell.mkdirClean('temp', null, function (done) {
+        fs.writeFileSync('temp/example.js', example);
+        shell.exec(shell.path('./duk') + ' ' + shell.path('temp/example.js'), {cwd: null}, done);
+    }, done);
+};
 
-                    util.generateCompileAndRun({
-                        setup: setup,
-                        config: config,
-                        command: 'example'
-                    }, done);
-                }, done);
-            }
+describe('README Examples', function () {
+    describe('Javascript API examples', function () {
+        it('should run without throwing errors', function (done) {
+            util.forEachAsync(javascript_examples, function (example, index, done) {
+                return generateWithExample(example, done);
+            }, done);
+        });
+    });
+    
+    describe('JSON configurations', function () {
+        it('should generate successfully using makefile-generator', function (done) {
+            util.forEachAsync(json_examples, function (json, index, done) {
+                var example = "require('./source/makefile-generator').generate(" + json + ");";
+                return generateWithExample(example, done);
+            }, done);
+        });
+
+        it('should actually be valid JSON', function () {
+            json_examples.forEach(function (json) {
+                JSON.parse(json);
+            });
         });
     });
 });
