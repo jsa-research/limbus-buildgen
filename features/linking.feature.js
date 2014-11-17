@@ -45,6 +45,13 @@ var setup = function () {
         +"int main(int argc, char** argv) {\n"
         +"  return ceil(0.5f) - 1;\n"
         +"}\n");
+    
+    fs.writeFileSync(
+        "temp/simple.c",
+
+         "int main(int argc, char** argv) {\n"
+        +"  return 0;\n"
+        +"}\n");
 };
 
 describe('Linking', function () {
@@ -75,6 +82,20 @@ describe('Linking', function () {
                 host: process.platform
             },
             command: 'math'
+        }, done);
+    });
+
+    it('should compile to an executable with outputName', function (done) {
+        util.generateCompileAndRun({
+            setup: setup,
+            config: {
+                files: [
+                    'simple.c'
+                ],
+                host: process.platform,
+                outputName: 'my_executable'
+            },
+            command: 'my_executable'
         }, done);
     });
 });

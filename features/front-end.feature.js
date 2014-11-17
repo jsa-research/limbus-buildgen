@@ -69,10 +69,10 @@ describe('Front-end', function () {
         });
     });
 
-    it('should fail if the config file is malformed', function (done) {
+    it('should fail if the config file is not valid JSON', function (done) {
         util.generateCompileAndRun({
             setup: setup,
-            config: "{ files: }",
+            config: "{ files: 'test.c' }",
             command: 'simple'
         }, function (error) {
             (error === undefined).should.be.false;
