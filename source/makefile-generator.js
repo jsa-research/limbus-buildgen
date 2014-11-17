@@ -107,7 +107,7 @@ var joinPaths = function (compiler, paths, prefix) {
     return joinedPaths;
 };
 
-var validConfigProperty = [
+var validConfigProperties = [
     'files',
     'outputName',
     'compilerFlags',
@@ -117,7 +117,7 @@ var validConfigProperty = [
 
 var validateConfig = function (config) {
     for (var property in config) {
-        if (validConfigProperty.indexOf(property) === -1) {
+        if (validConfigProperties.indexOf(property) === -1) {
             throw new Error('unknown_config_property');
         }
     }
