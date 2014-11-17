@@ -13,36 +13,66 @@ var duktape_version = '1.0.1';
 var makefile_generator = require('./source/makefile-generator');
 var fs = require('fs');
 
-if (process.argv.length < 3) {
-    console.log('Missing config file');
-    process.exit(-1);
-} else {
-    var configPath = process.argv[process.argv.length - 1];
-    var flags = process.argv.slice(2, -1);
-
-    var config = JSON.parse(fs.readFileSync(configPath));
-    var makefile;
-
-    for (var i = 0; i < flags.length; i += 2) {
-        var flag = flags[i];
-
-        if (i + 1 >= flags.length) {
-            console.log('Flag missing value');
-            process.exit(-1);
-
-        } else {
-            var value = flags[i + 1];
-
-            if (flag === '--host') {
-                config.host = value;
-            } else if (flag === '--buildFile') {
-                makefile = value;
-            } else {
-                console.log('Unknown flag', flag);
-                process.exit(-1);
-            }
-        }
+var getValue = function (flags, index) {
+    if (index + 1 >= flags.length) {
+        console.log('Flag missing value');
+        process.exit(-1);
     }
 
-    fs.writeFileSync(makefile || "Makefile", makefile_generator.generate(config));
+    return flags[index + 1];
+};
+
+var flags = process.argv.slice(2);
+var makefile,
+    configPath,
+    host;
+
+for (var i = 0; i < flags.length; ++i) {
+    var flag = flags[i];
+
+    if (flag.substr(0, 2) !== '--') {
+        if (configPath === undefined) {
+            configPath = flag;
+        } else {
+            console.log('Too many parameters');
+            process.exit(-1);
+        }
+
+    } else if (flag === '--host') {
+        host = getValue(flags, i);
+        i += 1;
+
+    } else if (flag === '--buildFile') {
+        makefile = getValue(flags, i);
+        i += 1;
+
+    } else if (flag === '--help') {
+        console.log("\n" +
+                    "Usage: ./duk limbus-buildgen.js [flags] <path to JSON configuration file>\n" +
+                    "\n" +
+                    "Options:" +
+                    "\n" +
+                    "  --help                          output usage information\n" +
+                    "  --host <host>                   override the configured target host\n" +
+                    "  --buildFile <path>              specify the path and filename for the\n" +
+                    "                                  generated build file (default: ./Makefile)\n");
+        process.exit(0);
+
+    } else {
+        console.log('Unknown flag', flag);
+        process.exit(-1);
+    }
 }
+
+if (!configPath) {
+    console.log("No configuration file");
+    process.exit(-1);
+}
+
+var config = JSON.parse(fs.readFileSync(configPath));
+
+if (host !== undefined) {
+    config.host = host;
+}
+
+fs.writeFileSync(makefile || "Makefile", makefile_generator.generate(config));

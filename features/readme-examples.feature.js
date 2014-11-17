@@ -52,7 +52,7 @@ describe('README Examples', function () {
             }, done);
         });
     });
-    
+
     describe('JSON configurations', function () {
         it('should generate successfully using makefile-generator', function (done) {
             util.forEachAsync(json_examples, function (json, index, done) {

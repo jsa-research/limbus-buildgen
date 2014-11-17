@@ -13,6 +13,7 @@ var should = require('should');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var util = require('./util.js');
+var shell = require('../source/shell.js');
 
 var setup = function () {
     /* Single file */
@@ -53,20 +54,44 @@ describe('Front-end', function () {
         }, done);
     });
 
-    it('should fail if not all flags match up with values', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
-            config: {
-                files: [
-                    'simple.c'
-                ]
-            },
-            command: 'simple',
-            parameters: '--host '
-        }, function (error) {
-            (error === undefined).should.be.false;
+    it('should fail if too many non-flag arguments are passed', function (done) {
+        shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' file.json file2.json', null, function (error, stdout, stderr) {
+            (!error).should.be.false;
             done();
         });
+    });
+
+    it('should fail with "No configuration file" if no config file is provided', function (done) {
+        shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js'), null, function (error, stdout, stderr) {
+            (!error).should.be.false;
+            stdout.indexOf('No configuration file').should.not.equal(-1);
+            done();
+        });
+    });
+
+    it('should output usage information if given the --help flag', function (done) {
+        shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --help', null, function (error, stdout, stderr) {
+            (!error).should.be.true;
+            stdout.indexOf('Usage:').should.not.equal(-1);
+            done();
+        });
+    });
+
+    it('should fail if flags requiring a value is missing one', function (done) {
+        var requiresValue = [
+            'host',
+            'buildFile'
+        ];
+
+        util.forEachAsync(requiresValue, function (flag, index, done) {
+            shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --' + flag, null, function (error, stdout, stderr) {
+                if (!error) {
+                    return done(new Error('Missing flag did not produce an error'));
+                } else {
+                    return done();
+                }
+            });
+        }, done);
     });
 
     it('should fail if the config file is not valid JSON', function (done) {
@@ -75,7 +100,7 @@ describe('Front-end', function () {
             config: "{ files: 'test.c' }",
             command: 'simple'
         }, function (error) {
-            (error === undefined).should.be.false;
+            (!error).should.be.false;
             done();
         });
     });
@@ -91,7 +116,7 @@ describe('Front-end', function () {
             },
             command: 'simple'
         }, function (error) {
-            (error === undefined).should.be.false;
+            (!error).should.be.false;
             done();
         });
     });
@@ -107,7 +132,7 @@ describe('Front-end', function () {
             command: 'simple',
             parameters: '--some-flag value'
         }, function (error) {
-            (error === undefined).should.be.false;
+            (!error).should.be.false;
             done();
         });
     });
