@@ -56,7 +56,7 @@ describe('README Examples', function () {
     describe('JSON configurations', function () {
         it('should generate successfully using makefile-generator', function (done) {
             util.forEachAsync(json_examples, function (json, index, done) {
-                var example = "require('./source/makefile-generator').generate(" + json + ");";
+                var example = "require('source/makefile-generator').generate(" + json + ");";
                 return generateWithExample(example, done);
             }, done);
         });
