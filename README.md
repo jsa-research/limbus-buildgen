@@ -1,7 +1,7 @@
 # limbus-buildgen
 [![appveyor build status](https://ci.appveyor.com/api/projects/status/seltnbq40v7fv4du/branch/master?svg=true)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) [![Coverage Status](https://img.shields.io/coveralls/redien/limbus-buildgen.svg)](https://coveralls.io/r/redien/limbus-buildgen?branch=master) [![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies) [![Public Domain](http://img.shields.io/badge/public%20domain%3F-yes-blue.svg)](http://creativecommons.org/publicdomain/zero/1.0/) [![SemVer](http://img.shields.io/badge/SemVer-2.0.0-blue.svg)](http://semver.org/spec/v2.0.0.html) ![version](http://img.shields.io/badge/version-0.1.0-blue.svg) ![development stage](http://img.shields.io/badge/development%20stage-alpha-orange.svg)
 
-limbus-buildgen builds small C/C++ code-bases that do not need a very complicated build process. Thus the generators can be kept small which makes them easy to test and port to other platforms.
+limbus-buildgen generates build files for small C/C++ code-bases that do not need a very complicated build process. Thus the generators can be kept small which makes them easy to test and port to other platforms.
 
 The project consists of a set of Common.js modules written in pure ECMAScript which can be imported into your project. A CLI front-end is also available to generate build files without additional code.
 
