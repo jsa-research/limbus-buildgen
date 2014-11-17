@@ -36,7 +36,7 @@ The JSON configuration files support the following properties:
 * **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is
 
 #### Example configuration file
-```javascript
+```json
 {
   "files": [
     "main.c"

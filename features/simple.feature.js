@@ -17,7 +17,7 @@ var setup = function () {
     /* Single file */
     fs.writeFileSync(
         "temp/simple.c",
-        
+
          "int main(int argc, char** argv) {\n"
         +"  return 0;\n"
         +"}\n");

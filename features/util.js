@@ -31,12 +31,10 @@ var setupTestEnvironment = function (performWork, callback) {
 
 var compileAndRun = function (config, workingDirectory, callback) {
     var make;
-    var relativeExecutablePrefix = '';
     if (process.platform === 'win32') {
         make = 'nmake /f ' + (config.makefile || 'Makefile');
     } else {
         make = 'make -f ' + (config.makefile || 'Makefile')
-        relativeExecutablePrefix = './';
     }
 
     return shell.exec(make, {cwd: workingDirectory}, function (error, stdout, stderr) {
@@ -44,7 +42,7 @@ var compileAndRun = function (config, workingDirectory, callback) {
             return callback(error);
         }
 
-        return shell.exec(shell.pathForPlatform(relativeExecutablePrefix) + config.command, {cwd: workingDirectory}, function (error, stdout, stderr) {
+        return shell.exec(shell.path('./') + config.command, {cwd: workingDirectory}, function (error, stdout, stderr) {
             if (error !== null) {
                 return callback(error);
             }
@@ -66,7 +64,7 @@ exports.generateCompileAndRun = function (config, done) {
         
         fs.writeFileSync('temp/build_config.json', buildConfig);
 
-        return shell.exec(shell.pathForPlatform('../duk ../limbus-buildgen.js ') + (config.parameters || '') + ' build_config.json', {cwd: 'temp'}, function (error, stdout, stderr) {
+        return shell.exec(shell.path('../duk') + ' ' + shell.path('../limbus-buildgen.js') + ' ' + (config.parameters || '') + ' build_config.json', {cwd: 'temp'}, function (error, stdout, stderr) {
             if (error !== null) {
                 return callback(error);
             }
@@ -75,4 +73,22 @@ exports.generateCompileAndRun = function (config, done) {
             return compileAndRun(config, 'temp', callback);
         });
     }, done);
+};
+
+exports.forEachAsync = function (array, callback, done) {
+    var next = function (index) {
+        if (index < array.length) {
+            return callback(array[index], index, function (error) {
+                if (error) {
+                    return done(error);
+                } else {
+                    return next(index + 1);
+                }
+            });
+        } else {
+            return done();
+        }
+    };
+    
+    return next(0);
 };

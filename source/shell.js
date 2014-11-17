@@ -1,12 +1,12 @@
 
-exports.pathForPlatform = function (path) {
+exports.path = function (path) {
     return path ? path.replace(/\//g, require('path').sep) : path;
 };
 
 exports.exec = function (command, options, callback) {
     require('child_process').exec(
         command,
-        options ? {cwd: exports.pathForPlatform(options.cwd)} : null,
+        options ? {cwd: exports.path(options.cwd)} : null,
         function (error, stdout, stderr) {
             if (error) {
                 error.message += stdout + stderr;
@@ -21,7 +21,7 @@ exports.rm = function (path, workingDirectory, callback) {
         rm = 'rmdir /S /Q ';
     }
 
-    exports.exec(rm + exports.pathForPlatform(path), {cwd: workingDirectory}, function (error, stdout, stderr) {
+    exports.exec(rm + exports.path(path), {cwd: workingDirectory}, function (error, stdout, stderr) {
         return callback(error);
     });
 };
@@ -32,13 +32,13 @@ exports.cp = function (source, destination, workingDirectory, callback) {
         cp = 'copy /Y ';
     }
 
-    return exports.exec(cp + exports.pathForPlatform(source) + ' ' + exports.pathForPlatform(destination), null, function (error, stdout, stderr) {
+    return exports.exec(cp + exports.path(source) + ' ' + exports.path(destination), null, function (error, stdout, stderr) {
         return callback(error);
     });
 };
 
 exports.mkdir = function (path, workingDirectory, callback) {
-    exports.exec('mkdir ' + exports.pathForPlatform(path), {cwd: workingDirectory}, function (error, stdout, stderr) {
+    exports.exec('mkdir ' + exports.path(path), {cwd: workingDirectory}, function (error, stdout, stderr) {
         return callback(error);
     });
 };
