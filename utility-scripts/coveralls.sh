@@ -15,7 +15,7 @@ job_version=`echo $TRAVIS_JOB_NUMBER | egrep -o "\.[0-9]$" | egrep -o [0-9]`
 # If we're the first job for this build, send coverage information.
 # We need to test this as sending the coverage information multiple times
 # produces an error in some cases.
-if test "$job_version" = "1"
+if test -z "$job_version" -o "$job_version" = "1"
 then
     # Install lcov
     sudo apt-get install lcov
