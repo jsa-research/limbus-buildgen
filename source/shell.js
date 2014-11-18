@@ -10,6 +10,8 @@ exports.exec = function (command, options, callback) {
         function (error, stdout, stderr) {
             if (error) {
                 error.message += stdout + stderr;
+                error.stdout = stdout;
+                error.stderr = stderr;
             }
             return callback(error, stdout, stderr);
         });

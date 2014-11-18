@@ -44,15 +44,21 @@ describe('makefile-generator', function () {
         makefile.should.match(/-o executable/);
     });
 
-    it('should throw "unknown_config_property" if the provided config object has an unknown property', function () {
-        (function () {
+    it('should throw "unknown_config_property" if the provided config object has an unknown property and provide the name as unknownProperty', function () {
+        try {
             makefile_generator.generate({
                 files: [
                     'simple.c'
                 ],
                 someUnknownProperty: 'this should throw an error'
             });
-        }).should.throw('unknown_config_property');
+        } catch (e) {
+            e.message.should.equal('unknown_config_property');
+            e.unknownProperty.should.equal('someUnknownProperty');
+            return;
+        }
+        
+        throw new Error('Expected error');
     });
 
     describe('makefile configured without any files', function () {

@@ -14,16 +14,21 @@ var fs = require('fs');
 var util = require('./util.js');
 var shell = require('../source/shell.js');
 
-var javascript_examples = [];
-var json_examples = [];
+var javascriptExamples = [];
+var jsonExamples = [];
+var usageInformation;
 
 var readme = fs.readFileSync('README.md').toString();
 readme.replace(/```javascript([\s\S]+?)```/gi, function (match, example) {
-    javascript_examples.push(example);
+    javascriptExamples.push(example);
     return match;
 });
 readme.replace(/```json([\s\S]+?)```/gi, function (match, example) {
-    json_examples.push(example);
+    jsonExamples.push(example);
+    return match;
+});
+readme.replace(/## Use[\s\S]+?```([\s\S]+?)```/, function (match, info) {
+    usageInformation = info;
     return match;
 });
 
@@ -47,7 +52,7 @@ var generateWithExample = function (example, done) {
 describe('README Examples', function () {
     describe('Javascript API examples', function () {
         it('should run without throwing errors', function (done) {
-            util.forEachAsync(javascript_examples, function (example, index, done) {
+            util.forEachAsync(javascriptExamples, function (example, index, done) {
                 return generateWithExample(example, done);
             }, done);
         });
@@ -55,15 +60,25 @@ describe('README Examples', function () {
 
     describe('JSON configurations', function () {
         it('should generate successfully using makefile-generator', function (done) {
-            util.forEachAsync(json_examples, function (json, index, done) {
+            util.forEachAsync(jsonExamples, function (json, index, done) {
                 var example = "require('source/makefile-generator').generate(" + json + ");";
                 return generateWithExample(example, done);
             }, done);
         });
 
         it('should actually be valid JSON', function () {
-            json_examples.forEach(function (json) {
+            jsonExamples.forEach(function (json) {
                 JSON.parse(json);
+            });
+        });
+    });
+
+    describe('Usage information', function () {
+        var usageCommand = shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --help';
+        it('should match the output of `' + usageCommand + '`', function (done) {
+            shell.exec(usageCommand, {cwd: null}, function (error, stdout, stderr) {
+                usageInformation.should.containEql(stdout);
+                done();
             });
         });
     });

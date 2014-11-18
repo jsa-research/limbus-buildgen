@@ -26,7 +26,7 @@ var setup = function () {
 };
 
 describe('Front-end', function () {
-    it('should take a parameter to specify the target host', function (done) {
+    it('should take a flag to specify the target host', function (done) {
         util.generateCompileAndRun({
             setup: setup,
             config: {
@@ -39,7 +39,7 @@ describe('Front-end', function () {
         }, done);
     });
 
-    it('should take a parameter to specify the output build file name', function (done) {
+    it('should take a flag to specify the output build file name', function (done) {
         util.generateCompileAndRun({
             setup: setup,
             config: {
@@ -54,9 +54,10 @@ describe('Front-end', function () {
         }, done);
     });
 
-    it('should fail if too many non-flag arguments are passed', function (done) {
+    it('should fail with "Too many arguments" if too many non-flag arguments are passed', function (done) {
         shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' file.json file2.json', null, function (error, stdout, stderr) {
             (!error).should.be.false;
+            stdout.should.containEql('Too many arguments');
             done();
         });
     });
@@ -64,7 +65,7 @@ describe('Front-end', function () {
     it('should fail with "No configuration file" if no config file is provided', function (done) {
         shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js'), null, function (error, stdout, stderr) {
             (!error).should.be.false;
-            stdout.indexOf('No configuration file').should.not.equal(-1);
+            stdout.should.containEql('No configuration file');
             done();
         });
     });
@@ -72,26 +73,30 @@ describe('Front-end', function () {
     it('should output usage information if given the --help flag', function (done) {
         shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --help', null, function (error, stdout, stderr) {
             (!error).should.be.true;
-            stdout.indexOf('Usage:').should.not.equal(-1);
+            stdout.should.containEql('Usage:');
             done();
         });
     });
 
-    it('should fail if flags requiring a value is missing one', function (done) {
+    it('should fail with "Flag <flag> is missing a value" if a flag requiring a value is missing one', function (done) {
         var requiresValue = [
             'host',
             'buildFile'
         ];
 
+        var fails = [];
+
         util.forEachAsync(requiresValue, function (flag, index, done) {
             shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --' + flag, null, function (error, stdout, stderr) {
-                if (!error) {
-                    return done(new Error('Missing flag did not produce an error'));
-                } else {
-                    return done();
+                if (error && stdout.indexOf('Flag --' + flag + ' is missing a value') !== -1) {
+                    fails.push(error);
                 }
+                done();
             });
-        }, done);
+        }, function () {
+            fails.length.should.equal(requiresValue.length);
+            done();
+        });
     });
 
     it('should fail if the config file is not valid JSON', function (done) {
@@ -105,23 +110,24 @@ describe('Front-end', function () {
         });
     });
 
-    it('should fail if the config file contains unknown properties', function (done) {
+    it('should fail with "Unknown property \'<property>\' in configuration" if the config file contains an unknown property', function (done) {
         util.generateCompileAndRun({
             setup: setup,
             config: {
                 files: [
                     'simple.c'
                 ],
-                someUnknownParameter: 'this should fail'
+                someUnknownProperty: 'this should fail'
             },
             command: 'simple'
         }, function (error) {
-            (!error).should.be.false;
+            (!error).should.be.false
+            error.stdout.should.containEql('Unknown property \'someUnknownProperty\' in configuration');
             done();
         });
     });
 
-    it('should fail if given unknown flag', function (done) {
+    it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function (done) {
         util.generateCompileAndRun({
             setup: setup,
             config: {
@@ -133,6 +139,7 @@ describe('Front-end', function () {
             parameters: '--some-flag value'
         }, function (error) {
             (!error).should.be.false;
+            error.message.should.containEql("Unknown flag '--some-flag'");
             done();
         });
     });

@@ -118,7 +118,9 @@ var validConfigProperties = [
 var validateConfig = function (config) {
     for (var property in config) {
         if (validConfigProperties.indexOf(property) === -1) {
-            throw new Error('unknown_config_property');
+            var error = new Error('unknown_config_property');
+            error.unknownProperty = property;
+            throw error;
         }
     }
 };

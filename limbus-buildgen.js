@@ -15,7 +15,7 @@ var fs = require('fs');
 
 var getValue = function (flags, index) {
     if (index + 1 >= flags.length) {
-        console.log('Flag missing value');
+        console.log('Flag ' + flags[index] + ' is missing a value');
         process.exit(-1);
     }
 
@@ -34,7 +34,7 @@ for (var i = 0; i < flags.length; ++i) {
         if (configPath === undefined) {
             configPath = flag;
         } else {
-            console.log('Too many parameters');
+            console.log('Too many arguments');
             process.exit(-1);
         }
 
@@ -50,7 +50,7 @@ for (var i = 0; i < flags.length; ++i) {
         console.log("\n" +
                     "Usage: ./duk limbus-buildgen.js [flags] <path to JSON configuration file>\n" +
                     "\n" +
-                    "Options:" +
+                    "Options:\n" +
                     "\n" +
                     "  --help                          output usage information\n" +
                     "  --host <host>                   override the configured target host\n" +
@@ -59,7 +59,7 @@ for (var i = 0; i < flags.length; ++i) {
         process.exit(0);
 
     } else {
-        console.log('Unknown flag', flag);
+        console.log("Unknown flag '" + flag + "'");
         process.exit(-1);
     }
 }
@@ -75,4 +75,14 @@ if (host !== undefined) {
     config.host = host;
 }
 
-fs.writeFileSync(makefile || "Makefile", makefile_generator.generate(config));
+try {
+    var generatedMakefile = makefile_generator.generate(config);
+    fs.writeFileSync(makefile || "Makefile", generatedMakefile);
+} catch (e) {
+    if (e.message === 'unknown_config_property') {
+        console.log("Unknown property '" + e.unknownProperty + "' in configuration");
+    } else {
+        console.log(e);
+    }
+    process.exit(-1);
+}

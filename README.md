@@ -22,9 +22,11 @@ Usage: ./duk limbus-buildgen.js [flags] <path to JSON configuration file>
 
 Options:
 
+  --help                          output usage information
   --host <host>                   override the configured target host
-  --buildFile <path>              specify the path and filename for the generated
-                                  build file (default: ./Makefile)
+  --buildFile <path>              specify the path and filename for the
+                                  generated build file (default: ./Makefile)
+
 ```
 
 ## Configure
