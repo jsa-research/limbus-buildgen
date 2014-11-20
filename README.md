@@ -1,5 +1,6 @@
 # limbus-buildgen
 ![version](http://img.shields.io/badge/version-0.2.0-blue.svg) [![Public Domain](http://img.shields.io/badge/public%20domain%3F-yes-blue.svg)](http://creativecommons.org/publicdomain/zero/1.0/) [![SemVer](http://img.shields.io/badge/SemVer-2.0.0-blue.svg)](http://semver.org/spec/v2.0.0.html) ![development stage](http://img.shields.io/badge/development%20stage-alpha-orange.svg)
+
 limbus-buildgen generates build files for small C/C++ code-bases that do not need a very complicated build process. Thus the generators can be kept small which makes them easy to test and port to other platforms.
 
 The project consists of a set of Common.js modules written in pure ECMAScript which can be imported into your project. A CLI front-end is also available to generate build files without additional code.
@@ -92,11 +93,9 @@ When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" an
 limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape 1.0.1 from `http://duktape.org/` and extract it into `dependencies/duktape-1.0.1`.
 
 ## Development
-[![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies)
+[![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/redien/limbus-buildgen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Fork the project and join our Gitter room: [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/redien/limbus-buildgen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-You'll also need to install some required dependencies:
+Fork the project and join our Gitter room. You'll also need to install some required dependencies:
 ```
 npm install -g mocha
 npm install
