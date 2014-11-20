@@ -14,7 +14,8 @@ language: node_js
 node_js:
     - "0.10"
     - "0.11"
-script: make && npm test && npm run-script coverage-travis-ci && npm run-script coverage-coveralls-io
+script: make && npm test && npm run-script coverage-travis-ci
+after_script: npm run-script coverage-coveralls-io
 
 notifications:
   webhooks:
