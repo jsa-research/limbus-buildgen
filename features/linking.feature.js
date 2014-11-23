@@ -19,15 +19,16 @@ var setup = function () {
         "temp/linked.c",
 
          "#include <mylibrary.h>\n"
+        +"#include <stdio.h>\n"
         +"int main(int argc, char** argv) {\n"
+        +"  printf(\"%d\", add(23, 88) - 69);\n"
         +"  return (add(23, 88) == 111) ? 0 : -1;\n"
         +"}\n");
 
     fs.writeFileSync(
         "temp/source/mylibrary.c",
 
-         "#include <stdio.h>\n"
-        +"#include \"../include/mylibrary.h\"\n"
+         "#include \"../include/mylibrary.h\"\n"
         +"int add(int a, int b) {\n"
         +"  return a + b;\n"
         +"}\n");
@@ -42,7 +43,9 @@ var setup = function () {
         "temp/math.c",
 
          "#include <math.h>\n"
+        +"#include <stdio.h>\n"
         +"int main(int argc, char** argv) {\n"
+        +"  printf(\"%g\", ceil(0.5f) + 41.0f);\n"
         +"  return ceil(0.5f) - 1;\n"
         +"}\n");
     
@@ -50,6 +53,7 @@ var setup = function () {
         "temp/simple.c",
 
          "int main(int argc, char** argv) {\n"
+        +"  printf(\"%d\", 42);\n"
         +"  return 0;\n"
         +"}\n");
 };
@@ -68,7 +72,8 @@ describe('Linking', function () {
                     'include'
                 ]
             },
-            command: 'linked'
+            command: 'linked',
+            expectOutputToMatch: /42/
         }, done);
     });
 
@@ -81,7 +86,8 @@ describe('Linking', function () {
                 ],
                 host: process.platform
             },
-            command: 'math'
+            command: 'math',
+            expectOutputToMatch: /42/
         }, done);
     });
 
@@ -95,7 +101,39 @@ describe('Linking', function () {
                 host: process.platform,
                 outputName: 'my_executable'
             },
-            command: 'my_executable'
+            command: 'my_executable',
+            expectOutputToMatch: /42/
+        }, done);
+    });
+
+    it('should compile a static library and then be able to link to it', function (done) {
+        util.generateCompileAndRun({
+            setup: setup,
+            config: [
+                {
+                    files: [
+                        'source/mylibrary.c'
+                    ],
+                    type: 'static-library',
+                    host: process.platform,
+                    outputName: 'my_lib_name'
+                },
+                {
+                    files: [
+                        'linked.c'
+                    ],
+                    libraries: [
+                        'my_lib_name'
+                    ],
+                    includePaths: [
+                        'include'
+                    ],
+                    host: process.platform,
+                    outputName: 'linked_with_library'
+                }
+            ],
+            command: 'linked_with_library',
+            expectOutputToMatch: /42/
         }, done);
     });
 });

@@ -79,7 +79,7 @@ describe('makefile-generator', function () {
     });
 
     describe('makefile configured with multiple files', function () {
-        it('should compile all of the files into one executable', function () {
+        it('should compile all of the files', function () {
             var makefile = makefile_generator.generate({
                 files: [
                     'file_a.c',
@@ -88,7 +88,25 @@ describe('makefile-generator', function () {
                 ]
             });
 
-            makefile.should.match(/file_a\.c file_b\.c file_c\.c/);
+            makefile.should.match(/file_a\.c/);
+            makefile.should.match(/file_b\.c/);
+            makefile.should.match(/file_c\.c/);
+        });
+    });
+
+    describe('makefile configured with a library to link', function () {
+        it('should link to the specified library', function () {
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                libraries: [
+                    'mylibrary'
+                ],
+                host: 'linux'
+            });
+
+            makefile.should.match(/\-lmylibrary/);
         });
     });
 
@@ -225,27 +243,50 @@ describe('makefile-generator', function () {
         });
     });
 
-    describe('makefile configured with extra compiler flags', function () {
-        it('should add the flag string as is, no matter which compiler is used', function () {
+    describe('makefile configured with type = "static-library"', function () {
+        it('should add the appropriate commands to build as a static library', function () {
             var makefile = makefile_generator.generate({
                 files: [
                     'test.c'
                 ],
-                compilerFlags: '-some-super-cool-flag',
-                host: 'linux'
+                host: 'linux',
+                type: 'static-library'
             });
 
-            makefile.should.match(/ -some-super-cool-flag /);
+            makefile.should.match(/-c test\.c/);
+            makefile.should.match(/ar rcs [^\s]+ test\.c\.o/);
 
             makefile = makefile_generator.generate({
                 files: [
                     'test.c'
                 ],
-                compilerFlags: '-some-super-cool-flag',
-                host: 'win32'
+                host: 'win32-cl',
+                type: 'static-library'
             });
 
-            makefile.should.match(/ -some-super-cool-flag /);
+            makefile.should.match(/lib \/OUT [^\s]+ test\.obj/);
+        });
+
+        it('should add the appropriate prefix & suffix to the outputName for the target platform', function () {
+            var makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                host: 'linux',
+                type: 'static-library'
+            });
+
+            makefile.should.match(/ar rcs libtest.a/);
+
+            makefile = makefile_generator.generate({
+                files: [
+                    'test.c'
+                ],
+                host: 'win32-cl',
+                type: 'static-library'
+            });
+
+            makefile.should.match(/lib \/OUT test.lib/);
         });
     });
 

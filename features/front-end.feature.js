@@ -20,7 +20,9 @@ var setup = function () {
     fs.writeFileSync(
         "temp/simple.c",
 
-         "int main(int argc, char** argv) {\n"
+         "#include <stdio.h>\n"
+        +"int main(int argc, char** argv) {\n"
+        +"  printf(\"%d\", 42);\n"
         +"  return 0;\n"
         +"}\n");
 };
@@ -35,6 +37,7 @@ describe('Front-end', function () {
                 ]
             },
             command: 'simple',
+            expectOutputToMatch: '42',
             parameters: '--host ' + process.platform
         }, done);
     });
@@ -50,6 +53,7 @@ describe('Front-end', function () {
             },
             makefile: 'Makefile.platform',
             command: 'simple',
+            expectOutputToMatch: '42',
             parameters: '--buildFile Makefile.platform'
         }, done);
     });

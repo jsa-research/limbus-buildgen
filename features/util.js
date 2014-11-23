@@ -29,54 +29,79 @@ var setupTestEnvironment = function (performWork, callback) {
     }, callback);
 };
 
-var compileAndRun = function (config, workingDirectory, callback) {
+var compile = function (makefile, workingDirectory, done) {
     var make;
     if (process.platform === 'win32') {
-        make = 'nmake /f ' + (config.makefile || 'Makefile');
+        make = 'nmake /f ' + (makefile || 'Makefile');
     } else {
-        make = 'make -f ' + (config.makefile || 'Makefile')
+        make = 'make -f ' + (makefile || 'Makefile')
     }
 
-    return shell.exec(make, {cwd: workingDirectory}, function (error, stdout, stderr) {
-        if (error !== null) {
-            return callback(error);
-        }
-
-        return shell.exec(shell.path('./') + config.command, {cwd: workingDirectory}, function (error, stdout, stderr) {
-            if (error !== null) {
-                return callback(error);
-            }
-
-            return callback();
-        });
-    });
+    shell.exec(make, {cwd: workingDirectory}, done);
 };
 
-exports.generateCompileAndRun = function (config, done) {
+var generate = function (config, parameters, done) {
+    var buildConfig;
+    if (typeof config === 'string') {
+        buildConfig = config;
+    } else {
+        buildConfig = JSON.stringify(config);
+    }
+
+    fs.writeFileSync('temp/build_config.json', buildConfig);
+
+    return shell.exec(shell.path('../duk') + ' ' + shell.path('../limbus-buildgen.js') + ' ' + (parameters || '') + ' build_config.json', {cwd: 'temp'}, done);
+};
+
+exports.generateCompileAndRun = function (options, done) {
+    var parameters = options.parameters;
+    var setup = options.setup;
+    var makefile = options.makefile;
+    var command = options.command;
+    var expectOutputToMatch = options.expectOutputToMatch;
+
     setupTestEnvironment(function (callback) {
-        var buildConfig;
+        var generateOneConfig = function (config, index, callback) {
+            return generate(config, parameters, function (error) {
+                if (error !== null) {
+                    return callback(error);
+                }
+
+                setup();
+                return compile(makefile, 'temp', function (error) {
+                    if (error !== null) {
+                        return callback(error);
+                    }
+
+                    if (config.type !== 'static-library') {
+                        return shell.exec(shell.path('./') + command, {cwd: 'temp'}, function (error, stdout, stderr) {
+                            if (error !== null) {
+                                return callback(error);
+                            }
+                            
+                            if (expectOutputToMatch && !stdout.match(expectOutputToMatch)) {
+                                return callback(new Error("Output '" + stdout + "' does not match " + expectOutputToMatch));
+                            }
+
+                            return callback();
+                        });
+                    } else {
+                        return callback();
+                    }
+                });
+            });
+        };
         
-        if (typeof config.config === 'string') {
-            buildConfig = config.config;
+        if (Array.isArray(options.config)) {
+            return exports.forEachAsync(options.config, generateOneConfig, callback);
         } else {
-            buildConfig = JSON.stringify(config.config);
+            return generateOneConfig(options.config, 0, callback);
         }
-        
-        fs.writeFileSync('temp/build_config.json', buildConfig);
-
-        return shell.exec(shell.path('../duk') + ' ' + shell.path('../limbus-buildgen.js') + ' ' + (config.parameters || '') + ' build_config.json', {cwd: 'temp'}, function (error, stdout, stderr) {
-            if (error !== null) {
-                return callback(error);
-            }
-
-            config.setup();
-            return compileAndRun(config, 'temp', callback);
-        });
     }, done);
 };
 
 exports.forEachAsync = function (array, callback, done) {
-    var next = function (index) {
+    function next(index) {
         if (index < array.length) {
             return callback(array[index], index, function (error) {
                 if (error) {

@@ -31,7 +31,12 @@ var compilerInfoTable = {
             'freebsd'
         ],
         outputNameFlag: '-o ',
-        includePathFlag: '-I'
+        includePathFlag: '-I',
+        staticLibraryCommand: 'ar rcs ',
+        staticLibraryPrefix: 'lib',
+        staticLibrarySuffix: '.a',
+        objectFileSuffix: '.c.o',
+        libraryLinkFlag: ' -L./ -l'
     },
     gcc: {
         hosts: [
@@ -39,7 +44,12 @@ var compilerInfoTable = {
             'linux-gcc'
         ],
         outputNameFlag: '-o ',
-        includePathFlag: '-I'
+        includePathFlag: '-I',
+        staticLibraryCommand: 'ar rcs ',
+        staticLibraryPrefix: 'lib',
+        staticLibrarySuffix: '.a',
+        objectFileSuffix: '.c.o',
+        libraryLinkFlag: ' -L./ -l'
     },
     cl: {
         hosts: [
@@ -47,7 +57,12 @@ var compilerInfoTable = {
             'win32-cl'
         ],
         outputNameFlag: '/Fe',
-        includePathFlag: '/I'
+        includePathFlag: '/I',
+        staticLibraryCommand: 'lib /OUT ',
+        staticLibraryPrefix: '',
+        staticLibrarySuffix: '.lib',
+        objectFileSuffix: '.obj',
+        libraryLinkFlag: ' '
     }
 };
 
@@ -112,7 +127,9 @@ var validConfigProperties = [
     'outputName',
     'compilerFlags',
     'includePaths',
-    'host'
+    'host',
+    'type',
+    'libraries'
 ];
 
 var validateConfig = function (config) {
@@ -125,9 +142,7 @@ var validateConfig = function (config) {
     }
 };
 
-exports.generate = function (config) {
-    validateConfig(config);
-    
+var generateCompileInstructions = function (config) {
     var compiler = compilerByHost(config.host);
     if (config.host !== undefined && !isHostValid(config.host)) {
         throw new Error('invalid_host');
@@ -136,6 +151,10 @@ exports.generate = function (config) {
     var compilerInfo = compilerInfoTable[compiler];
     var outputNameFlag = compilerInfo.outputNameFlag;
     var includePathFlag = compilerInfo.includePathFlag;
+    var staticLibraryCommand = compilerInfo.staticLibraryCommand;
+    var staticLibraryPrefix = compilerInfo.staticLibraryPrefix;
+    var staticLibrarySuffix = compilerInfo.staticLibrarySuffix;
+    var libraryLinkFlag = compilerInfo.libraryLinkFlag;
 
     if (config.files === undefined || config.files.length === 0) {
         throw new Error('no_source_files');
@@ -154,10 +173,34 @@ exports.generate = function (config) {
     if (config.compilerFlags) {
         extraFlags += ' ' + config.compilerFlags;
     }
+    if (config.libraries) {
+        extraFlags += libraryLinkFlag + config.libraries.join(libraryLinkFlag);
+    }
+    
+    if (config.type !== 'static-library') {
+        return [compiler + ' ' + sourceFiles + extraFlags + ' ' + outputNameFlag + outputName];
+    } else {
+        var instructions = [];
+        var objectFiles = [];
+        config.files.forEach(function (file) {
+            var filename = file.match(/([^\/]+)\.c$/);
+            if (filename) {
+                var objectFileName = filename[1] + compilerInfo.objectFileSuffix;
+                instructions.push(compiler + ' -c ' + file + extraFlags + ' ' + outputNameFlag + objectFileName);
+                objectFiles.push(objectFileName);
+            }
+        });
+        instructions.push(staticLibraryCommand + staticLibraryPrefix + outputName + staticLibrarySuffix + ' ' + objectFiles.join(' '));
+        return instructions;
+    }
+};
 
+exports.generate = function (config) {
+    validateConfig(config);
+    
     var makefile =
-        'all:\n' + 
-        '\t' + compiler + ' ' + sourceFiles + extraFlags + ' ' + outputNameFlag + outputName + '\n';
+        'all:' +
+        '\n\t' + generateCompileInstructions(config).join('\n\t') + '\n';
 
     return makefile;
 };
