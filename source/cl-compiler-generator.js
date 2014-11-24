@@ -40,15 +40,21 @@ exports.compilerCommand = function (options) {
     if (typeof options.file !== 'string') {
         throw new Error('file_is_not_a_string');
     }
+    if (options.flags !== undefined && typeof options.flags !== 'string') {
+        throw new Error('flags_is_not_a_string');
+    }
     checkStringArray(options.includePaths, 'include_paths_is_not_a_string_array');
-    
-    var includePaths = '';
+
+    var extraFlags = '';
     if (options.includePaths) {
-        includePaths += '/I' + _.map(options.includePaths, processPath).join(' /I');
+        extraFlags += ' /I' + _.map(options.includePaths, processPath).join(' /I');
+    }
+    if (options.flags) {
+        extraFlags += ' ' + options.flags;
     }
     var processedFile = processPath(options.file);
     var match = processedFile.match(/^([^\.]+)\.\w+$/);
-    return 'cl /c /Fe' + match[1] + '.obj ' + includePaths + ' ' + processedFile;
+    return 'cl /c /Fe' + match[1] + '.obj' + extraFlags + ' ' + processedFile;
 };
 
 exports.linkerCommand = function (options) {
@@ -61,14 +67,20 @@ exports.linkerCommand = function (options) {
     if (typeof options.outputName !== 'string') {
         throw new Error('output_name_is_not_a_string');
     }
+    if (options.flags !== undefined && typeof options.flags !== 'string') {
+        throw new Error('flags_is_not_a_string');
+    }
     checkStringArray(options.objectFiles, 'object_files_is_not_a_string_array', 'no_object_files');
     checkStringArray(options.libraries, 'libraries_is_not_a_string_array');
 
-    var libraries = '';
+    var extraFlags = '';
     if (options.libraries) {
-        libraries += options.libraries.join('.lib ') + '.lib ';
+        extraFlags += ' ' + options.libraries.join('.lib ') + '.lib';
     }
-    
+    if (options.flags) {
+        extraFlags += ' ' + options.flags;
+    }
+
     var command,
         outputNameSuffix;
     if (options.type === 'static-library') {
@@ -79,5 +91,5 @@ exports.linkerCommand = function (options) {
         outputNameSuffix = '';
     }
 
-    return command + options.outputName + outputNameSuffix + ' ' + libraries + _.map(options.objectFiles, processPath).join(' ');
+    return command + options.outputName + outputNameSuffix + ' ' + extraFlags + _.map(options.objectFiles, processPath).join(' ');
 };

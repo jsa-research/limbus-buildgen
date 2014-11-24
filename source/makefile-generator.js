@@ -150,12 +150,13 @@ var generateCompileInstructionsForCl = function (outputName, config) {
         if (match) {
             instructions.push(ClCompilerGenerator.compilerCommand({
                 file: file,
-                includePaths: config.includePaths
+                includePaths: config.includePaths,
+                flags: config.compilerFlags
             }));
             objectFiles.push(match[1] + '.obj');
         }
     });
-    
+
     instructions.push(ClCompilerGenerator.linkerCommand({
         objectFiles: objectFiles,
         outputName: outputName,
