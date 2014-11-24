@@ -47,7 +47,9 @@ describe('makefile-generator', function () {
         var makefile = makefile_generator.generate({
             files: [
                 'source/files/test.c'
-            ]
+            ],
+            type: 'application',
+            outputName: 'test'
         });
 
         makefile.should.match(/\-o test/);
@@ -56,7 +58,8 @@ describe('makefile-generator', function () {
             files: [
                 'source/files/test.c'
             ],
-            outputName: 'executable'
+            outputName: 'executable',
+            type: 'application'
         });
 
         makefile.should.match(/\-o executable/);
@@ -68,7 +71,9 @@ describe('makefile-generator', function () {
                 files: [
                     'simple.c'
                 ],
-                someUnknownProperty: 'this should throw an error'
+                someUnknownProperty: 'this should throw an error',
+                type: 'application',
+                outputName: 'test'
             });
         } catch (e) {
             e.message.should.equal('unknown_config_property');
@@ -80,19 +85,24 @@ describe('makefile-generator', function () {
     });
 
     describe('makefile configured without any files', function () {
-        var no_source_files_error = 'no_source_files';
+        var no_files_error = 'no_files';
         
-        it('should throw "no_source_files" when files is undefined', function () {
-            (function () {
-                makefile_generator.generate({});
-            }).should.throw(no_source_files_error);
-        });
-        it('should throw "no_source_files" when files is empty', function () {
+        it('should throw "no_files" when files is undefined', function () {
             (function () {
                 makefile_generator.generate({
-                    files: []
+                    type: 'application',
+                    outputName: 'test'
                 });
-            }).should.throw(no_source_files_error);
+            }).should.throw(no_files_error);
+        });
+        it('should throw "no_files" when files is empty', function () {
+            (function () {
+                makefile_generator.generate({
+                    files: [],
+                    type: 'application',
+                    outputName: 'test'
+                });
+            }).should.throw(no_files_error);
         });
     });
 
@@ -103,7 +113,9 @@ describe('makefile-generator', function () {
                     'file_a.c',
                     'file_b.c',
                     'file_c.c'
-                ]
+                ],
+                type: 'application',
+                outputName: 'test'
             });
 
             makefile.should.match(/file_a\.c/);
@@ -121,7 +133,9 @@ describe('makefile-generator', function () {
                 libraries: [
                     'mylibrary'
                 ],
-                host: 'linux'
+                host: 'linux',
+                type: 'application',
+                outputName: 'test'
             });
 
             makefile.should.match(/\-lmylibrary/);
@@ -134,52 +148,24 @@ describe('makefile-generator', function () {
                 files: [
                     'test.c'
                 ],
-                outputName: 'executable.exe'
+                outputName: 'executable.exe',
+                type: 'application'
             });
 
             makefile.should.match(/\-o executable\.exe/);
         });
-
-        it('should not throw "given_source_file_without_extension"', function () {
-            (function () {
-                makefile_generator.generate({
-                    files: [
-                        'source_without_extension'
-                    ],
-                    outputName: 'executable'
-                });
-            }).should.not.throw();
-        });
     });
 
     describe('makefile configured without an outputName', function () {
-        it('should name the resulting executable using the first given file without the extension by default', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'another_executable.c',
-                    'test.c'
-                ]
-            });
-
-            makefile.should.match(/\-o another_executable/);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'file.with.many.dots.c'
-                ]
-            });
-
-            makefile.should.match(/\-o file\.with\.many\.dots/);
-        });
-
-        it('should throw "given_source_file_without_extension" if the first source file is missing an extension', function () {
+        it('should throw "no_output_name" if no outputName is specified', function () {
             (function () {
                 makefile_generator.generate({
                     files: [
-                        'source_without_extension'
-                    ]
+                        'source.c'
+                    ],
+                    type: 'application'
                 });
-            }).should.throw('given_source_file_without_extension');
+            }).should.throw('no_output_name');
         });
     });
 
@@ -193,7 +179,8 @@ describe('makefile-generator', function () {
                             'test.c'
                         ],
                         host: host,
-                        type: 'application'
+                        type: 'application',
+                        outputName: 'test'
                     });
                     makefile.should.containEql(compiler);
                 });
@@ -210,7 +197,9 @@ describe('makefile-generator', function () {
             ].forEach(function (host) {
                 (function () {
                     makefile_generator.generate({
-                        host: host
+                        host: host,
+                        type: 'application',
+                        outputName: 'test'
                     });
                 }).should.throw('invalid_host');
             });
@@ -220,7 +209,9 @@ describe('makefile-generator', function () {
             makefile_generator.supportedHosts.forEach(function (host) {
                 (function () {
                     makefile_generator.generate({
-                        host: host
+                        host: host,
+                        type: 'application',
+                        outputName: 'test'
                     });
                 }).should.not.throw('invalid_host');
             });
@@ -232,7 +223,9 @@ describe('makefile-generator', function () {
             var makefile = makefile_generator.generate({
                 files: [
                     'test.c'
-                ]
+                ],
+                type: 'application',
+                outputName: 'test'
             });
 
             makefile.should.match(/\tgcc /);
@@ -247,10 +240,12 @@ describe('makefile-generator', function () {
                 ],
                 includePaths: [
                     'includes/'
-                ]
+                ],
+                type: 'application',
+                outputName: 'test'
             });
 
-            makefile.should.match(/ \-Iincludes\/ /);
+            makefile.should.containEql('-Iincludes/');
         });
     });
 
@@ -261,7 +256,8 @@ describe('makefile-generator', function () {
                     'test.c'
                 ],
                 host: 'linux',
-                type: 'static-library'
+                type: 'static-library',
+                outputName: 'test'
             });
 
             makefile.should.match(/\-c test\.c/);
@@ -272,7 +268,8 @@ describe('makefile-generator', function () {
                     'test.c'
                 ],
                 host: 'win32-cl',
-                type: 'static-library'
+                type: 'static-library',
+                outputName: 'test'
             });
 
             makefile.should.match(/lib \/OUT:/);
@@ -284,7 +281,8 @@ describe('makefile-generator', function () {
                     'test.c'
                 ],
                 host: 'linux',
-                type: 'static-library'
+                type: 'static-library',
+                outputName: 'test'
             });
 
             makefile.should.match(/ar rcs libtest.a/);
@@ -294,7 +292,8 @@ describe('makefile-generator', function () {
                     'test.c'
                 ],
                 host: 'win32-cl',
-                type: 'static-library'
+                type: 'static-library',
+                outputName: 'test'
             });
 
             makefile.should.match(/lib \/OUT:test.lib/);
@@ -307,10 +306,12 @@ describe('makefile-generator', function () {
                 files: [
                     'test.c'
                 ],
-                host: 'freebsd'
+                host: 'freebsd',
+                type: 'application',
+                outputName: 'test'
             });
 
-            makefile.should.match(/ \-lm /);
+            makefile.should.containEql('-lm');
         });
     });
 
@@ -320,10 +321,12 @@ describe('makefile-generator', function () {
                 files: [
                     'test.c'
                 ],
-                host: 'linux'
+                host: 'linux',
+                type: 'application',
+                outputName: 'test'
             });
 
-            makefile.should.match(/ \-lm /);
+            makefile.should.containEql('-lm');
         });
     });
 
@@ -334,7 +337,8 @@ describe('makefile-generator', function () {
                     'test.c'
                 ],
                 host: 'win32-cl',
-                type: 'application'
+                type: 'application',
+                outputName: 'test'
             });
 
             makefile.should.match(/ \/Fetest/);
@@ -347,7 +351,8 @@ describe('makefile-generator', function () {
                     'includes'
                 ],
                 host: 'win32-cl',
-                type: 'application'
+                type: 'application',
+                outputName: 'test'
             });
 
             makefile.should.match(/ \/Iincludes /);
@@ -359,7 +364,8 @@ describe('makefile-generator', function () {
                     'in/some/path/test.c'
                 ],
                 host: 'win32-cl',
-                type: 'application'
+                type: 'application',
+                outputName: 'test'
             });
 
             makefile.should.match(/in\\some\\path\\test.c/);
@@ -372,7 +378,8 @@ describe('makefile-generator', function () {
                     'include/some/directory/'
                 ],
                 host: 'win32-cl',
-                type: 'application'
+                type: 'application',
+                outputName: 'test'
             });
 
             makefile.should.match(/include\\some\\directory\\/);

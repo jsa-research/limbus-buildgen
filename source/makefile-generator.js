@@ -9,13 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var outputNameFromSourceFile = function (sourceFile) {
-    var matchedName = sourceFile.match(/([^\/]+)\.\w+$/);
-    if (matchedName === null) {
-        throw new Error('given_source_file_without_extension');
-    }
-    return matchedName[1];
-};
+var typeCheck = require('./type-check');
 
 var standardLinkerFlags = {
     freebsd: '-lm',
@@ -46,21 +40,16 @@ var compilerInfoTable = {
             'linux',
             'linux-gcc'
         ],
-        compilerCommand: 'gcc -c ',
-        staticLibraryCommand: 'ar rcs ',
-        executableCommand: 'gcc -o ',
-        outputNameFlag: '-o ',
-        includePathFlag: '-I',
-        staticLibraryPrefix: 'lib',
-        staticLibrarySuffix: '.a',
-        objectFileSuffix: '.c.o',
-        libraryLinkFlag: ' -L./ -l'
+        generator: require('./gcc-compiler-generator'),
+        objectFileSuffix: '.c.o'
     },
     cl: {
         hosts: [
             'win32',
             'win32-cl'
-        ]
+        ],
+        generator: require('./cl-compiler-generator'),
+        objectFileSuffix: '.obj'
     }
 };
 
@@ -140,26 +129,25 @@ var validateConfig = function (config) {
     }
 };
 
-var ClCompilerGenerator = require('./cl-compiler-generator');
-
-var generateCompileInstructionsForCl = function (outputName, config) {
+var generateCompileInstructionsForCompiler = function (compiler, outputName, config) {
     var instructions = [];
     var objectFiles = [];
     config.files.forEach(function (file) {
         var match = file.match(/([^\.]+)\.\w+$/);
         if (match) {
-            instructions.push(ClCompilerGenerator.compilerCommand({
+            instructions.push(compiler.generator.compilerCommand({
                 file: file,
                 includePaths: config.includePaths,
                 flags: config.compilerFlags
             }));
-            objectFiles.push(match[1] + '.obj');
+            objectFiles.push(match[1] + compiler.objectFileSuffix);
         }
     });
 
-    instructions.push(ClCompilerGenerator.linkerCommand({
+    instructions.push(compiler.generator.linkerCommand({
         objectFiles: objectFiles,
         outputName: outputName,
+        libraries: config.libraries,
         type: config.type
     }));
     return instructions;
@@ -182,14 +170,20 @@ var generateCompileInstructions = function (config) {
     var libraryLinkFlag = compilerInfo.libraryLinkFlag;
 
     if (config.files === undefined || config.files.length === 0) {
-        throw new Error('no_source_files');
+        throw new Error('no_files');
     }
+    
+    typeCheck.string(config, 'outputName', 'required');
 
     var sourceFiles = joinPaths(compiler, config.files);
-    var outputName = config.outputName || outputNameFromSourceFile(config.files[0]);
+    var outputName = config.outputName;
 
-    if (compiler === 'cl') {
-        return generateCompileInstructionsForCl(outputName, config);
+    if (compiler === 'cl' || compiler === 'gcc') {
+        if (config.host === 'linux') {
+            config.libraries = config.libraries || [];
+            config.libraries.push('m');
+        }
+        return generateCompileInstructionsForCompiler(compilerInfo, outputName, config);
     }
 
     var compilerFlags = '',

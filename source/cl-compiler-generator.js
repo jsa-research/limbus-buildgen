@@ -10,40 +10,16 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var _ = require('./underscore');
-
-var checkStringArray = function (value, error_on_not_string_array, error_on_empty_or_undefined) {
-    if (value !== undefined && !Array.isArray(value)) {
-        throw new Error(error_on_not_string_array);
-    }
-    if (error_on_empty_or_undefined) {
-        if (value === undefined || value.length === 0) {
-            throw new Error(error_on_empty_or_undefined);
-        }
-    }
-    if (value !== undefined) {
-        value.forEach(function (file) {
-            if (typeof file !== 'string') {
-                throw new Error(error_on_not_string_array);
-            }
-        });
-    }
-};
+var typeCheck = require('./type-check');
 
 var processPath = function (path) {
     return path.replace(/\//g, '\\');
 };
 
 exports.compilerCommand = function (options) {
-    if (options.file === undefined) {
-        throw new Error('no_file');
-    }
-    if (typeof options.file !== 'string') {
-        throw new Error('file_is_not_a_string');
-    }
-    if (options.flags !== undefined && typeof options.flags !== 'string') {
-        throw new Error('flags_is_not_a_string');
-    }
-    checkStringArray(options.includePaths, 'include_paths_is_not_a_string_array');
+    typeCheck.string(options, 'file', 'required');
+    typeCheck.string(options, 'flags');
+    typeCheck.stringArray(options, 'includePaths');
 
     var extraFlags = '';
     if (options.includePaths) {
@@ -61,17 +37,10 @@ exports.linkerCommand = function (options) {
     if (options.type !== 'application' && options.type !== 'static-library') {
         throw new Error('invalid_type');
     }
-    if (options.outputName === undefined) {
-        throw new Error('no_output_name');
-    }
-    if (typeof options.outputName !== 'string') {
-        throw new Error('output_name_is_not_a_string');
-    }
-    if (options.flags !== undefined && typeof options.flags !== 'string') {
-        throw new Error('flags_is_not_a_string');
-    }
-    checkStringArray(options.objectFiles, 'object_files_is_not_a_string_array', 'no_object_files');
-    checkStringArray(options.libraries, 'libraries_is_not_a_string_array');
+    typeCheck.string(options, 'outputName', 'required');
+    typeCheck.string(options, 'flags');
+    typeCheck.stringArray(options, 'objectFiles', 'required');
+    typeCheck.stringArray(options, 'libraries');
 
     var extraFlags = '';
     if (options.libraries) {

@@ -11,42 +11,7 @@
 
 var should = require('should');
 var ClCompilerGenerator = require('../source/cl-compiler-generator');
-
-var camelToSnakeCase = function (input) {
-    return input.replace(/([a-z])([A-Z])/g, function (match, a, b) {
-        return a + '_' + b.toLowerCase();
-    });
-};
-
-var should_throw_type_error = function (permutations, errorSuffix, generator, baseOptions, option, error) {
-    permutations.forEach(function (permutationToTry) {
-        baseOptions[option] = permutationToTry;
-        (function () { generator(baseOptions); }).should.throw(camelToSnakeCase(option) + errorSuffix);
-    });
-};
-
-var should_throw_not_string_array_error = function (generator, baseOptions, option, error) {
-    var permutations = [
-        ['', 1],
-        ['', {}],
-        ['', null],
-        ['', NaN],
-        ['', []],
-        {},
-        1,
-        '',
-        null,
-        NaN
-    ];
-    should_throw_type_error(permutations, '_is_not_a_string_array', generator, baseOptions, option, error);
-};
-
-var should_throw_not_string_error = function (generator, baseOptions, option, error) {
-    var permutations = [
-        [], {}, 1, NaN, null
-    ];
-    should_throw_type_error(permutations, '_is_not_a_string', generator, baseOptions, option, error);
-};
+var CompilerGenerator = require('../units/compiler-generator');
 
 describe('cl-compiler-generator', function () {
     describe('Compiling', function () {
@@ -93,34 +58,7 @@ describe('cl-compiler-generator', function () {
             compilerCommand.should.match(/in\\some\\path\\test.obj/);
         });
 
-        it('should include extra compiler flags', function () {
-            var compilerCommand = ClCompilerGenerator.compilerCommand({
-                file: 'file.c',
-                flags: '--some-compiler-flag'
-            });
-
-            compilerCommand.should.containEql('--some-compiler-flag');
-        });
-
-        describe('Error Handling', function () {
-            it('should throw "include_paths_is_not_a_string_array" if includePaths is anything other than an array of strings', function () {
-                should_throw_not_string_array_error(ClCompilerGenerator.compilerCommand, { file: 'test' }, 'includePaths');
-            });
-
-            it('should throw "no_file" if no file is given', function () {
-                (function () {
-                    ClCompilerGenerator.compilerCommand({});
-                }).should.throw('no_file');
-            });
-
-            it('should throw "file_is_not_a_string" if file is anything other than a string', function () {
-                should_throw_not_string_error(ClCompilerGenerator.compilerCommand, {}, 'file');
-            });
-
-            it('should throw "flags_is_not_a_string" if flags is anything other than a string', function () {
-                should_throw_not_string_error(ClCompilerGenerator.compilerCommand, {file: 'test'}, 'flags');
-            });
-        });
+        CompilerGenerator.injectCompilerInterfaceSpecs(ClCompilerGenerator.compilerCommand);
     });
 
     describe('Linking', function () {
@@ -168,7 +106,7 @@ describe('cl-compiler-generator', function () {
 
             linkerCommand.should.match(/object\\file\\in\\a\\path.obj/);
         });
-        
+
         it('should link as a static library if "type" === "static-library"', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 objectFiles: [
@@ -180,81 +118,7 @@ describe('cl-compiler-generator', function () {
 
             linkerCommand.should.match(/^lib \/OUT:name\.lib/);
         });
-        
-        it('should include extra linker flags', function () {
-            var linkerCommand = ClCompilerGenerator.linkerCommand({
-                objectFiles: [
-                    'file.obj'
-                ],
-                outputName: 'name',
-                type: 'application',
-                flags: '--some-linker-flag'
-            });
 
-            linkerCommand.should.containEql('--some-linker-flag');
-        });
-
-        describe('Error Handling', function () {
-            it('should throw "libraries_is_not_a_string_array" if libraries is anything other than an array of strings', function () {
-                should_throw_not_string_array_error(ClCompilerGenerator.linkerCommand, {objectFiles: ['test'], outputName: 'test', type: 'application'}, 'libraries');
-            });
-
-            it('should throw "no_output_name" if no outputName is given', function () {
-                (function () {
-                    ClCompilerGenerator.linkerCommand({
-                        objectFiles: [
-                            'test'
-                        ],
-                        type: 'application'
-                    });
-                }).should.throw('no_output_name');
-            });
-
-            it('should throw "output_name_is_not_a_string" if outputName is anything other than a string', function () {
-                should_throw_not_string_error(ClCompilerGenerator.linkerCommand, {objectFiles: ['test'], type: 'application'}, 'outputName');
-            });
-
-            it('should throw "no_object_files" if no object files are given', function () {
-                (function () {
-                    ClCompilerGenerator.linkerCommand({
-                        outputName: 'test',
-                        type: 'application'
-                    });
-                }).should.throw('no_object_files');
-
-                (function () {
-                    ClCompilerGenerator.linkerCommand({
-                        outputName: 'test',
-                        objectFiles: [],
-                        type: 'application'
-                    });
-                }).should.throw('no_object_files');
-            });
-
-            it('should throw "object_files_is_not_a_string_array" if objectFiles is anything other than an array of strings', function () {
-                should_throw_not_string_array_error(ClCompilerGenerator.linkerCommand, { outputName: 'test', type: 'application' }, 'objectFiles');
-            });
-
-            it('should throw "invalid_type" if type is not "static-library" nor "application"', function () {
-                (function () {
-                    ClCompilerGenerator.linkerCommand({
-                        outputName: 'test',
-                        objectFiles: ['test']
-                    });
-                }).should.throw('invalid_type');
-
-                (function () {
-                    ClCompilerGenerator.linkerCommand({
-                        outputName: 'test',
-                        objectFiles: ['test'],
-                        type: 'something-else'
-                    });
-                }).should.throw('invalid_type');
-            });
-
-            it('should throw "flags_is_not_a_string" if flags is anything other than a string', function () {
-                should_throw_not_string_error(ClCompilerGenerator.linkerCommand, {objectFiles: ['test'], type: 'application', outputName: 'name'}, 'flags');
-            });
-        });
+        CompilerGenerator.injectLinkerInterfaceSpecs(ClCompilerGenerator.linkerCommand);
     });
 });

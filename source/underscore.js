@@ -16,3 +16,9 @@ exports.map = function (list, applyFunction) {
     });
     return newList;
 };
+
+exports.camelToSnakeCase = function (input) {
+    return input.replace(/([a-z])([A-Z])/g, function (match, a, b) {
+        return a + '_' + b.toLowerCase();
+    });
+};
