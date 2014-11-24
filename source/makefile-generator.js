@@ -17,7 +17,7 @@ var outputNameFromSourceFile = function (sourceFile) {
     return matchedName[1];
 };
 
-var standardFlags = {
+var standardLinkerFlags = {
     freebsd: '-lm',
     linux: '-lm'
 };
@@ -30,9 +30,11 @@ var compilerInfoTable = {
             'linux-clang',
             'freebsd'
         ],
+        compilerCommand: 'clang -c ',
+        staticLibraryCommand: 'ar rcs ',
+        executableCommand: 'clang -o ',
         outputNameFlag: '-o ',
         includePathFlag: '-I',
-        staticLibraryCommand: 'ar rcs ',
         staticLibraryPrefix: 'lib',
         staticLibrarySuffix: '.a',
         objectFileSuffix: '.c.o',
@@ -43,9 +45,11 @@ var compilerInfoTable = {
             'linux',
             'linux-gcc'
         ],
+        compilerCommand: 'gcc -c ',
+        staticLibraryCommand: 'ar rcs ',
+        executableCommand: 'gcc -o ',
         outputNameFlag: '-o ',
         includePathFlag: '-I',
-        staticLibraryCommand: 'ar rcs ',
         staticLibraryPrefix: 'lib',
         staticLibrarySuffix: '.a',
         objectFileSuffix: '.c.o',
@@ -56,9 +60,11 @@ var compilerInfoTable = {
             'win32',
             'win32-cl'
         ],
+        compilerCommand: 'cl ',
+        executableCommand: 'cl ',
+        staticLibraryCommand: 'lib /OUT ',
         outputNameFlag: '/Fe',
         includePathFlag: '/I',
-        staticLibraryCommand: 'lib /OUT ',
         staticLibraryPrefix: '',
         staticLibrarySuffix: '.lib',
         objectFileSuffix: '.obj',
@@ -147,11 +153,13 @@ var generateCompileInstructions = function (config) {
     if (config.host !== undefined && !isHostValid(config.host)) {
         throw new Error('invalid_host');
     }
-    
+
     var compilerInfo = compilerInfoTable[compiler];
+    var compilerCommand = compilerInfo.compilerCommand;
+    var staticLibraryCommand = compilerInfo.staticLibraryCommand;
+    var executableCommand = compilerInfo.executableCommand;
     var outputNameFlag = compilerInfo.outputNameFlag;
     var includePathFlag = compilerInfo.includePathFlag;
-    var staticLibraryCommand = compilerInfo.staticLibraryCommand;
     var staticLibraryPrefix = compilerInfo.staticLibraryPrefix;
     var staticLibrarySuffix = compilerInfo.staticLibrarySuffix;
     var libraryLinkFlag = compilerInfo.libraryLinkFlag;
@@ -163,36 +171,41 @@ var generateCompileInstructions = function (config) {
     var sourceFiles = joinPaths(compiler, config.files);
     var outputName = config.outputName || outputNameFromSourceFile(config.files[0]);
 
-    var extraFlags = '';
+    var compilerFlags = '',
+        linkerFlags = '';
     if (config.includePaths) {
-        extraFlags += " " + joinPaths(compiler, config.includePaths, includePathFlag);
+        compilerFlags += " " + joinPaths(compiler, config.includePaths, includePathFlag);
     }
-    if (standardFlags[config.host]) {
-        extraFlags += ' ' + standardFlags[config.host];
+    if (standardLinkerFlags[config.host]) {
+        linkerFlags += ' ' + standardLinkerFlags[config.host];
     }
     if (config.compilerFlags) {
-        extraFlags += ' ' + config.compilerFlags;
+        compilerFlags += ' ' + config.compilerFlags;
     }
     if (config.libraries) {
-        extraFlags += libraryLinkFlag + config.libraries.join(libraryLinkFlag);
+        linkerFlags += libraryLinkFlag + config.libraries.join(libraryLinkFlag);
     }
     
-    if (config.type !== 'static-library') {
-        return [compiler + ' ' + sourceFiles + extraFlags + ' ' + outputNameFlag + outputName];
+    var linkerCommand;
+    if (config.type === 'static-library') {
+        outputName = staticLibraryPrefix + outputName + staticLibrarySuffix;
+        linkerCommand = staticLibraryCommand;
     } else {
-        var instructions = [];
-        var objectFiles = [];
-        config.files.forEach(function (file) {
-            var filename = file.match(/([^\/]+)\.c$/);
-            if (filename) {
-                var objectFileName = filename[1] + compilerInfo.objectFileSuffix;
-                instructions.push(compiler + ' -c ' + file + extraFlags + ' ' + outputNameFlag + objectFileName);
-                objectFiles.push(objectFileName);
-            }
-        });
-        instructions.push(staticLibraryCommand + staticLibraryPrefix + outputName + staticLibrarySuffix + ' ' + objectFiles.join(' '));
-        return instructions;
+        linkerCommand = executableCommand;
     }
+
+    var instructions = [];
+    var objectFiles = [];
+    config.files.forEach(function (file) {
+        var filename = file.match(/([^\/]+)\.c$/);
+        if (filename) {
+            var objectFileName = filename[1] + compilerInfo.objectFileSuffix;
+            instructions.push(compilerCommand + processPath(compiler, file) + compilerFlags + ' ' + outputNameFlag + objectFileName);
+            objectFiles.push(objectFileName);
+        }
+    });
+    instructions.push(linkerCommand + outputName + linkerFlags + ' ' + objectFiles.join(' '));
+    return instructions;
 };
 
 exports.generate = function (config) {

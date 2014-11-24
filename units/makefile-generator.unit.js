@@ -32,7 +32,7 @@ describe('makefile-generator', function () {
             ]
         });
 
-        makefile.should.match(/-o test/);
+        makefile.should.match(/\-o test/);
 
         makefile = makefile_generator.generate({
             files: [
@@ -41,7 +41,7 @@ describe('makefile-generator', function () {
             outputName: 'executable'
         });
 
-        makefile.should.match(/-o executable/);
+        makefile.should.match(/\-o executable/);
     });
 
     it('should throw "unknown_config_property" if the provided config object has an unknown property and provide the name as unknownProperty', function () {
@@ -119,7 +119,7 @@ describe('makefile-generator', function () {
                 outputName: 'executable.exe'
             });
 
-            makefile.should.match(/-o executable\.exe\n/);
+            makefile.should.match(/\-o executable\.exe/);
         });
     });
 
@@ -132,7 +132,7 @@ describe('makefile-generator', function () {
                 ]
             });
 
-            makefile.should.match(/-o another_executable\n/);
+            makefile.should.match(/\-o another_executable/);
 
             makefile = makefile_generator.generate({
                 files: [
@@ -140,7 +140,7 @@ describe('makefile-generator', function () {
                 ]
             });
 
-            makefile.should.match(/-o file.with.many.dots\n/);
+            makefile.should.match(/\-o file\.with\.many\.dots/);
         });
 
         it('should throw "given_source_file_without_extension" if the first source file is missing an extension', function () {
@@ -239,7 +239,7 @@ describe('makefile-generator', function () {
                 ]
             });
 
-            makefile.should.match(/ -Iincludes\/ /);
+            makefile.should.match(/ \-Iincludes\/ /);
         });
     });
 
@@ -253,8 +253,8 @@ describe('makefile-generator', function () {
                 type: 'static-library'
             });
 
-            makefile.should.match(/-c test\.c/);
-            makefile.should.match(/ar rcs [^\s]+ test\.c\.o/);
+            makefile.should.match(/\-c test\.c/);
+            makefile.should.match(/ar rcs /);
 
             makefile = makefile_generator.generate({
                 files: [
@@ -264,7 +264,7 @@ describe('makefile-generator', function () {
                 type: 'static-library'
             });
 
-            makefile.should.match(/lib \/OUT [^\s]+ test\.obj/);
+            makefile.should.match(/lib \/OUT /);
         });
 
         it('should add the appropriate prefix & suffix to the outputName for the target platform', function () {
@@ -299,7 +299,7 @@ describe('makefile-generator', function () {
                 host: 'freebsd'
             });
 
-            makefile.should.match(/ -lm /);
+            makefile.should.match(/ \-lm /);
         });
     });
 
@@ -312,7 +312,7 @@ describe('makefile-generator', function () {
                 host: 'linux'
             });
 
-            makefile.should.match(/ -lm /);
+            makefile.should.match(/ \-lm /);
         });
     });
 
