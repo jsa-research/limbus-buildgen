@@ -34,7 +34,9 @@ describe('Front-end', function () {
             config: {
                 files: [
                     'simple.c'
-                ]
+                ],
+                outputName: 'simple',
+                type: 'application'
             },
             command: 'simple',
             expectOutputToMatch: '42',
@@ -49,7 +51,9 @@ describe('Front-end', function () {
                 files: [
                     'simple.c'
                 ],
-                host: process.platform
+                host: process.platform,
+                outputName: 'simple',
+                type: 'application'
             },
             makefile: 'Makefile.platform',
             command: 'simple',
@@ -121,7 +125,9 @@ describe('Front-end', function () {
                 files: [
                     'simple.c'
                 ],
-                someUnknownProperty: 'this should fail'
+                someUnknownProperty: 'this should fail',
+                outputName: 'simple',
+                type: 'application'
             },
             command: 'simple'
         }, function (error) {
@@ -137,7 +143,9 @@ describe('Front-end', function () {
             config: {
                 files: [
                     'simple.c'
-                ]
+                ],
+                outputName: 'simple',
+                type: 'application'
             },
             command: 'simple',
             parameters: '--some-flag value'

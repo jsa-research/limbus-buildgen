@@ -25,15 +25,8 @@ var compilerInfoTable = {
             'freebsd',
             'freebsd-clang'
         ],
-        compilerCommand: 'clang -c ',
-        staticLibraryCommand: 'ar rcs ',
-        executableCommand: 'clang -o ',
-        outputNameFlag: '-o ',
-        includePathFlag: '-I',
-        staticLibraryPrefix: 'lib',
-        staticLibrarySuffix: '.a',
-        objectFileSuffix: '.c.o',
-        libraryLinkFlag: ' -L./ -l'
+        generator: require('./clang-compiler-generator'),
+        objectFileSuffix: '.c.o'
     },
     gcc: {
         hosts: [
@@ -158,69 +151,17 @@ var generateCompileInstructions = function (config) {
     if (config.host !== undefined && !isHostValid(config.host)) {
         throw new Error('invalid_host');
     }
-    
     var compilerInfo = compilerInfoTable[compiler];
-    var compilerCommand = compilerInfo.compilerCommand;
-    var staticLibraryCommand = compilerInfo.staticLibraryCommand;
-    var executableCommand = compilerInfo.executableCommand;
-    var outputNameFlag = compilerInfo.outputNameFlag;
-    var includePathFlag = compilerInfo.includePathFlag;
-    var staticLibraryPrefix = compilerInfo.staticLibraryPrefix;
-    var staticLibrarySuffix = compilerInfo.staticLibrarySuffix;
-    var libraryLinkFlag = compilerInfo.libraryLinkFlag;
-
-    if (config.files === undefined || config.files.length === 0) {
-        throw new Error('no_files');
-    }
     
+    typeCheck.stringArray(config, 'files', 'required');
     typeCheck.string(config, 'outputName', 'required');
 
-    var sourceFiles = joinPaths(compiler, config.files);
-    var outputName = config.outputName;
-
-    if (compiler === 'cl' || compiler === 'gcc') {
-        if (config.host === 'linux') {
-            config.libraries = config.libraries || [];
-            config.libraries.push('m');
-        }
-        return generateCompileInstructionsForCompiler(compilerInfo, outputName, config);
+    if (config.host === 'linux' || config.host === 'freebsd') {
+        config.libraries = config.libraries || [];
+        config.libraries.push('m');
     }
 
-    var compilerFlags = '',
-        linkerFlags = '';
-    if (config.includePaths) {
-        compilerFlags += " " + joinPaths(compiler, config.includePaths, includePathFlag);
-    }
-    if (standardLinkerFlags[config.host]) {
-        linkerFlags += ' ' + standardLinkerFlags[config.host];
-    }
-    if (config.compilerFlags) {
-        compilerFlags += ' ' + config.compilerFlags;
-    }
-    if (config.libraries) {
-        linkerFlags += libraryLinkFlag + config.libraries.join(libraryLinkFlag);
-    }
-
-    var linkerCommand;
-    if (config.type === 'static-library') {
-        outputName = staticLibraryPrefix + outputName + staticLibrarySuffix;
-        linkerCommand = staticLibraryCommand;
-    } else {
-        linkerCommand = executableCommand;
-    }
-
-    var instructions = [];
-    var objectFiles = [];
-    config.files.forEach(function (file) {
-        var filename = file.match(/([^\/]+)\.c$/);
-        if (filename) {
-            var objectFileName = filename[1] + compilerInfo.objectFileSuffix;
-            instructions.push(compilerCommand + processPath(compiler, file) + compilerFlags + ' ' + outputNameFlag + objectFileName);
-            objectFiles.push(objectFileName);
-        }
-    });
-    instructions.push(linkerCommand + outputName + linkerFlags + ' ' + objectFiles.join(' '));
-    return instructions;
+    return generateCompileInstructionsForCompiler(compilerInfo, config.outputName, config);
 };
 
 exports.generate = function (config) {

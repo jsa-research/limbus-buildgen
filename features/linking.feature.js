@@ -70,7 +70,9 @@ describe('Linking', function () {
                 host: process.platform,
                 includePaths: [
                     'include'
-                ]
+                ],
+                outputName: 'linked',
+                type: 'application'
             },
             command: 'linked',
             expectOutputToMatch: /42/
@@ -84,7 +86,9 @@ describe('Linking', function () {
                 files: [
                     'math.c'
                 ],
-                host: process.platform
+                host: process.platform,
+                outputName: 'math',
+                type: 'application'
             },
             command: 'math',
             expectOutputToMatch: /42/
@@ -99,7 +103,8 @@ describe('Linking', function () {
                     'simple.c'
                 ],
                 host: process.platform,
-                outputName: 'my_executable'
+                outputName: 'my_executable',
+                type: 'application'
             },
             command: 'my_executable',
             expectOutputToMatch: /42/
@@ -129,7 +134,8 @@ describe('Linking', function () {
                         'include'
                     ],
                     host: process.platform,
-                    outputName: 'linked_with_library'
+                    outputName: 'linked_with_library',
+                    type: 'application'
                 }
             ],
             command: 'linked_with_library',
