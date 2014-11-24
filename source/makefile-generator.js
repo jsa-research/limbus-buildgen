@@ -60,16 +60,7 @@ var compilerInfoTable = {
         hosts: [
             'win32',
             'win32-cl'
-        ],
-        compilerCommand: 'cl /c ',
-        executableCommand: 'cl ',
-        staticLibraryCommand: 'lib /OUT ',
-        outputNameFlag: '/Fe',
-        includePathFlag: '/I',
-        staticLibraryPrefix: '',
-        staticLibrarySuffix: '.lib',
-        objectFileSuffix: '.obj',
-        libraryLinkFlag: ' '
+        ]
     }
 };
 
@@ -149,12 +140,36 @@ var validateConfig = function (config) {
     }
 };
 
+var ClCompilerGenerator = require('./cl-compiler-generator');
+
+var generateCompileInstructionsForCl = function (outputName, config) {
+    var instructions = [];
+    var objectFiles = [];
+    config.files.forEach(function (file) {
+        var match = file.match(/([^\.]+)\.\w+$/);
+        if (match) {
+            instructions.push(ClCompilerGenerator.compilerCommand({
+                file: file,
+                includePaths: config.includePaths
+            }));
+            objectFiles.push(match[1] + '.obj');
+        }
+    });
+    
+    instructions.push(ClCompilerGenerator.linkerCommand({
+        objectFiles: objectFiles,
+        outputName: outputName,
+        type: config.type
+    }));
+    return instructions;
+};
+
 var generateCompileInstructions = function (config) {
     var compiler = compilerByHost(config.host);
     if (config.host !== undefined && !isHostValid(config.host)) {
         throw new Error('invalid_host');
     }
-
+    
     var compilerInfo = compilerInfoTable[compiler];
     var compilerCommand = compilerInfo.compilerCommand;
     var staticLibraryCommand = compilerInfo.staticLibraryCommand;
@@ -171,6 +186,10 @@ var generateCompileInstructions = function (config) {
 
     var sourceFiles = joinPaths(compiler, config.files);
     var outputName = config.outputName || outputNameFromSourceFile(config.files[0]);
+
+    if (compiler === 'cl') {
+        return generateCompileInstructionsForCl(outputName, config);
+    }
 
     var compilerFlags = '',
         linkerFlags = '';

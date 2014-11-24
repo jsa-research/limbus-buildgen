@@ -192,7 +192,8 @@ describe('makefile-generator', function () {
                         files: [
                             'test.c'
                         ],
-                        host: host
+                        host: host,
+                        type: 'application'
                     });
                     makefile.should.containEql(compiler);
                 });
@@ -274,7 +275,7 @@ describe('makefile-generator', function () {
                 type: 'static-library'
             });
 
-            makefile.should.match(/lib \/OUT /);
+            makefile.should.match(/lib \/OUT:/);
         });
 
         it('should add the appropriate prefix & suffix to the outputName for the target platform', function () {
@@ -296,7 +297,7 @@ describe('makefile-generator', function () {
                 type: 'static-library'
             });
 
-            makefile.should.match(/lib \/OUT test.lib/);
+            makefile.should.match(/lib \/OUT:test.lib/);
         });
     });
 
@@ -332,7 +333,8 @@ describe('makefile-generator', function () {
                 files: [
                     'test.c'
                 ],
-                host: 'win32-cl'
+                host: 'win32-cl',
+                type: 'application'
             });
 
             makefile.should.match(/ \/Fetest/);
@@ -344,7 +346,8 @@ describe('makefile-generator', function () {
                 includePaths: [
                     'includes'
                 ],
-                host: 'win32-cl'
+                host: 'win32-cl',
+                type: 'application'
             });
 
             makefile.should.match(/ \/Iincludes /);
@@ -355,7 +358,8 @@ describe('makefile-generator', function () {
                 files: [
                     'in/some/path/test.c'
                 ],
-                host: 'win32-cl'
+                host: 'win32-cl',
+                type: 'application'
             });
 
             makefile.should.match(/in\\some\\path\\test.c/);
@@ -367,7 +371,8 @@ describe('makefile-generator', function () {
                 includePaths: [
                     'include/some/directory/'
                 ],
-                host: 'win32-cl'
+                host: 'win32-cl',
+                type: 'application'
             });
 
             makefile.should.match(/include\\some\\directory\\/);
