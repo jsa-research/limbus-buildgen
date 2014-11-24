@@ -12,17 +12,35 @@
 var should = require('should');
 var makefile_generator = require('../source/makefile-generator');
 
+var hostsByCompiler = {
+    clang: [
+        'darwin',
+        'darwin-clang',
+        'linux-clang',
+        'freebsd',
+        'freebsd-clang'
+    ],
+    gcc: [
+        'linux',
+        'linux-gcc'
+    ],
+    cl: [
+        'win32',
+        'win32-cl'
+    ]
+};
+
 describe('makefile-generator', function () {
     it('should have a list with the supported hosts', function () {
-        makefile_generator.supportedHosts.length.should.equal(8);
-        makefile_generator.supportedHosts.should.containEql('darwin');
-        makefile_generator.supportedHosts.should.containEql('darwin-clang');
-        makefile_generator.supportedHosts.should.containEql('linux');
-        makefile_generator.supportedHosts.should.containEql('linux-gcc');
-        makefile_generator.supportedHosts.should.containEql('linux-clang');
-        makefile_generator.supportedHosts.should.containEql('freebsd');
-        makefile_generator.supportedHosts.should.containEql('win32');
-        makefile_generator.supportedHosts.should.containEql('win32-cl');
+        var hostCount = 0;
+        for (var compiler in hostsByCompiler) {
+            var hosts = hostsByCompiler[compiler];
+            hosts.forEach(function (host) {
+                makefile_generator.supportedHosts.should.containEql(host);
+                hostCount += 1;
+            });
+        }
+        makefile_generator.supportedHosts.length.should.equal(hostCount);
     });
 
     it('should create an executable in the current directory by default', function () {
@@ -121,6 +139,17 @@ describe('makefile-generator', function () {
 
             makefile.should.match(/\-o executable\.exe/);
         });
+
+        it('should not throw "given_source_file_without_extension"', function () {
+            (function () {
+                makefile_generator.generate({
+                    files: [
+                        'source_without_extension'
+                    ],
+                    outputName: 'executable'
+                });
+            }).should.not.throw();
+        });
     });
 
     describe('makefile configured without an outputName', function () {
@@ -156,37 +185,18 @@ describe('makefile-generator', function () {
 
     describe('makefile configured with a host', function () {
         it('should compile with the correct compiler for the specified host', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'linux'
-            });
-            makefile.should.match(/\tgcc /);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'darwin'
-            });
-            makefile.should.match(/\tclang /);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'linux-clang'
-            });
-            makefile.should.match(/\tclang /);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'win32-cl'
-            });
-            makefile.should.match(/\tcl /);
+            for (var compiler in hostsByCompiler) {
+                var hosts = hostsByCompiler[compiler];
+                hosts.forEach(function (host) {
+                    var makefile = makefile_generator.generate({
+                        files: [
+                            'test.c'
+                        ],
+                        host: host
+                    });
+                    makefile.should.containEql(compiler);
+                });
+            }
         });
 
         it('should throw "invalid_host" if host is not one of the predefined hosts', function () {

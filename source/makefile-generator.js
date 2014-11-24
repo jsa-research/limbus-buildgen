@@ -28,7 +28,8 @@ var compilerInfoTable = {
             'darwin',
             'darwin-clang',
             'linux-clang',
-            'freebsd'
+            'freebsd',
+            'freebsd-clang'
         ],
         compilerCommand: 'clang -c ',
         staticLibraryCommand: 'ar rcs ',
@@ -60,7 +61,7 @@ var compilerInfoTable = {
             'win32',
             'win32-cl'
         ],
-        compilerCommand: 'cl ',
+        compilerCommand: 'cl /c ',
         executableCommand: 'cl ',
         staticLibraryCommand: 'lib /OUT ',
         outputNameFlag: '/Fe',
@@ -185,7 +186,7 @@ var generateCompileInstructions = function (config) {
     if (config.libraries) {
         linkerFlags += libraryLinkFlag + config.libraries.join(libraryLinkFlag);
     }
-    
+
     var linkerCommand;
     if (config.type === 'static-library') {
         outputName = staticLibraryPrefix + outputName + staticLibrarySuffix;
