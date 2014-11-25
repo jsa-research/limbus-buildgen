@@ -42,6 +42,12 @@ exports.linkerCommand = function (options) {
     typeCheck.stringArray(options, 'objectFiles', 'required');
     typeCheck.stringArray(options, 'libraries');
 
+    if (options.type === 'static-library' &&
+        options.libraries !== undefined &&
+        options.libraries.length > 0) {
+        throw new Error('linking_libraries_is_not_valid_for_static_libraries');
+    }
+    
     var extraFlags = '';
     if (options.libraries) {
         extraFlags += ' ' + options.libraries.join('.lib ') + '.lib';

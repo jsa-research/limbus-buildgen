@@ -82,26 +82,6 @@ var isHostValid = function (host) {
     return false;
 };
 
-var processPath = function (compiler, path) {
-    if (compiler === 'cl') {
-        return path.replace(/\//g, '\\');
-    } else {
-        return path;
-    }
-};
-
-var joinPaths = function (compiler, paths, prefix) {
-    prefix = prefix || '';
-    var joinedPaths = prefix;
-    paths.forEach(function (path, i) {
-        if (i != 0) {
-            joinedPaths += " " + prefix;
-        }
-        joinedPaths += processPath(compiler, path);
-    });
-    return joinedPaths;
-};
-
 var validConfigProperties = [
     'files',
     'outputName',
@@ -156,7 +136,7 @@ var generateCompileInstructions = function (config) {
     typeCheck.stringArray(config, 'files', 'required');
     typeCheck.string(config, 'outputName', 'required');
 
-    if (config.host === 'linux' || config.host === 'freebsd') {
+    if (config.type !== 'static-library' && (config.host === 'linux' || config.host === 'freebsd')) {
         config.libraries = config.libraries || [];
         config.libraries.push('m');
     }

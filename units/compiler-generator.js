@@ -118,5 +118,16 @@ exports.injectLinkerInterfaceSpecs = function (generator) {
         it('should throw "flags_is_not_a_string" if flags is anything other than a string', function () {
             util.should_throw_not_string_error(generator, {objectFiles: ['test'], type: 'application', outputName: 'name'}, 'flags');
         });
+
+        it('should throw "linking_libraries_is_not_valid_for_static_libraries" if given libraries to link while type is "static-library"', function () {
+            (function () {
+                generator({
+                    type: 'static-library',
+                    objectFiles: ['test'],
+                    outputName: 'name',
+                    libraries: ['alibrary']
+                });
+            }).should.throw('linking_libraries_is_not_valid_for_static_libraries');
+        });
     });
 };

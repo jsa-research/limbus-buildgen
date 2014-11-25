@@ -37,6 +37,12 @@ exports.inject = function (compiler, exports) {
         typeCheck.stringArray(options, 'objectFiles', 'required');
         typeCheck.stringArray(options, 'libraries');
 
+        if (options.type === 'static-library' &&
+            options.libraries !== undefined &&
+            options.libraries.length > 0) {
+            throw new Error('linking_libraries_is_not_valid_for_static_libraries');
+        }
+
         var extraFlags = '';
         if (options.libraries !== undefined) {
             var separator = ' -L./ -l';
@@ -45,6 +51,7 @@ exports.inject = function (compiler, exports) {
         if (options.flags !== undefined) {
             extraFlags += ' ' + options.flags;
         }
+
         var command;
         var outputName;
         if (options.type === 'application') {
