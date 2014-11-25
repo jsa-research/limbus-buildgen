@@ -124,51 +124,6 @@ describe('makefile-generator', function () {
         });
     });
 
-    describe('makefile configured with a library to link', function () {
-        it('should link to the specified library', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                libraries: [
-                    'mylibrary'
-                ],
-                host: 'linux',
-                type: 'application',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/\-lmylibrary/);
-        });
-    });
-
-    describe('makefile configured with outputName', function () {
-        it('should create an executable with the specified name', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                outputName: 'executable.exe',
-                type: 'application'
-            });
-
-            makefile.should.match(/\-o executable\.exe/);
-        });
-    });
-
-    describe('makefile configured without an outputName', function () {
-        it('should throw "no_output_name" if no outputName is specified', function () {
-            (function () {
-                makefile_generator.generate({
-                    files: [
-                        'source.c'
-                    ],
-                    type: 'application'
-                });
-            }).should.throw('no_output_name');
-        });
-    });
-
     describe('makefile configured with a host', function () {
         it('should compile with the correct compiler for the specified host', function () {
             for (var compiler in hostsByCompiler) {
@@ -232,74 +187,6 @@ describe('makefile-generator', function () {
         });
     });
 
-    describe('makefile configured with include path', function () {
-        it('should add the correct flag', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                includePaths: [
-                    'includes/'
-                ],
-                type: 'application',
-                outputName: 'test'
-            });
-
-            makefile.should.containEql('-Iincludes/');
-        });
-    });
-
-    describe('makefile configured with type = "static-library"', function () {
-        it('should add the appropriate commands to build as a static library', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'linux',
-                type: 'static-library',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/\-c test\.c/);
-            makefile.should.match(/ar rcs /);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'win32-cl',
-                type: 'static-library',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/lib \/OUT:/);
-        });
-
-        it('should add the appropriate prefix & suffix to the outputName for the target platform', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'linux',
-                type: 'static-library',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/ar rcs libtest.a/);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'win32-cl',
-                type: 'static-library',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/lib \/OUT:test.lib/);
-        });
-    });
-
     describe('makefile where host is freebsd', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
@@ -327,62 +214,6 @@ describe('makefile-generator', function () {
             });
 
             makefile.should.containEql('-lm');
-        });
-    });
-
-    describe('makefile where host is win32-cl', function () {
-        it('should use the correct flags', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'win32-cl',
-                type: 'application',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/ \/Fetest/);
-
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                includePaths: [
-                    'includes'
-                ],
-                host: 'win32-cl',
-                type: 'application',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/ \/Iincludes /);
-        });
-
-        it('should convert paths to use backslashes instead of forward ones', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'in/some/path/test.c'
-                ],
-                host: 'win32-cl',
-                type: 'application',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/in\\some\\path\\test.c/);
-
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                includePaths: [
-                    'include/some/directory/'
-                ],
-                host: 'win32-cl',
-                type: 'application',
-                outputName: 'test'
-            });
-
-            makefile.should.match(/include\\some\\directory\\/);
         });
     });
 });
