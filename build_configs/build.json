@@ -7,5 +7,6 @@
     "includePaths": [
         "dependencies/duktape-1.0.1/src/"
     ],
-    "outputName": "duk"
+    "outputName": "duk",
+    "type": "application"
 }

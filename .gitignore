@@ -16,7 +16,8 @@
 /duk.exe
 /duk.dSYM
 /*coverage.info
-/*.obj
+*.obj
+*.o
 *.gcda
 *.gcno
 

@@ -1,2 +1,5 @@
 all:
-	clang dependencies/duktape-1.0.1/src/duktape.c source/duk.c source/platform.c -Idependencies/duktape-1.0.1/src/ -lm -o duk
+	clang -c dependencies/duktape-1.0.1/src/duktape.c -o dependencies/duktape-1.0.1/src/duktape.c.o -Idependencies/duktape-1.0.1/src/
+	clang -c source/duk.c -o source/duk.c.o -Idependencies/duktape-1.0.1/src/
+	clang -c source/platform.c -o source/platform.c.o -Idependencies/duktape-1.0.1/src/
+	clang -o duk dependencies/duktape-1.0.1/src/duktape.c.o source/duk.c.o source/platform.c.o -L./ -lm

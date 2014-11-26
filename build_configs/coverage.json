@@ -9,5 +9,6 @@
     ],
     "outputName": "duk",
     "compilerFlags": "-g -O0 --coverage",
-    "host": "linux"
+    "host": "linux",
+    "type": "application"
 }
