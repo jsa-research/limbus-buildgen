@@ -29,7 +29,7 @@ exports.compilerCommand = function (options) {
         extraFlags += ' ' + options.flags;
     }
     var processedFile = processPath(options.file);
-    var match = processedFile.match(/^([^\.]+)\.\w+$/);
+    var match = processedFile.match(/^(.+)\.\w+$/);
     return 'cl /c /Fo' + match[1] + '.obj' + extraFlags + ' ' + processedFile;
 };
 

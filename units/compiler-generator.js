@@ -22,6 +22,14 @@ exports.injectCompilerInterfaceSpecs = function (generator) {
         compilerCommand.should.containEql('--some-compiler-flag');
     });
 
+    it('should take a path as file', function () {
+        var compilerCommand = generator({
+            file: './some/path/to/file.c'
+        });
+
+        compilerCommand.should.match(/\.[\/\\]some[\/\\]path[\/\\]to[\/\\]file\.c/);
+    });
+
     describe('Error Handling', function () {
         it('should throw "include_paths_is_not_a_string_array" if includePaths is anything other than an array of strings', function () {
             util.should_throw_not_string_array_error(generator, { file: 'test' }, 'includePaths');
