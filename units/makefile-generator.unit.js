@@ -106,6 +106,19 @@ describe('makefile-generator', function () {
         });
     });
 
+    it('should accept files with dots in their paths', function () {
+        var makefile = makefile_generator.generate({
+            files: [
+                'file.with.dots.c'
+            ],
+            type: 'application',
+            outputName: 'test',
+            host: 'linux'
+        });
+
+        makefile.should.not.match(/[^\.]dots\.c/);
+    });
+
     describe('makefile configured with multiple files', function () {
         it('should compile all of the files', function () {
             var makefile = makefile_generator.generate({

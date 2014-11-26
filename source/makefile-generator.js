@@ -106,7 +106,7 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
     var instructions = [];
     var objectFiles = [];
     config.files.forEach(function (file) {
-        var match = file.match(/([^\.]+)\.\w+$/);
+        var match = file.match(/^(.+)\.\w+$/);
         if (match) {
             instructions.push(compiler.generator.compilerCommand({
                 file: file,
