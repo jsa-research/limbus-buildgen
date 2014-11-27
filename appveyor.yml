@@ -20,7 +20,7 @@ install:
     - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /%target_arch% /%target_config%'
 
 build_script:
-    - nmake /f Makefile.mak && npm test
+    - nmake /f Makefile.win32 && npm test
 
 environment:
     matrix:
