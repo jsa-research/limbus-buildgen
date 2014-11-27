@@ -12,5 +12,5 @@
 all:
 	@dependencies/fetch_dependencies.sh
 	@echo Compiling...
-	@./utility-scripts/make_proxy.sh
+	@make -f Makefile.`uname -s | tr 'A-Z' 'a-z'`
 	@echo Done.
