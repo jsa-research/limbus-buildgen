@@ -90,7 +90,7 @@ Run `make` in the project root directory to build.
 #### Windows
 You will need to download some dependencies. If you have PowerShell 3.0 installed you can run the script `dependencies\fetch_dependencies.ps1` in the project root directory and it will download the required dependencies. Otherwise, you can download them manually, see [Download dependencies manually](#download-dependencies-manually).
 
-When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.mak` in the project root directory.
+When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.win32` in the project root directory.
 
 #### Download dependencies manually
 limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape 1.0.1 from `http://duktape.org/` and extract it into `dependencies/duktape-1.0.1`.
