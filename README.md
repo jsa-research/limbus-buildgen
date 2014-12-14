@@ -31,7 +31,7 @@ The following options are optional:
 * **includePaths** Specifies where to find header files to include.
 * **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is.
 * **linkerFlags** Specifies any extra linkers flags that will be passed to the compiler as is.
-* **libraries** Specifies any libraries to link with when building an application.
+* **libraries** Specifies any libraries to link with when building an application or dynamic library.
 
 #### Example configuration file
 
@@ -83,7 +83,7 @@ var makefile = makefile_generator.generate({
     compilerFlags: '-g -O0 -coverage',
     // Specifies any extra linker flags that will be passed to the linker as is.
     linkerFlags: '-coverage',
-    // Specifies any libraries to link with when building an application.
+    // Specifies any libraries to link with when building an application or dynamic library.
     libraries: [
         'png'
     ]
