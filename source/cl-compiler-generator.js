@@ -34,6 +34,11 @@ exports.compilerCommand = function (options) {
     if (options.flags) {
         extraFlags += ' ' + options.flags;
     }
+    
+    if (options.type === 'dynamic-library') {
+        extraFlags += ' /D_USRDLL /D_WINDLL';
+    }
+    
     var processedFile = processPath(options.file);
     var match = processedFile.match(/^(.+)\.\w+$/);
     return 'cl /c /Fo' + match[1] + '.obj' + extraFlags + ' ' + processedFile;
@@ -71,7 +76,7 @@ exports.linkerCommand = function (options) {
         command = 'lib /OUT:';
         outputNameSuffix = '.lib';
     } else if (options.type === 'dynamic-library') {
-        command = 'cl /D_USRDLL /D_WINDLL /link /DLL /OUT:';
+        command = 'link /DLL /OUT:';
         outputNameSuffix = '.dll';
     } else {
         command = 'cl /Fe';

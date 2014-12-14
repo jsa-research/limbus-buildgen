@@ -62,6 +62,15 @@ describe('cl-compiler-generator', function () {
             compilerCommand.should.match(/in\\some\\path\\test.obj/);
         });
 
+        it('should compile as a dynamic library if "type" === "dynamic-library"', function () {
+            var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'dynamic-library',
+                file: 'file.c'
+            });
+
+            compilerCommand.should.containEql('/D_USRDLL /D_WINDLL');
+        });
+
         CompilerGenerator.injectCompilerInterfaceSpecs(ClCompilerGenerator.compilerCommand);
     });
 
@@ -132,7 +141,7 @@ describe('cl-compiler-generator', function () {
                 type: 'dynamic-library'
             });
 
-            linkerCommand.should.containEql('cl /D_USRDLL /D_WINDLL /link /DLL /OUT:name.dll file.obj');
+            linkerCommand.should.match(/^link \/DLL \/OUT\:name\.dll file\.obj/);
         });
 
         CompilerGenerator.injectLinkerInterfaceSpecs(ClCompilerGenerator.linkerCommand);
