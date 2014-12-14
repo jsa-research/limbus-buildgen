@@ -32,11 +32,11 @@ describe('Front-end', function () {
         util.generateCompileAndRun({
             setup: setup,
             config: {
+                type: 'application',
                 files: [
                     'simple.c'
                 ],
-                outputName: 'simple',
-                type: 'application'
+                outputName: 'simple'
             },
             command: 'simple',
             expectOutputToMatch: '42',
@@ -48,12 +48,12 @@ describe('Front-end', function () {
         util.generateCompileAndRun({
             setup: setup,
             config: {
+                type: 'application',
+                host: process.platform,
                 files: [
                     'simple.c'
                 ],
-                host: process.platform,
-                outputName: 'simple',
-                type: 'application'
+                outputName: 'simple'
             },
             makefile: 'Makefile.platform',
             command: 'simple',
@@ -122,12 +122,13 @@ describe('Front-end', function () {
         util.generateCompileAndRun({
             setup: setup,
             config: {
+                type: 'application',
+                host: process.platform,
                 files: [
                     'simple.c'
                 ],
                 someUnknownProperty: 'this should fail',
                 outputName: 'simple',
-                type: 'application'
             },
             command: 'simple'
         }, function (error) {
@@ -141,11 +142,12 @@ describe('Front-end', function () {
         util.generateCompileAndRun({
             setup: setup,
             config: {
+                type: 'application',
+                host: process.platform,
                 files: [
                     'simple.c'
                 ],
-                outputName: 'simple',
-                type: 'application'
+                outputName: 'simple'
             },
             command: 'simple',
             parameters: '--some-flag value'

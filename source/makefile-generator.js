@@ -83,16 +83,33 @@ var isHostValid = function (host) {
 };
 
 var validConfigProperties = [
+    'type',
+    'host',
     'files',
     'outputName',
     'compilerFlags',
+    'linkerFlags',
     'includePaths',
-    'host',
-    'type',
     'libraries'
 ];
 
 var validateConfig = function (config) {
+    typeCheck.string(config, 'host', 'required');
+    typeCheck.stringArray(config, 'files', 'required');
+    typeCheck.string(config, 'compilerFlags');
+    typeCheck.string(config, 'linkerFlags');
+    typeCheck.stringArray(config, 'libraries');
+    
+    config.files.forEach(function (file) {
+        if (!file.match(/\.\w+$/)) {
+            throw new Error("file_has_no_extension");
+        }
+    });
+    
+    if (!isHostValid(config.host)) {
+        throw new Error('invalid_host');
+    }
+
     for (var property in config) {
         if (validConfigProperties.indexOf(property) === -1) {
             var error = new Error('unknown_config_property');
@@ -120,6 +137,7 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
     instructions.push(compiler.generator.linkerCommand({
         objectFiles: objectFiles,
         outputName: outputName,
+        flags: config.linkerFlags,
         libraries: config.libraries,
         type: config.type
     }));
@@ -128,13 +146,7 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
 
 var generateCompileInstructions = function (config) {
     var compiler = compilerByHost(config.host);
-    if (config.host !== undefined && !isHostValid(config.host)) {
-        throw new Error('invalid_host');
-    }
     var compilerInfo = compilerInfoTable[compiler];
-    
-    typeCheck.stringArray(config, 'files', 'required');
-    typeCheck.string(config, 'outputName', 'required');
 
     if (config.type !== 'static-library' && (config.host === 'linux' || config.host === 'freebsd')) {
         config.libraries = config.libraries || [];

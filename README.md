@@ -39,6 +39,9 @@ The JSON configuration files support the following properties:
   "host": "darwin-clang",
   "outputName": "my-application",
   "compilerFlags": "-g -O0 -coverage",
+  "libraries": [
+    "png"
+  ],
   "type": "application"
 }
 ```
@@ -64,6 +67,10 @@ var makefile = makefile_generator.generate({
   outputName: 'my-application',
   // Specifies any extra compiler flags that will be passed to the compiler as is
   compilerFlags: '-g -O0 -coverage',
+  // Specifies any libraries to link with when building an application
+  libraries: [
+    'png'
+  ],
   // Specifies the type of project to build, can be either 'application' or 'static-library'
   type: 'application'
 });

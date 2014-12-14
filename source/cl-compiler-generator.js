@@ -34,6 +34,7 @@ exports.compilerCommand = function (options) {
 };
 
 exports.linkerCommand = function (options) {
+    typeCheck.string(options, 'type', 'required');
     if (options.type !== 'application' && options.type !== 'static-library') {
         throw new Error('invalid_type');
     }
