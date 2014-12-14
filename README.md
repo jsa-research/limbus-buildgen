@@ -19,30 +19,39 @@ Options:
 ```
 
 ## Configure
-The JSON configuration files support the following properties: 
-* **files** Specifies a list of source files
-* **includePaths** Specifies where to find header files to include
-* **host** Specifies the target host, i.e. the desired platform that the makefile should compile with
-* **outputName** Specifies the name of the final executable
-* **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is
+The JSON configuration files support the following properties:
+
+The following options are required:
+* **type** Specifies the type of project to build, can be either "application" or "static-library".
+* **files** Specifies a list of source files.
+* **host** Specifies the target host, i.e. the desired platform that the makefile should compile with.
+* **outputName** Specifies the name of the final executable.
+
+The following options are optional:
+* **includePaths** Specifies where to find header files to include.
+* **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is.
+* **linkerFlags** Specifies any extra linkers flags that will be passed to the compiler as is.
+* **libraries** Specifies any libraries to link with when building an application.
 
 #### Example configuration file
 
 ```json
 {
-  "files": [
-    "main.c"
-  ],
-  "includePaths": [
-    "include/"
-  ],
-  "host": "darwin-clang",
-  "outputName": "my-application",
-  "compilerFlags": "-g -O0 -coverage",
-  "libraries": [
-    "png"
-  ],
-  "type": "application"
+    "type": "application",
+    "host": "darwin-clang",
+    "files": [
+        "main.c"
+    ],
+    "outputName": "my-application",
+
+    "includePaths": [
+        "include/"
+    ],
+    "compilerFlags": "-g -O0 -coverage",
+    "linkerFlags": "-coverage",
+    "libraries": [
+        "png"
+    ]
 }
 ```
 
@@ -53,26 +62,31 @@ var makefile_generator = require('source/makefile-generator');
 
 // Returns a string with the generated makefile.
 var makefile = makefile_generator.generate({
-  // Specifies a list of source files
-  files: [
-    'main.c'
-  ],
-  // Specifies where to find header files to include
-  includePaths: [
-    'include/'
-  ],
-  // Specifies the target host, i.e. the desired platform that the makefile should compile with
-  host: 'darwin-clang',
-  // Specifies the name of the final executable
-  outputName: 'my-application',
-  // Specifies any extra compiler flags that will be passed to the compiler as is
-  compilerFlags: '-g -O0 -coverage',
-  // Specifies any libraries to link with when building an application
-  libraries: [
-    'png'
-  ],
-  // Specifies the type of project to build, can be either 'application' or 'static-library'
-  type: 'application'
+    // The following options are required:
+    // Specifies the type of project to build, can be either 'application' or 'static-library'.
+    type: 'application',
+    // Specifies the target host, i.e. the desired platform that the makefile should compile with.
+    host: 'darwin-clang',
+    // Specifies a list of source files.
+    files: [
+        'main.c'
+    ],
+    // Specifies the name of the final executable.
+    outputName: 'my-application',
+
+    // The following options are optional:
+    // Specifies where to find header files to include.
+    includePaths: [
+        'include/'
+    ],
+    // Specifies any extra compiler flags that will be passed to the compiler as is.
+    compilerFlags: '-g -O0 -coverage',
+    // Specifies any extra linker flags that will be passed to the linker as is.
+    linkerFlags: '-coverage',
+    // Specifies any libraries to link with when building an application.
+    libraries: [
+        'png'
+    ]
 });
 ```
 
@@ -135,7 +149,6 @@ This will generate a file named `coverage.html` in the project root directory wh
 Planned for a 0.2 version:
 * A Visual Studio 2013 project generator.
 * To be useful for building libraries, we need to be able to actually link as libraries.
-* Linking to other libraries.
 * Create release bundled with dependencies.
 * Override all configuration properties using flags
 
