@@ -126,6 +126,7 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
         var match = file.match(/^(.+)\.\w+$/);
         if (match) {
             instructions.push(compiler.generator.compilerCommand({
+                type: config.type,
                 file: file,
                 includePaths: config.includePaths,
                 flags: config.compilerFlags

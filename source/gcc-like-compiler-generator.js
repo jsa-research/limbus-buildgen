@@ -13,6 +13,12 @@ var typeCheck = require('./type-check');
 
 exports.inject = function (compiler, exports) {
     exports.compilerCommand = function (options) {
+        typeCheck.string(options, 'type', 'required');
+        if (options.type !== 'static-library' &&
+            options.type !== 'application' &&
+            options.type !== 'dynamic-library') {
+            throw new Error('invalid_type');
+        }
         typeCheck.string(options, 'file', 'required');
         typeCheck.string(options, 'flags');
         typeCheck.stringArray(options, 'includePaths');
@@ -25,12 +31,17 @@ exports.inject = function (compiler, exports) {
         if (options.flags !== undefined) {
             extraFlags += ' ' + options.flags;
         }
+        if (options.type === 'dynamic-library') {
+            extraFlags += ' -fpic';
+        }
         return compiler + ' -c ' + options.file + ' -o ' + options.file + '.o' + extraFlags;
     };
 
     exports.linkerCommand = function (options) {
         typeCheck.string(options, 'type', 'required');
-        if (options.type !== 'static-library' && options.type !== 'application') {
+        if (options.type !== 'static-library' &&
+            options.type !== 'application' &&
+            options.type !== 'dynamic-library') {
             throw new Error('invalid_type');
         }
         typeCheck.string(options, 'outputName', 'required');
@@ -55,12 +66,15 @@ exports.inject = function (compiler, exports) {
 
         var command;
         var outputName;
-        if (options.type === 'application') {
-            command = compiler + ' -o ';
-            outputName = options.outputName;
-        } else {
+        if (options.type === 'static-library') {
             command = 'ar rcs ';
             outputName = 'lib' + options.outputName + '.a';
+        } else if (options.type === 'dynamic-library') {
+            command = compiler + ' -shared -o ';
+            outputName = 'lib' + options.outputName + '.so';
+        } else {
+            command = compiler + ' -o ';
+            outputName = options.outputName;
         }
         return command + outputName + ' ' + options.objectFiles.join(' ') + extraFlags;
     };

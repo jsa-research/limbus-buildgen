@@ -73,7 +73,9 @@ exports.generateCompileAndRun = function (options, done) {
                         return callback(error);
                     }
 
-                    if (config.type !== 'static-library') {
+                    if (config.type !== 'application') {
+                        return callback();
+                    } else {
                         return shell.exec(shell.path('./') + command, {cwd: 'temp'}, function (error, stdout, stderr) {
                             if (error !== null) {
                                 return callback(error);
@@ -85,8 +87,6 @@ exports.generateCompileAndRun = function (options, done) {
 
                             return callback();
                         });
-                    } else {
-                        return callback();
                     }
                 });
             });

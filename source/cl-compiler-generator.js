@@ -17,6 +17,12 @@ var processPath = function (path) {
 };
 
 exports.compilerCommand = function (options) {
+    typeCheck.string(options, 'type', 'required');
+    if (options.type !== 'application' &&
+        options.type !== 'static-library' &&
+        options.type !== 'dynamic-library') {
+        throw new Error('invalid_type');
+    }
     typeCheck.string(options, 'file', 'required');
     typeCheck.string(options, 'flags');
     typeCheck.stringArray(options, 'includePaths');
@@ -35,7 +41,9 @@ exports.compilerCommand = function (options) {
 
 exports.linkerCommand = function (options) {
     typeCheck.string(options, 'type', 'required');
-    if (options.type !== 'application' && options.type !== 'static-library') {
+    if (options.type !== 'application' &&
+        options.type !== 'static-library' &&
+        options.type !== 'dynamic-library') {
         throw new Error('invalid_type');
     }
     typeCheck.string(options, 'outputName', 'required');
@@ -62,6 +70,9 @@ exports.linkerCommand = function (options) {
     if (options.type === 'static-library') {
         command = 'lib /OUT:';
         outputNameSuffix = '.lib';
+    } else if (options.type === 'dynamic-library') {
+        command = 'cl /D_USRDLL /D_WINDLL /link /DLL /OUT:';
+        outputNameSuffix = '.dll';
     } else {
         command = 'cl /Fe';
         outputNameSuffix = '';

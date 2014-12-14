@@ -26,6 +26,16 @@ var setup = function () {
         +"}\n");
 
     fs.writeFileSync(
+        "temp/linked_dynamic.c",
+
+         "#include <mydynamiclibrary.h>\n"
+        +"#include <stdio.h>\n"
+        +"int main(int argc, char** argv) {\n"
+        +"  printf(\"%d\", subtract(111, 69));\n"
+        +"  return (subtract(111, 69) == 42) ? 0 : -1;\n"
+        +"}\n");
+
+    fs.writeFileSync(
         "temp/source/mylibrary.c",
 
          "#include \"../include/mylibrary.h\"\n"
@@ -37,6 +47,20 @@ var setup = function () {
         "temp/include/mylibrary.h",
 
         "int add(int a, int b);\n");
+
+    fs.writeFileSync(
+        "temp/source/mydynamiclibrary.c",
+
+         "#include \"../include/mydynamiclibrary.h\"\n"
+        +"extern int add(int, int);"
+        +"int subtract(int a, int b) {\n"
+        +"  return add(a, -b);\n"
+        +"}\n");
+
+    fs.writeFileSync(
+        "temp/include/mydynamiclibrary.h",
+
+        "int subtract(int a, int b);\n");
 
     /* Check for libm */
     fs.writeFileSync(
@@ -63,16 +87,16 @@ describe('Linking', function () {
         util.generateCompileAndRun({
             setup: setup,
             config: {
+                type: 'application',
+                host: process.platform,
                 files: [
                     'linked.c',
                     'source/mylibrary.c'
                 ],
-                host: process.platform,
                 includePaths: [
                     'include'
                 ],
-                outputName: 'linked',
-                type: 'application'
+                outputName: 'linked'
             },
             command: 'linked',
             expectOutputToMatch: /42/
@@ -83,12 +107,12 @@ describe('Linking', function () {
         util.generateCompileAndRun({
             setup: setup,
             config: {
+                type: 'application',
+                host: process.platform,
                 files: [
                     'math.c'
                 ],
-                host: process.platform,
-                outputName: 'math',
-                type: 'application'
+                outputName: 'math'
             },
             command: 'math',
             expectOutputToMatch: /42/
@@ -99,12 +123,12 @@ describe('Linking', function () {
         util.generateCompileAndRun({
             setup: setup,
             config: {
+                type: 'application',
+                host: process.platform,
                 files: [
                     'simple.c'
                 ],
-                host: process.platform,
-                outputName: 'my_executable',
-                type: 'application'
+                outputName: 'my_executable'
             },
             command: 'my_executable',
             expectOutputToMatch: /42/
@@ -116,14 +140,16 @@ describe('Linking', function () {
             setup: setup,
             config: [
                 {
+                    type: 'static-library',
+                    host: process.platform,
                     files: [
                         'source/mylibrary.c'
                     ],
-                    type: 'static-library',
-                    host: process.platform,
                     outputName: 'my_lib_name'
                 },
                 {
+                    type: 'application',
+                    host: process.platform,
                     files: [
                         'linked.c'
                     ],
@@ -133,9 +159,50 @@ describe('Linking', function () {
                     includePaths: [
                         'include'
                     ],
+                    outputName: 'linked_with_library'
+                }
+            ],
+            command: 'linked_with_library',
+            expectOutputToMatch: /42/
+        }, done);
+    });
+
+    it('should compile a dynamic library and then be able to link to it', function (done) {
+        util.generateCompileAndRun({
+            setup: setup,
+            config: [
+                {
+                    type: 'static-library',
                     host: process.platform,
-                    outputName: 'linked_with_library',
-                    type: 'application'
+                    files: [
+                        'source/mylibrary.c'
+                    ],
+                    outputName: 'my_lib_name'
+                },
+                {
+                    type: 'dynamic-library',
+                    host: process.platform,
+                    files: [
+                        'source/mydynamiclibrary.c'
+                    ],
+                    libraries: [
+                        'my_lib_name'
+                    ],
+                    outputName: 'my_dyn_lib_name'
+                },
+                {
+                    type: 'application',
+                    host: process.platform,
+                    files: [
+                        'linked_dynamic.c'
+                    ],
+                    libraries: [
+                        'my_dyn_lib_name'
+                    ],
+                    includePaths: [
+                        'include'
+                    ],
+                    outputName: 'linked_with_library'
                 }
             ],
             command: 'linked_with_library',

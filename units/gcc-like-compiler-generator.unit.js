@@ -19,6 +19,7 @@ var injectSpecs = function (compiler) {
         describe('Compiling', function () {
             it('should compile a file into an object file with the same name', function () {
                 var compilerCommand = GccCompilerGenerator.compilerCommand({
+                    type: 'application',
                     file: 'test.c'
                 });
 
@@ -27,6 +28,7 @@ var injectSpecs = function (compiler) {
                 compilerCommand.should.containEql('-o test.c.o');
 
                 compilerCommand = GccCompilerGenerator.compilerCommand({
+                    type: 'application',
                     file: 'other.c'
                 });
 
@@ -36,6 +38,7 @@ var injectSpecs = function (compiler) {
 
             it('should add any specified include paths in includePaths', function () {
                 var compilerCommand = GccCompilerGenerator.compilerCommand({
+                    type: 'application',
                     file: 'test.c',
                     includePaths: [
                         'include_path',
@@ -45,6 +48,15 @@ var injectSpecs = function (compiler) {
 
                 compilerCommand.should.containEql('-Iinclude_path');
                 compilerCommand.should.containEql('-Iother_include');
+            });
+
+            it('should compile as a dynamic library if "type" === "dynamic-library"', function () {
+                var compilerCommand = GccCompilerGenerator.compilerCommand({
+                    type: 'dynamic-library',
+                    file: 'test.c'
+                });
+
+                compilerCommand.should.containEql('-fpic');
             });
 
             CompilerGenerator.injectCompilerInterfaceSpecs(GccCompilerGenerator.compilerCommand);
@@ -86,14 +98,27 @@ var injectSpecs = function (compiler) {
 
             it('should link as a static library if "type" === "static-library"', function () {
                 var linkerCommand = GccCompilerGenerator.linkerCommand({
+                    type: 'static-library',
                     objectFiles: [
                         'test.c.o'
                     ],
                     outputName: 'name',
-                    type: 'static-library'
                 });
 
                 linkerCommand.should.containEql('ar rcs libname.a');
+            });
+
+            it('should link as a dynamic library if "type" === "dynamic-library"', function () {
+                var linkerCommand = GccCompilerGenerator.linkerCommand({
+                    type: 'dynamic-library',
+                    objectFiles: [
+                        'test.c.o'
+                    ],
+                    outputName: 'name'
+                });
+
+                linkerCommand.should.containEql('-shared');
+                linkerCommand.should.containEql('-o libname.so');
             });
 
             CompilerGenerator.injectLinkerInterfaceSpecs(GccCompilerGenerator.linkerCommand);

@@ -15,6 +15,7 @@ var util = require('../units/util.js');
 exports.injectCompilerInterfaceSpecs = function (generator) {
     it('should include extra compiler flags', function () {
         var compilerCommand = generator({
+            type: 'application',
             file: 'file.c',
             flags: '--some-compiler-flag'
         });
@@ -24,6 +25,7 @@ exports.injectCompilerInterfaceSpecs = function (generator) {
 
     it('should take a path as file', function () {
         var compilerCommand = generator({
+            type: 'application',
             file: './some/path/to/file.c'
         });
 
@@ -31,27 +33,69 @@ exports.injectCompilerInterfaceSpecs = function (generator) {
     });
 
     describe('Error Handling', function () {
+        describe('type', function () {
+            it('should throw "no_type" if no type is given', function () {
+                (function () {
+                    generator({
+                        file: 'file.c'
+                    });
+                }).should.throw('no_type');
+            });
+
+            it('should throw "type_is_not_a_string" if type is anything other than a string', function () {
+                util.should_throw_not_string_error(generator, {
+                    file: 'file.c'
+                }, 'type');
+            });
+
+            it('should throw "invalid_type" if type is not "static-library", "dynamic-library" nor "application"', function () {
+                (function () {
+                    generator({
+                        file: 'file.c',
+                        type: 'something-else'
+                    });
+                }).should.throw('invalid_type');
+                
+                ['static-library', 'dynamic-library', 'application'].forEach(function (type) {
+                    (function () {
+                        generator({
+                            file: 'file.c',
+                            type: type
+                        });
+                    }).should.not.throw('invalid_type');
+                });
+            });
+        });
+
         describe('file', function () {
             it('should throw "no_file" if no file is given', function () {
                 (function () {
-                    generator({});
+                    generator({
+                        type: 'application',
+                    });
                 }).should.throw('no_file');
             });
 
             it('should throw "file_is_not_a_string" if file is anything other than a string', function () {
-                util.should_throw_not_string_error(generator, {}, 'file');
+                util.should_throw_not_string_error(generator, {
+                    type: 'application',
+                }, 'file');
             });
         });
 
         describe('flags', function () {
             it('should throw "flags_is_not_a_string" if flags is anything other than a string', function () {
-                util.should_throw_not_string_error(generator, {file: 'test'}, 'flags');
+                util.should_throw_not_string_error(generator, {
+                    type: 'application',
+                    file: 'test'
+                }, 'flags');
             });
         });
 
         describe('includePaths', function () {
             it('should throw "include_paths_is_not_a_string_array" if includePaths is anything other than an array of strings', function () {
                 util.should_throw_not_string_array_error(generator, {
+                    type: 'application',
                     file: 'test'
                 }, 'includePaths');
             });
@@ -139,7 +183,7 @@ exports.injectLinkerInterfaceSpecs = function (generator) {
                 }, 'type');
             });
 
-            it('should throw "invalid_type" if type is not "static-library" nor "application"', function () {
+            it('should throw "invalid_type" if type is not "static-library", "dynamic-library" nor "application"', function () {
                 (function () {
                     generator({
                         outputName: 'test',
@@ -147,6 +191,16 @@ exports.injectLinkerInterfaceSpecs = function (generator) {
                         type: 'something-else'
                     });
                 }).should.throw('invalid_type');
+                
+                ['static-library', 'dynamic-library', 'application'].forEach(function (type) {
+                    (function () {
+                        generator({
+                            outputName: 'test',
+                            objectFiles: ['test'],
+                            type: type
+                        });
+                    }).should.not.throw('invalid_type');
+                });
             });
         });
 

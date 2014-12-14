@@ -17,6 +17,7 @@ describe('cl-compiler-generator', function () {
     describe('Compiling', function () {
         it('should compile a file into an object file with the same name', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'application',
                 file: 'test.c'
             });
 
@@ -25,6 +26,7 @@ describe('cl-compiler-generator', function () {
             compilerCommand.should.containEql('/Fotest.obj');
 
             var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'application',
                 file: 'anotherFile.c'
             });
 
@@ -34,6 +36,7 @@ describe('cl-compiler-generator', function () {
 
         it('should add any specified include paths in includePaths', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'application',
                 file: 'test.c',
                 includePaths: [
                     'include_path',
@@ -47,6 +50,7 @@ describe('cl-compiler-generator', function () {
 
         it('should convert paths to use backslashes instead of forward ones', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'application',
                 file: 'in/some/path/test.c',
                 includePaths: [
                     'some/include/path'
@@ -117,6 +121,18 @@ describe('cl-compiler-generator', function () {
             });
 
             linkerCommand.should.match(/^lib \/OUT:name\.lib/);
+        });
+
+        it('should link as a dynamic library if "type" === "dynamic-library"', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                objectFiles: [
+                    'file.obj'
+                ],
+                outputName: 'name',
+                type: 'dynamic-library'
+            });
+
+            linkerCommand.should.containEql('cl /D_USRDLL /D_WINDLL /link /DLL /OUT:name.dll file.obj');
         });
 
         CompilerGenerator.injectLinkerInterfaceSpecs(ClCompilerGenerator.linkerCommand);

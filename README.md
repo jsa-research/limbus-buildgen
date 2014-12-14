@@ -22,7 +22,7 @@ Options:
 The JSON configuration files support the following properties:
 
 The following options are required:
-* **type** Specifies the type of project to build, can be either "application" or "static-library".
+* **type** Specifies the type of project to build, can be either "application", "dynamic-library" or "static-library".
 * **files** Specifies a list of source files.
 * **host** Specifies the target host, i.e. the desired platform that the makefile should compile with.
 * **outputName** Specifies the name of the final executable.
@@ -63,7 +63,7 @@ var makefile_generator = require('source/makefile-generator');
 // Returns a string with the generated makefile.
 var makefile = makefile_generator.generate({
     // The following options are required:
-    // Specifies the type of project to build, can be either 'application' or 'static-library'.
+    // Specifies the type of project to build, can be either 'application', 'dynamic-library' or 'static-library'.
     type: 'application',
     // Specifies the target host, i.e. the desired platform that the makefile should compile with.
     host: 'darwin-clang',
@@ -148,7 +148,6 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Roadmap
 Planned for a 0.2 version:
 * A Visual Studio 2013 project generator.
-* To be useful for building libraries, we need to be able to actually link as libraries.
 * Create release bundled with dependencies.
 * Override all configuration properties using flags
 
