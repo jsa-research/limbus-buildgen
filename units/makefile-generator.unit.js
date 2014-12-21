@@ -308,6 +308,32 @@ describe('makefile-generator', function () {
                     ]
                 }, 'outputName');
             });
+
+            it('should throw "output_name_does_not_take_a_path" if outputName is given a path', function () {
+                (function () {
+                    makefile_generator.generate({
+                        type: 'application',
+                        host: 'linux',
+                        files: [
+                            'file.c'
+                        ],
+                        outputName: 'a/path/in/name'
+                    });
+                }).should.throw("output_name_does_not_take_a_path");
+            });
+        });
+
+        describe('outputPath', function () {
+            it('should throw "output_path_is_not_a_string" if outputPath is anything other than a string', function () {
+                util.should_throw_not_string_error(makefile_generator.generate, {
+                    type: 'application',
+                    host: 'linux',
+                    files: [
+                        'file.c'
+                    ],
+                    outputName: 'name'
+                }, 'outputPath');
+            });
         });
 
         describe('compilerFlags', function () {

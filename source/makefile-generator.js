@@ -87,6 +87,7 @@ var validConfigProperties = [
     'host',
     'files',
     'outputName',
+    'outputPath',
     'compilerFlags',
     'linkerFlags',
     'includePaths',
@@ -138,6 +139,7 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
     instructions.push(compiler.generator.linkerCommand({
         objectFiles: objectFiles,
         outputName: outputName,
+        outputPath: config.outputPath,
         flags: config.linkerFlags,
         libraries: config.libraries,
         type: config.type

@@ -45,9 +45,14 @@ exports.inject = function (compiler, exports) {
             throw new Error('invalid_type');
         }
         typeCheck.string(options, 'outputName', 'required');
+        typeCheck.string(options, 'outputPath');
         typeCheck.string(options, 'flags');
         typeCheck.stringArray(options, 'objectFiles', 'required');
         typeCheck.stringArray(options, 'libraries');
+
+        if (options.outputName.match(/\//)) {
+            throw new Error("output_name_does_not_take_a_path");
+        }
 
         if (options.type === 'static-library' &&
             options.libraries !== undefined &&
@@ -76,6 +81,14 @@ exports.inject = function (compiler, exports) {
             command = compiler + ' -o ';
             outputName = options.outputName;
         }
-        return command + outputName + ' ' + options.objectFiles.join(' ') + extraFlags;
+
+        var outputPath;
+        if (options.outputPath) {
+            outputPath = options.outputPath.replace(/\/$/, '') + '/';
+        } else {
+            outputPath = '';
+        }
+
+        return command + outputPath + outputName + ' ' + options.objectFiles.join(' ') + extraFlags;
     };
 };

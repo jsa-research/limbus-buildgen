@@ -106,15 +106,43 @@ exports.injectCompilerInterfaceSpecs = function (generator) {
 exports.injectLinkerInterfaceSpecs = function (generator) {
     it('should include extra linker flags', function () {
         var linkerCommand = generator({
+            type: 'application',
             objectFiles: [
                 'file.obj'
             ],
             outputName: 'name',
-            type: 'application',
             flags: '--some-linker-flag'
         });
 
         linkerCommand.should.containEql('--some-linker-flag');
+    });
+
+    describe('outputPath', function () {
+        it('should be prepended to outputName if given', function () {
+            var linkerCommand = generator({
+                type: 'application',
+                objectFiles: [
+                    'file.obj'
+                ],
+                outputName: 'name',
+                outputPath: 'some/directory'
+            });
+
+            linkerCommand.should.containEql('some/directory/name');
+        });
+
+        it('should handle trailing slashes', function () {
+            var linkerCommand = generator({
+                type: 'application',
+                objectFiles: [
+                    'file.obj'
+                ],
+                outputName: 'name',
+                outputPath: 'some/directory/'
+            });
+
+            linkerCommand.should.containEql('some/directory/name');
+        });
     });
 
     describe('Error Handling', function () {
@@ -130,11 +158,33 @@ exports.injectLinkerInterfaceSpecs = function (generator) {
                 }).should.throw('no_output_name');
             });
 
+            it('should throw "output_name_does_not_take_a_path" if outputName is given a path', function () {
+                (function () {
+                    generator({
+                        objectFiles: [
+                            'test'
+                        ],
+                        type: 'application',
+                        outputName: 'name/with/path'
+                    });
+                }).should.throw('output_name_does_not_take_a_path');
+            });
+
             it('should throw "output_name_is_not_a_string" if outputName is anything other than a string', function () {
                 util.should_throw_not_string_error(generator, {
                     objectFiles: ['test'],
                     type: 'application'
                 }, 'outputName');
+            });
+        });
+        
+        describe('outputPath', function () {
+            it('should throw "output_path_is_not_a_string" if outputPath is anything other than a string', function () {
+                util.should_throw_not_string_error(generator, {
+                    type: 'application',
+                    objectFiles: ['test'],
+                    outputName: 'name'
+                }, 'outputPath');
             });
         });
 

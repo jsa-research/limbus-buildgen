@@ -52,10 +52,15 @@ exports.linkerCommand = function (options) {
         throw new Error('invalid_type');
     }
     typeCheck.string(options, 'outputName', 'required');
+    typeCheck.string(options, 'outputPath');
     typeCheck.string(options, 'flags');
     typeCheck.stringArray(options, 'objectFiles', 'required');
     typeCheck.stringArray(options, 'libraries');
 
+    if (options.outputName.match(/\//)) {
+        throw new Error("output_name_does_not_take_a_path");
+    }
+    
     if (options.type === 'static-library' &&
         options.libraries !== undefined &&
         options.libraries.length > 0) {
@@ -83,5 +88,12 @@ exports.linkerCommand = function (options) {
         outputNameSuffix = '';
     }
 
-    return command + options.outputName + outputNameSuffix + extraFlags + ' ' + _.map(options.objectFiles, processPath).join(' ');
+    var outputPath;
+    if (options.outputPath) {
+        outputPath = options.outputPath.replace(/\/$/, '') + '/';
+    } else {
+        outputPath = '';
+    }
+
+    return command + outputPath + options.outputName + outputNameSuffix + extraFlags + ' ' + _.map(options.objectFiles, processPath).join(' ');
 };

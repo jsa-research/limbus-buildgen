@@ -28,6 +28,7 @@ The following options are required:
 * **outputName** Specifies the name of the final executable.
 
 The following options are optional:
+* **outputPath** Specifies a path to prepend to the outputName.
 * **includePaths** Specifies where to find header files to include.
 * **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is.
 * **linkerFlags** Specifies any extra linkers flags that will be passed to the compiler as is.
@@ -44,6 +45,7 @@ The following options are optional:
     ],
     "outputName": "my-application",
 
+    "outputPath": "some/path",
     "includePaths": [
         "include/"
     ],
@@ -75,6 +77,8 @@ var makefile = makefile_generator.generate({
     outputName: 'my-application',
 
     // The following options are optional:
+    // Specifies a path to prepend to the outputName.
+    "outputPath": "some/path",
     // Specifies where to find header files to include.
     includePaths: [
         'include/'
