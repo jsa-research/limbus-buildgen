@@ -10,6 +10,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var typeCheck = require('./type-check');
+var makefileBuilder = require('./makefile-builder');
 
 var standardLinkerFlags = {
     freebsd: '-lm',
@@ -162,9 +163,7 @@ var generateCompileInstructions = function (config) {
 exports.generate = function (config) {
     validateConfig(config);
     
-    var makefile =
-        'all:' +
-        '\n\t' + generateCompileInstructions(config).join('\n\t') + '\n';
-
-    return makefile;
+    return makefileBuilder.build({
+        all: generateCompileInstructions(config)
+    });
 };
