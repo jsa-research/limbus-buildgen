@@ -9,16 +9,42 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-exports.map = function (list, applyFunction) {
-    var newList = [];
-    list.forEach(function (item, index) {
-        newList[index] = applyFunction(item);
-    });
-    return newList;
+var mapHashmap = function (hashmap, func) {
+    var newHashmap = {};
+    for (var key in hashmap) {
+        var item = hashmap[key];
+        newHashmap[key] = func(item, key);
+    }
+    return newHashmap;
 };
 
-exports.camelToSnakeCase = function (input) {
-    return input.replace(/([a-z])([A-Z])/g, function (match, a, b) {
-        return a + '_' + b.toLowerCase();
-    });
+var mapArray = function (array, func) {
+    var newArray = [];
+    for (var i = 0; i < array.length; ++i) {
+        var item = array[i];
+        newArray[i] = func(item, i);
+    }
+    return newArray;
+};
+
+exports.map = function (collection, func) {
+    if (Array.isArray(collection)) {
+        return mapArray.apply(this, arguments);
+    } else {
+        return mapHashmap.apply(this, arguments);
+    }
+};
+
+exports.reduce = function (collection, func, accumulator) {
+    for (var key in collection) {
+        var item = collection[key];
+        accumulator = func(accumulator, item, key);
+    }
+    return accumulator;
+};
+
+exports.snakeCase = function (string) {
+    return string.replace(/([a-z])([A-Z])/, function (match, lower, upper) {
+        return lower + '_' + upper.toLowerCase();
+    }).toLowerCase();
 };

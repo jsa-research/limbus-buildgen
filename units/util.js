@@ -14,7 +14,7 @@ var _ = require('../source/underscore');
 var should_throw_type_error = function (permutations, errorSuffix, generator, baseOptions, option, error) {
     permutations.forEach(function (permutationToTry) {
         baseOptions[option] = permutationToTry;
-        (function () { generator(baseOptions); }).should.throw(_.camelToSnakeCase(option) + errorSuffix);
+        (function () { generator(baseOptions); }).should.throw(_.snakeCase(option) + errorSuffix);
     });
 };
 
