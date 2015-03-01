@@ -9,7 +9,7 @@
     "coveralls": "2.11.2",
     "lcov-result-merger": "1.0.0",
     "mocha-lcov-reporter": "0.0.1",
-    "should": "4.1.0",
+    "should": "5.0.1",
     "travis-cov": "0.2.5"
   },
   "scripts": {
@@ -48,5 +48,6 @@
     "travis-cov": {
       "threshold": 90
     }
-  }
+  },
+  "dependencies": {}
 }
