@@ -43,6 +43,36 @@ exports.reduce = function (collection, func, accumulator) {
     return accumulator;
 };
 
+var filterArray = function (array, func) {
+    var newArray = [];
+    for (var i = 0; i < array.length; ++i) {
+        var value = array[i];
+        if (func(value, i)) {
+            newArray.push(value);
+        }
+    }
+    return newArray;
+};
+
+var filterMap = function (hashmap, func) {
+    var newHashmap = {};
+    for (var key in hashmap) {
+        var value = hashmap[key];
+        if (func(value, key)) {
+            newHashmap[key] = value;
+        }
+    }
+    return newHashmap;
+};
+
+exports.filter = function (collection, func) {
+    if (Array.isArray(collection)) {
+        return filterArray.apply(this, arguments);
+    } else {
+        return filterMap.apply(this, arguments);
+    }
+};
+
 exports.snakeCase = function (string) {
     return string.replace(/([a-z])([A-Z])/, function (match, lower, upper) {
         return lower + '_' + upper.toLowerCase();
