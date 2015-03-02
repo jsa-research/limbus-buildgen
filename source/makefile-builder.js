@@ -1,5 +1,5 @@
 
-var _ = require('./underscore');
+var _ = require('./publicdash');
 
 exports.build = function (targets) {
     return _.reduce(targets, function (makefile, commands, target) {

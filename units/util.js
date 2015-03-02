@@ -9,7 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var _ = require('../source/underscore');
+var _ = require('../source/publicdash');
 
 var should_throw_type_error = function (permutations, errorSuffix, generator, baseOptions, option, error) {
     permutations.forEach(function (permutationToTry) {
