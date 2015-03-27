@@ -78,3 +78,19 @@ exports.snakeCase = function (string) {
         return lower + '_' + upper.toLowerCase();
     }).toLowerCase();
 };
+
+exports.compose = function (a, b) {
+    return function (x) {
+        return a(b(x));
+    };
+};
+
+exports.not = {};
+exports.negate = function (value) {
+    return !value;
+};
+
+exports.isNull = function (value) {
+    return value === null;
+};
+exports.not.isNull = exports.compose(exports.negate, exports.isNull);

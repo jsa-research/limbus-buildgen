@@ -9,6 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+var _ = require('./publicdash');
 var typeCheck = require('./type-check');
 var makefileBuilder = require('./makefile-builder');
 
@@ -121,20 +122,31 @@ var validateConfig = function (config) {
     }
 };
 
+var parseFileName = function (fileName) {
+    var match = fileName.match(/^(.+)\.(\w+)$/);
+    if (match) {
+        return {
+            full: match[0],
+            name: match[1],
+            suffix: match[2]
+        };
+    } else {
+        return null;
+    }
+};
+
 var generateCompileInstructionsForCompiler = function (compiler, outputName, config) {
-    var instructions = [];
-    var objectFiles = [];
-    config.files.forEach(function (file) {
-        var match = file.match(/^(.+)\.\w+$/);
-        if (match) {
-            instructions.push(compiler.generator.compilerCommand({
-                type: config.type,
-                file: file,
-                includePaths: config.includePaths,
-                flags: config.compilerFlags
-            }));
-            objectFiles.push(match[1] + compiler.objectFileSuffix);
-        }
+    var filenames = _.filter(_.map(config.files, parseFileName), _.not.isNull);
+    var instructions = _.map(filenames, function (filename) {
+        return compiler.generator.compilerCommand({
+            type: config.type,
+            file: filename.full,
+            includePaths: config.includePaths,
+            flags: config.compilerFlags
+        });
+    });
+    var objectFiles = _.map(filenames, function (filename) {
+        return filename.name + compiler.objectFileSuffix;
     });
 
     instructions.push(compiler.generator.linkerCommand({
