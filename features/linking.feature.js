@@ -17,76 +17,36 @@ var setup = function () {
     /* Includes and linking */
     fs.writeFileSync(
         "temp/linked.c",
-
-         "#include <mylibrary.h>\n"
-        +"#include <stdio.h>\n"
-        +"int main(int argc, char** argv) {\n"
-        +"  printf(\"%d\", add(23, 88) - 69);\n"
-        +"  return (add(23, 88) == 111) ? 0 : -1;\n"
-        +"}\n");
+        fs.readFileSync("features/linking/linked.c"));
 
     fs.writeFileSync(
         "temp/linked_dynamic.c",
-
-         "#include <mydynamiclibrary.h>\n"
-        +"#include <stdio.h>\n"
-        +"int main(int argc, char** argv) {\n"
-        +"  printf(\"%d\", subtract(111, 69));\n"
-        +"  return (subtract(111, 69) == 42) ? 0 : -1;\n"
-        +"}\n");
+        fs.readFileSync("features/linking/linked_dynamic.c"));
 
     fs.writeFileSync(
         "temp/source/mylibrary.c",
-
-         "#include \"../include/mylibrary.h\"\n"
-        +"int add(int a, int b) {\n"
-        +"  return a + b;\n"
-        +"}\n");
+        fs.readFileSync("features/linking/source/mylibrary.c"));
 
     fs.writeFileSync(
         "temp/include/mylibrary.h",
-
-        "int add(int a, int b);\n");
+        fs.readFileSync("features/linking/include/mylibrary.h"));
 
     fs.writeFileSync(
         "temp/source/mydynamiclibrary.c",
-
-         "#include \"../include/mydynamiclibrary.h\"\n"
-        +"extern int add(int, int);"
-        +"DLLEXPORT int subtract(int a, int b) {\n"
-        +"  return add(a, -b);\n"
-        +"}\n");
+        fs.readFileSync("features/linking/source/mydynamiclibrary.c"));
 
     fs.writeFileSync(
         "temp/include/mydynamiclibrary.h",
-
-         "#ifdef _WIN32\n"
-        +"#define DLLEXPORT __declspec(dllexport)\n"
-        +"#define DLLIMPORT __declspec(dllimport)\n"
-        +"#else\n"
-        +"#define DLLEXPORT\n"
-        +"#define DLLIMPORT\n"
-        +"#endif\n"
-        +"DLLIMPORT int subtract(int a, int b);\n");
+        fs.readFileSync("features/linking/include/mydynamiclibrary.h"));
 
     /* Check for libm */
     fs.writeFileSync(
         "temp/math.c",
+        fs.readFileSync("features/linking/math.c"));
 
-         "#include <math.h>\n"
-        +"#include <stdio.h>\n"
-        +"int main(int argc, char** argv) {\n"
-        +"  printf(\"%g\", ceil(0.5f) + 41.0f);\n"
-        +"  return ceil(0.5f) - 1;\n"
-        +"}\n");
-    
     fs.writeFileSync(
         "temp/simple.c",
-
-         "int main(int argc, char** argv) {\n"
-        +"  printf(\"%d\", 42);\n"
-        +"  return 0;\n"
-        +"}\n");
+        fs.readFileSync("features/linking/simple.c"));
 };
 
 describe('Linking', function () {

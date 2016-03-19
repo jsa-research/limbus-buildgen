@@ -19,12 +19,7 @@ var setup = function () {
     /* Single file */
     fs.writeFileSync(
         "temp/simple.c",
-
-         "#include <stdio.h>\n"
-        +"int main(int argc, char** argv) {\n"
-        +"  printf(\"%d\", 42);\n"
-        +"  return 0;\n"
-        +"}\n");
+        fs.readFileSync("features/front-end/simple.c"));
 };
 
 describe('Front-end', function () {

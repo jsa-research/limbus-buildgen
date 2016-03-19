@@ -36,10 +36,7 @@ readme.replace(/## Use[\s\S]+?```([\s\S]+?)```/, function (match, info) {
 var setup = function () {
     fs.writeFileSync(
         "temp/main.c",
-
-         "int main(int argc, char** argv) {\n"
-        +"  return 0;\n"
-        +"}\n");
+        fs.readFileSync("features/readme-examples/main.c"));
 };
 
 var generateWithExample = function (example, done) {
