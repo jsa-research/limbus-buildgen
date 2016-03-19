@@ -1,5 +1,5 @@
 
-// sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
+// limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
 // Written in 2014 by Jesper Oskarsson jesosk@gmail.com
 //
 // To the extent possible under law, the author(s) have dedicated all copyright
@@ -9,15 +9,11 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var outputNameFromSourceFile = function (sourceFile) {
-    var matchedName = sourceFile.match(/([^\/]+)\.\w+$/);
-    if (matchedName === null) {
-        throw new Error('given_source_file_without_extension');
-    }
-    return matchedName[1];
-};
+var _ = require('./publicdash');
+var typeCheck = require('./type-check');
+var makefileBuilder = require('./makefile-builder');
 
-var standardFlags = {
+var standardLinkerFlags = {
     freebsd: '-lm',
     linux: '-lm'
 };
@@ -28,26 +24,27 @@ var compilerInfoTable = {
             'darwin',
             'darwin-clang',
             'linux-clang',
-            'freebsd'
+            'freebsd',
+            'freebsd-clang'
         ],
-        outputNameFlag: '-o ',
-        includePathFlag: '-I'
+        generator: require('./clang-compiler-generator'),
+        objectFileSuffix: '.c.o'
     },
     gcc: {
         hosts: [
             'linux',
             'linux-gcc'
         ],
-        outputNameFlag: '-o ',
-        includePathFlag: '-I'
+        generator: require('./gcc-compiler-generator'),
+        objectFileSuffix: '.c.o'
     },
     cl: {
         hosts: [
             'win32',
             'win32-cl'
         ],
-        outputNameFlag: '/Fe',
-        includePathFlag: '/I'
+        generator: require('./cl-compiler-generator'),
+        objectFileSuffix: '.obj'
     }
 };
 
@@ -87,54 +84,98 @@ var isHostValid = function (host) {
     return false;
 };
 
-var processPath = function (compiler, path) {
-    if (compiler === 'cl') {
-        return path.replace(/\//g, '\\');
-    } else {
-        return path;
+var validConfigProperties = [
+    'type',
+    'host',
+    'files',
+    'outputName',
+    'outputPath',
+    'compilerFlags',
+    'linkerFlags',
+    'includePaths',
+    'libraries'
+];
+
+var validateConfig = function (config) {
+    typeCheck.string(config, 'host', 'required');
+    typeCheck.stringArray(config, 'files', 'required');
+    typeCheck.string(config, 'compilerFlags');
+    typeCheck.string(config, 'linkerFlags');
+    typeCheck.stringArray(config, 'libraries');
+    
+    config.files.forEach(function (file) {
+        if (!file.match(/\.\w+$/)) {
+            throw new Error("file_has_no_extension");
+        }
+    });
+    
+    if (!isHostValid(config.host)) {
+        throw new Error('invalid_host');
+    }
+
+    for (var property in config) {
+        if (validConfigProperties.indexOf(property) === -1) {
+            var error = new Error('unknown_config_property');
+            error.unknownProperty = property;
+            throw error;
+        }
     }
 };
 
-var joinPaths = function (compiler, paths, prefix) {
-    prefix = prefix || '';
-    var joinedPaths = prefix;
-    paths.forEach(function (path, i) {
-        if (i != 0) {
-            joinedPaths += " " + prefix;
-        }
-        joinedPaths += processPath(compiler, path);
+var parseFileName = function (fileName) {
+    var match = fileName.match(/^(.+)\.(\w+)$/);
+    if (match) {
+        return {
+            full: match[0],
+            name: match[1],
+            suffix: match[2]
+        };
+    } else {
+        return null;
+    }
+};
+
+var generateCompileInstructionsForCompiler = function (compiler, outputName, config) {
+    var filenames = _.filter(_.map(config.files, parseFileName), _.not.isNull);
+    var instructions = _.map(filenames, function (filename) {
+        return compiler.generator.compilerCommand({
+            type: config.type,
+            file: filename.full,
+            includePaths: config.includePaths,
+            flags: config.compilerFlags
+        });
     });
-    return joinedPaths;
+    var objectFiles = _.map(filenames, function (filename) {
+        return filename.name + compiler.objectFileSuffix;
+    });
+
+    instructions.push(compiler.generator.linkerCommand({
+        objectFiles: objectFiles,
+        outputName: outputName,
+        outputPath: config.outputPath,
+        flags: config.linkerFlags,
+        libraries: config.libraries,
+        type: config.type
+    }));
+    return instructions;
+};
+
+var generateCompileInstructions = function (config) {
+    var compiler = compilerByHost(config.host);
+    var compilerInfo = compilerInfoTable[compiler];
+
+    if (config.type !== 'static-library' && (config.host === 'linux' || config.host === 'freebsd')) {
+        config.libraries = config.libraries || [];
+        config.libraries.push('m');
+    }
+
+    return generateCompileInstructionsForCompiler(compilerInfo, config.outputName, config);
 };
 
 exports.generate = function (config) {
-    var compiler = compilerByHost(config.host);
-    if (config.host !== undefined && !isHostValid(config.host)) {
-        throw new Error('invalid_host');
-    }
+    validateConfig(config);
     
-    var compilerInfo = compilerInfoTable[compiler];
-    var outputNameFlag = compilerInfo.outputNameFlag;
-    var includePathFlag = compilerInfo.includePathFlag;
-
-    if (config.files === undefined || config.files.length === 0) {
-        throw new Error('no_source_files');
-    }
-
-    var sourceFiles = joinPaths(compiler, config.files);
-    var outputName = config.outputName || outputNameFromSourceFile(config.files[0]);
-
-    var extraFlags = '';
-    if (config.includePaths) {
-        extraFlags += " " + joinPaths(compiler, config.includePaths, includePathFlag);
-    }
-    if (standardFlags[config.host]) {
-        extraFlags += ' ' + standardFlags[config.host];
-    }
-
-    var makefile =
-        'all:\n' + 
-        '\t' + compiler + ' ' + sourceFiles + extraFlags + ' ' + outputNameFlag + outputName + '\n';
-
-    return makefile;
+    return makefileBuilder.build({
+        all: generateCompileInstructions(config)
+    });
 };

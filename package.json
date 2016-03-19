@@ -1,28 +1,29 @@
 {
-  "name": "sea-strap.js",
+  "name": "limbus-buildgen",
   "version": "0.1.0",
   "description": "A \"build anywhere\" build system.",
-  "main": "duk sea-strap.js",
+  "main": "duk limbus-buildgen.js",
   "directories": {},
   "devDependencies": {
-    "blanket": "1.1.6",
-    "coveralls": "2.11.2",
-    "mocha-lcov-reporter": "0.0.1",
-    "shelljs": "0.3.0",
-    "should": "4.1.0",
+    "blanket": "1.2.2",
+    "coveralls": "2.11.8",
+    "lcov-result-merger": "1.0.2",
+    "mocha": "2.4.5",
+    "mocha-lcov-reporter": "1.2.0",
+    "should": "8.2.2",
     "travis-cov": "0.2.5"
   },
   "scripts": {
     "test": "mocha \"**/*.unit.js\" \"**/*.feature.js\"",
     "coverage-travis-ci": "mocha --require blanket -R travis-cov \"**/*.unit.js\" \"**/*.feature.js\"",
-    "coverage-coveralls-io": "mocha --require blanket -R mocha-lcov-reporter \"**/*.unit.js\" \"**/*.feature.js\" | ./node_modules/coveralls/bin/coveralls.js",
+    "coverage-coveralls-io": "./utility-scripts/coveralls.sh",
     "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" \"**/*.feature.js\" > coverage.html",
     "unit-test": "mocha \"**/*.unit.js\"",
     "integration-test": "mocha \"**/*.feature.js\""
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/redien/sea-strap.js"
+    "url": "https://github.com/redien/limbus-buildgen"
   },
   "keywords": [
     "build",
@@ -32,11 +33,11 @@
     "generator"
   ],
   "author": "Jesper Oskarsson <jesosk@gmail.com>",
-  "license": "Public Domain",
+  "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/redien/sea-strap.js/issues"
+    "url": "https://github.com/redien/limbus-buildgen/issues"
   },
-  "homepage": "https://github.com/redien/sea-strap.js",
+  "homepage": "https://github.com/redien/limbus-buildgen",
   "config": {
     "blanket": {
       "pattern": [

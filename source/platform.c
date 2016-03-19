@@ -1,6 +1,6 @@
 
 /*
- * sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
+ * limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
  * Written in 2014 by Jesper Oskarsson jesosk@gmail.com
  *
  * To the extent possible under law, the author(s) have dedicated all copyright
@@ -30,15 +30,6 @@ static void* sea_platform_buffer_construct_with_buffer_no_copy(void* data, unsig
         buffer->data = data;
     }
     return buffer;
-}
-
-void* sea_platform_buffer_construct(unsigned long size) {
-    void* data = malloc(size);
-    if (data) {
-        return sea_platform_buffer_construct_with_buffer(data, size);
-    } else {
-        return NULL;
-    }
 }
 
 void* sea_platform_buffer_construct_with_buffer(void* data, unsigned long size) {
@@ -87,13 +78,14 @@ void* sea_platform_read_file(const char* filepath) {
             
             /* Buffer is full, we need to resize it */
             if (file_size == buffer_size) {
-                buffer_size *= 1.6f; // Magic number
-                char* resized_buffer = (char*)realloc(buffer, buffer_size);
+                char* resized_buffer;
+
+                buffer_size *= 1.6f; /* Magic number */
+                resized_buffer = (char*)realloc(buffer, buffer_size);
 
                 if (!resized_buffer) {
                     free(buffer);
                     fclose(file);
-                    fprintf(stderr, "Out of memory\n");
                     return NULL;
                 } else {
                     buffer = resized_buffer;
@@ -105,7 +97,6 @@ void* sea_platform_read_file(const char* filepath) {
         return sea_platform_buffer_construct_with_buffer(buffer, file_size);
         
     } else {
-        fprintf(stderr, "Unable to open file %s\n", filepath);
         return NULL;
     }
 }

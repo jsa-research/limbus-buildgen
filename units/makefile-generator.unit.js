@@ -1,5 +1,5 @@
 
-// sea-strap.js - A "build anywhere" C/C++ makefile/project generator.
+// limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
 // Written in 2014 by Jesper Oskarsson jesosk@gmail.com
 //
 // To the extent possible under law, the author(s) have dedicated all copyright
@@ -11,273 +11,401 @@
 
 var should = require('should');
 var makefile_generator = require('../source/makefile-generator');
+var util = require('../units/util');
+
+var hostsByCompiler = {
+    clang: [
+        'darwin',
+        'darwin-clang',
+        'linux-clang',
+        'freebsd',
+        'freebsd-clang'
+    ],
+    gcc: [
+        'linux',
+        'linux-gcc'
+    ],
+    cl: [
+        'win32',
+        'win32-cl'
+    ]
+};
 
 describe('makefile-generator', function () {
     it('should have a list with the supported hosts', function () {
-        makefile_generator.supportedHosts.length.should.equal(8);
-        makefile_generator.supportedHosts.should.containEql('darwin');
-        makefile_generator.supportedHosts.should.containEql('darwin-clang');
-        makefile_generator.supportedHosts.should.containEql('linux');
-        makefile_generator.supportedHosts.should.containEql('linux-gcc');
-        makefile_generator.supportedHosts.should.containEql('linux-clang');
-        makefile_generator.supportedHosts.should.containEql('freebsd');
-        makefile_generator.supportedHosts.should.containEql('win32');
-        makefile_generator.supportedHosts.should.containEql('win32-cl');
+        var hostCount = 0;
+        for (var compiler in hostsByCompiler) {
+            var hosts = hostsByCompiler[compiler];
+            hosts.forEach(function (host) {
+                makefile_generator.supportedHosts.should.containEql(host);
+                hostCount += 1;
+            });
+        }
+        makefile_generator.supportedHosts.length.should.equal(hostCount);
     });
 
-    it('should create an executable in the current directory by default', function () {
+    it('should create an executable in the current directory', function () {
         var makefile = makefile_generator.generate({
+            type: 'application',
+            host: 'linux',
             files: [
                 'source/files/test.c'
-            ]
+            ],
+            outputName: 'test'
         });
 
-        makefile.should.match(/-o test/);
+        makefile.should.match(/\-o test/);
 
         makefile = makefile_generator.generate({
+            type: 'application',
+            host: 'linux',
             files: [
                 'source/files/test.c'
             ],
             outputName: 'executable'
         });
 
-        makefile.should.match(/-o executable/);
+        makefile.should.match(/\-o executable/);
     });
 
-    describe('makefile configured without any files', function () {
-        var no_source_files_error = 'no_source_files';
-        
-        it('should throw "no_source_files" when files is undefined', function () {
-            (function () {
-                makefile_generator.generate({});
-            }).should.throw(no_source_files_error);
+    it('should accept files with dots in their paths', function () {
+        var makefile = makefile_generator.generate({
+            type: 'application',
+            host: 'linux',
+            files: [
+                'file.with.dots.c'
+            ],
+            outputName: 'test'
         });
-        it('should throw "no_source_files" when files is empty', function () {
-            (function () {
-                makefile_generator.generate({
-                    files: []
-                });
-            }).should.throw(no_source_files_error);
-        });
+
+        makefile.should.not.match(/[^\.]dots\.c/);
     });
 
     describe('makefile configured with multiple files', function () {
-        it('should compile all of the files into one executable', function () {
+        it('should compile all of the files', function () {
             var makefile = makefile_generator.generate({
+                type: 'application',
+                host: 'linux',
                 files: [
                     'file_a.c',
                     'file_b.c',
                     'file_c.c'
-                ]
-            });
-
-            makefile.should.match(/file_a\.c file_b\.c file_c\.c/);
-        });
-    });
-
-    describe('makefile configured with outputName', function () {
-        it('should create an executable with the specified name', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
                 ],
-                outputName: 'executable.exe'
+                outputName: 'test'
             });
 
-            makefile.should.match(/-o executable\.exe\n/);
-        });
-    });
-
-    describe('makefile configured without an outputName', function () {
-        it('should name the resulting executable using the first given file without the extension by default', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'another_executable.c',
-                    'test.c'
-                ]
-            });
-
-            makefile.should.match(/-o another_executable\n/);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'file.with.many.dots.c'
-                ]
-            });
-
-            makefile.should.match(/-o file.with.many.dots\n/);
-        });
-
-        it('should throw "given_source_file_without_extension" if the first source file is missing an extension', function () {
-            (function () {
-                makefile_generator.generate({
-                    files: [
-                        'source_without_extension'
-                    ]
-                });
-            }).should.throw('given_source_file_without_extension');
+            makefile.should.match(/file_a\.c/);
+            makefile.should.match(/file_b\.c/);
+            makefile.should.match(/file_c\.c/);
         });
     });
 
     describe('makefile configured with a host', function () {
         it('should compile with the correct compiler for the specified host', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'linux'
-            });
-            makefile.should.match(/\tgcc /);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'darwin'
-            });
-            makefile.should.match(/\tclang /);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'linux-clang'
-            });
-            makefile.should.match(/\tclang /);
-
-            makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'win32-cl'
-            });
-            makefile.should.match(/\tcl /);
-        });
-        it('should throw "invalid_host" if host is not one of the predefined hosts', function () {
-            [
-                'made up host',
-                'darwin-gcc',
-                'darw',
-                'osx'
-
-            ].forEach(function (host) {
-                (function () {
-                    makefile_generator.generate({
-                        host: host
+            for (var compiler in hostsByCompiler) {
+                var hosts = hostsByCompiler[compiler];
+                hosts.forEach(function (host) {
+                    var makefile = makefile_generator.generate({
+                        type: 'application',
+                        host: host,
+                        files: [
+                            'test.c'
+                        ],
+                        outputName: 'test'
                     });
-                }).should.throw('invalid_host');
-            });
-        });
-
-        it('should not throw "invalid_host" if host is one of the predefined hosts', function () {
-            makefile_generator.supportedHosts.forEach(function (host) {
-                (function () {
-                    makefile_generator.generate({
-                        host: host
-                    });
-                }).should.not.throw('invalid_host');
-            });
-        });
-    });
-
-    describe('makefile configured without a host', function () {
-        it('should compile with gcc by default', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ]
-            });
-
-            makefile.should.match(/\tgcc /);
-        });
-    });
-
-    describe('makefile configured with include path', function () {
-        it('should add the correct flag', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                includePaths: [
-                    'includes/'
-                ]
-            });
-
-            makefile.should.match(/ -Iincludes\/ /);
+                    makefile.should.containEql(compiler);
+                });
+            }
         });
     });
 
     describe('makefile where host is freebsd', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
+                type: 'application',
+                host: 'freebsd',
                 files: [
                     'test.c'
                 ],
-                host: 'freebsd'
+                outputName: 'test'
             });
 
-            makefile.should.match(/ -lm /);
+            makefile.should.containEql('-lm');
         });
     });
 
     describe('makefile where host is linux', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
+                type: 'application',
+                host: 'linux',
                 files: [
                     'test.c'
                 ],
-                host: 'linux'
+                outputName: 'test'
             });
 
-            makefile.should.match(/ -lm /);
+            makefile.should.containEql('-lm');
         });
     });
 
-    describe('makefile where host is win32-cl', function () {
-        it('should use the correct flags', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                host: 'win32-cl'
+    describe('Error Handling', function () {
+        describe('type', function () {
+            it('should throw "no_type" if no type is given', function () {
+                (function () {
+                    makefile_generator.generate({
+                        host: 'linux',
+                        files: [
+                            'test.c'
+                        ],
+                        outputName: 'test'
+                    });
+                }).should.throw('no_type');
             });
 
-            makefile.should.match(/ \/Fetest/);
-
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                includePaths: [
-                    'includes'
-                ],
-                host: 'win32-cl'
+            it('should throw "type_is_not_a_string" if type is anything other than a string', function () {
+                util.should_throw_not_string_error(makefile_generator.generate, {
+                    host: 'linux',
+                    files: [
+                        'test.c'
+                    ],
+                    outputName: 'test'
+                }, 'type');
             });
-
-            makefile.should.match(/ \/Iincludes /);
         });
 
-        it('should convert paths to use backslashes instead of forward ones', function () {
-            var makefile = makefile_generator.generate({
-                files: [
-                    'in/some/path/test.c'
-                ],
-                host: 'win32-cl'
+        describe('host', function () {
+            it('should throw "no_host" if no host is given', function () {
+                (function () {
+                    makefile_generator.generate({
+                        type: 'application',
+                        files: [
+                            'test.c'
+                        ],
+                        outputName: 'test'
+                    });
+                }).should.throw('no_host');
             });
 
-            makefile.should.match(/in\\some\\path\\test.c/);
-
-            var makefile = makefile_generator.generate({
-                files: [
-                    'test.c'
-                ],
-                includePaths: [
-                    'include/some/directory/'
-                ],
-                host: 'win32-cl'
+            it('should throw "host_is_not_a_string" if host is anything other than a string', function () {
+                util.should_throw_not_string_error(makefile_generator.generate, {
+                    type: 'application',
+                    files: [
+                        'test.c'
+                    ],
+                    outputName: 'test'
+                }, 'host');
             });
 
-            makefile.should.match(/include\\some\\directory\\/);
+            it('should not throw "invalid_host" if host is one of the predefined hosts', function () {
+                makefile_generator.supportedHosts.forEach(function (host) {
+                    (function () {
+                        makefile_generator.generate({
+                            type: 'application',
+                            host: host,
+                            files: [
+                                'file.c'
+                            ],
+                            outputName: 'test'
+                        });
+                    }).should.not.throw('invalid_host');
+                });
+            });
+
+            it('should throw "invalid_host" if host is not one of the predefined hosts', function () {
+                [
+                    'made up host',
+                    'darwin-gcc',
+                    'darw',
+                    'osx'
+
+                ].forEach(function (host) {
+                    (function () {
+                        makefile_generator.generate({
+                            type: 'application',
+                            host: host,
+                            files: [
+                                'file.c'
+                            ],
+                            outputName: 'test'
+                        });
+                    }).should.throw('invalid_host');
+                });
+            });
+        });
+
+        describe('files', function () {
+            var no_files_error = 'no_files';
+            it('should throw "no_files" when files is undefined', function () {
+                (function () {
+                    makefile_generator.generate({
+                        type: 'application',
+                        host: 'linux',
+                        outputName: 'test'
+                    });
+                }).should.throw(no_files_error);
+            });
+
+            it('should throw "no_files" when files is empty', function () {
+                (function () {
+                    makefile_generator.generate({
+                        type: 'application',
+                        host: 'linux',
+                        files: [],
+                        outputName: 'test'
+                    });
+                }).should.throw(no_files_error);
+            });
+
+            it('should throw "files_is_not_a_string_array" if files is anything other than an array of strings', function () {
+    util.should_throw_not_string_array_error(makefile_generator.generate, {
+                    type: 'application',
+                    host: 'linux',
+                    outputName: 'test'
+                }, 'files');
+            });
+
+            it('should throw "file_has_no_extension" if files has a filename without an extension', function () {
+                (function () {
+                    makefile_generator.generate({
+                        type: 'application',
+                        host: 'linux',
+                        files: ['no_extension'],
+                        outputName: 'test'
+                    });
+                }).should.throw('file_has_no_extension');
+
+                (function () {
+                    makefile_generator.generate({
+                        type: 'application',
+                        host: 'linux',
+                        files: ['/path.with.dot/no_extension'],
+                        outputName: 'test'
+                    });
+                }).should.throw('file_has_no_extension');
+            });
+        });
+
+        describe('outputName', function () {
+            it('should throw "no_output_name" when outputName is undefined', function () {
+                (function () {
+                    makefile_generator.generate({
+                        type: 'application',
+                        host: 'linux',
+                        files: [
+                            'file.c'
+                        ]
+                    });
+                }).should.throw("no_output_name");
+            });
+
+            it('should throw "output_name_is_not_a_string" if outputName is anything other than a string', function () {
+    util.should_throw_not_string_error(makefile_generator.generate, {
+                    type: 'application',
+                    host: 'linux',
+                    files: [
+                        'file.c'
+                    ]
+                }, 'outputName');
+            });
+
+            it('should throw "output_name_does_not_take_a_path" if outputName is given a path', function () {
+                (function () {
+                    makefile_generator.generate({
+                        type: 'application',
+                        host: 'linux',
+                        files: [
+                            'file.c'
+                        ],
+                        outputName: 'a/path/in/name'
+                    });
+                }).should.throw("output_name_does_not_take_a_path");
+            });
+        });
+
+        describe('outputPath', function () {
+            it('should throw "output_path_is_not_a_string" if outputPath is anything other than a string', function () {
+                util.should_throw_not_string_error(makefile_generator.generate, {
+                    type: 'application',
+                    host: 'linux',
+                    files: [
+                        'file.c'
+                    ],
+                    outputName: 'name'
+                }, 'outputPath');
+            });
+        });
+
+        describe('compilerFlags', function () {
+            it('should throw "compiler_flags_is_not_a_string" if compilerFlags is anything other than a string', function () {
+    util.should_throw_not_string_error(makefile_generator.generate, {
+                    type: 'application',
+                    host: 'linux',
+                    files: [
+                        'file.c'
+                    ],
+                    outputName: 'name'
+                }, 'compilerFlags');
+            });
+        });
+
+        describe('linkerFlags', function () {
+            it('should throw "linker_flags_is_not_a_string" if linkerFlags is anything other than a string', function () {
+    util.should_throw_not_string_error(makefile_generator.generate, {
+                    type: 'application',
+                    host: 'linux',
+                    files: [
+                        'file.c'
+                    ],
+                    outputName: 'name'
+                }, 'linkerFlags');
+            });
+        });
+
+        describe('includePaths', function () {
+            it('should throw "include_paths_is_not_a_string_array" if includePaths is anything other than an array of strings', function () {
+    util.should_throw_not_string_array_error(makefile_generator.generate, {
+                    type: 'application',
+                    host: 'linux',
+                    files: [
+                        'file.c'
+                    ],
+                    outputName: 'test'
+                }, 'includePaths');
+            });
+        });
+
+        describe('libraries', function () {
+            it('should throw "libraries_is_not_a_string_array" if libraries is anything other than an array of strings', function () {
+    util.should_throw_not_string_array_error(makefile_generator.generate, {
+                    type: 'application',
+                    host: 'linux',
+                    files: [
+                        'file.c'
+                    ],
+                    outputName: 'test'
+                }, 'libraries');
+            });
+        });
+
+        it('should throw "unknown_config_property" if the provided config object has an unknown property and provide the name as unknownProperty', function () {
+            try {
+                makefile_generator.generate({
+                    type: 'application',
+                    host: 'linux',
+                    files: [
+                        'simple.c'
+                    ],
+                    someUnknownProperty: 'this should throw an error',
+                    outputName: 'test'
+                });
+            } catch (e) {
+                e.message.should.equal('unknown_config_property');
+                e.unknownProperty.should.equal('someUnknownProperty');
+                return;
+            }
+
+            throw new Error('Expected error');
         });
     });
 });

@@ -1,0 +1,38 @@
+
+# limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
+# Written in 2014 by Jesper Oskarsson jesosk@gmail.com
+#
+# To the extent possible under law, the author(s) have dedicated all copyright
+# and related and neighboring rights to this software to the public domain worldwide.
+# This software is distributed without any warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication along with this software.
+# If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+version: 0.2.0+{build}
+
+install:
+    - ps: Install-Product node $env:nodejs_version
+    - npm --version
+    - npm install
+    - 'Powershell.exe -executionpolicy remotesigned -File dependencies\fetch_dependencies.ps1'
+    - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /%target_arch% /%target_config%'
+
+build_script:
+    - nmake /f Makefile.win32 && npm test
+
+environment:
+    matrix:
+          # AppVeyor does not seem to have 5.9.0 yet.
+        - nodejs_version: 4.4.0
+          target_arch: x86
+          target_config: Release
+
+          # The x64 build does not depend on the node version.
+          # We only test x64 to make sure building x64 binaries works as expected.
+        - nodejs_version: 4.4.0
+          target_arch: x64
+          target_config: Release
+
+matrix:
+    fast_finish: true

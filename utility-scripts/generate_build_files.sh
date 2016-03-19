@@ -9,8 +9,14 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-all:
-	@dependencies/fetch_dependencies.sh
-	@echo Compiling...
-	@make -f Makefile.`uname -s | tr 'A-Z' 'a-z'`
-	@echo Done.
+generate_for_platform() {
+    ./duk limbus-buildgen.js --buildFile Makefile.$1 --host $1 build_configs/build.json
+}
+
+generate_for_platform freebsd
+generate_for_platform linux
+generate_for_platform darwin
+generate_for_platform win32
+
+# This is used for sending coverage information from the C sources to coveralls.io
+./duk limbus-buildgen.js --buildFile Makefile.coverage build_configs/coverage.json

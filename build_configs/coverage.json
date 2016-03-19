@@ -1,0 +1,14 @@
+{
+    "files": [
+        "dependencies/duktape-1.4.0/src/duktape.c",
+        "source/duk.c",
+        "source/platform.c"
+    ],
+    "includePaths": [
+        "dependencies/duktape-1.4.0/src/"
+    ],
+    "outputName": "duk",
+    "compilerFlags": "-g -O0 --coverage",
+    "host": "linux",
+    "type": "application"
+}
