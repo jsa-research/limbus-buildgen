@@ -33,7 +33,7 @@
     "generator"
   ],
   "author": "Jesper Oskarsson <jesosk@gmail.com>",
-  "license": "Public Domain",
+  "license": "CC0-1.0",
   "bugs": {
     "url": "https://github.com/redien/limbus-buildgen/issues"
   },
