@@ -9,13 +9,13 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-install: npm install -g mocha && npm install
+install: npm install
 language: node_js
 node_js:
-    - "0.10"
-    - "0.11"
-script: make && npm test && npm run-script coverage-travis-ci
-after_script: npm run-script coverage-coveralls-io
+    - "4.4.0"
+    - "5.9.0"
+script: make && npm test && npm run coverage-travis-ci
+after_script: npm run coverage-coveralls-io
 
 notifications:
   webhooks:
