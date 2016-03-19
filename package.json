@@ -10,7 +10,7 @@
     "lcov-result-merger": "1.0.2",
     "mocha": "2.4.5",
     "mocha-lcov-reporter": "1.2.0",
-    "should": "5.0.1",
+    "should": "8.2.2",
     "travis-cov": "0.2.5"
   },
   "scripts": {
