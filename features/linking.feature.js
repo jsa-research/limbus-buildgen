@@ -169,6 +169,10 @@ describe('Linking', function () {
                     includePaths: [
                         'include'
                     ],
+                    // On linux systems the shared object won't be looked for in
+                    // the current working directory by default. We just add a
+                    // flag so that it is.
+                    linkerFlags: (process.platform === 'linux') ? '-Wl,-rpath=.' : '',
                     outputName: 'linked_with_library'
                 }
             ],
