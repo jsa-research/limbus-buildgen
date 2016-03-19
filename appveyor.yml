@@ -23,16 +23,14 @@ build_script:
 
 environment:
     matrix:
+          # AppVeyor does not seem to have 5.9.0 yet.
         - nodejs_version: 4.4.0
-          target_arch: x86
-          target_config: Release
-        - nodejs_version: 5.9.0
           target_arch: x86
           target_config: Release
 
           # The x64 build does not depend on the node version.
           # We only test x64 to make sure building x64 binaries works as expected.
-        - nodejs_version: 5.9.0
+        - nodejs_version: 4.4.0
           target_arch: x64
           target_config: Release
 
