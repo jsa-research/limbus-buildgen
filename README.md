@@ -161,6 +161,7 @@ Towards a 1.0 release:
 * Provide npm packages for both executable and libraries.
 * Cross compilation to Android on supported platforms.
 * A Xcode 6 project generator for iOS cross compilation.
+* Emscripten compilation target
 
 ## Copy
 limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
