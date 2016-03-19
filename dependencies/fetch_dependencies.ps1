@@ -19,6 +19,6 @@ Invoke-WebRequest $duktape_archive_url -OutFile $duktape_archive_destination
 if (Test-Path $duktape_final_directory) {
     Remove-Item $duktape_final_directory -Force -Recurse
 }
-[System.IO.Compression.ZipFile]::ExtractToDirectory(duktape_archive_destination, $dependencies_folder)
+[System.IO.Compression.ZipFile]::ExtractToDirectory($duktape_archive_destination, $dependencies_folder)
 Move-Item $duktape_intermediary_directory $duktape_final_directory
 Remove-Item $duktape_archive_destination -Force
