@@ -1,11 +1,11 @@
 {
     "files": [
-        "dependencies/duktape-1.0.1/src/duktape.c",
+        "dependencies/duktape-1.4.0/src/duktape.c",
         "source/duk.c",
         "source/platform.c"
     ],
     "includePaths": [
-        "dependencies/duktape-1.0.1/src/"
+        "dependencies/duktape-1.4.0/src/"
     ],
     "outputName": "duk",
     "type": "application"

@@ -14,7 +14,6 @@ version: 0.2.0+{build}
 install:
     - ps: Install-Product node $env:nodejs_version
     - npm --version
-    - npm install -g mocha
     - npm install
     - 'Powershell.exe -executionpolicy remotesigned -File dependencies\fetch_dependencies.ps1'
     - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /%target_arch% /%target_config%'
@@ -24,14 +23,16 @@ build_script:
 
 environment:
     matrix:
-        - nodejs_version: 0.11
-          target_arch: x64
-          target_config: Release
-
-        - nodejs_version: 0.10
+        - nodejs_version: 4.4.0
           target_arch: x86
           target_config: Release
-        - nodejs_version: 0.10
+        - nodejs_version: 5.9.0
+          target_arch: x86
+          target_config: Release
+
+          # The x64 build does not depend on the node version.
+          # We only test x64 to make sure building x64 binaries works as expected.
+        - nodejs_version: 5.9.0
           target_arch: x64
           target_config: Release
 

@@ -100,8 +100,8 @@ The unit- & integration tests are automatically run against several combinations
 #### Target platforms
 | Target Host   | Build Status | Built Configurations | Node.js Versions   |
 | :------------ | :----------: | :------------------- | :----------------- |
-| win32-cl | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x86 Release, x64 Release | 0.10, 0.11 |
-| linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 0.10, 0.11 |
+| win32-cl | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x86 Release, x64 Release | 5.9.0, 4.4.0 |
+| linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
 | linux-clang | | | |
 | darwin-clang  | | | |
 | freebsd-clang | | | |
@@ -118,14 +118,14 @@ You will need to download some dependencies. If you have PowerShell 3.0 installe
 When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.win32` in the project root directory.
 
 #### Download dependencies manually
-limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape 1.0.1 from `http://duktape.org/` and extract it into `dependencies/duktape-1.0.1`.
+limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape 1.4.0 from `http://duktape.org/` and extract it into `dependencies/duktape-1.4.0`.
 
 ## Development
-[![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies) [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/redien/limbus-buildgen?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies)
 
-Fork the project and join our Gitter room. You'll also need to install some required dependencies:
+For development you need some extra development dependencies.
+
 ```
-npm install -g mocha
 npm install
 ```
 
@@ -166,7 +166,7 @@ Towards a 1.0 release:
 ## Copy
 limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
 
-Written in 2014 by Jesper Oskarsson jesosk@gmail.com
+Written in 2014-2016 by Jesper Oskarsson jesosk@gmail.com
 
 To the extent possible under law, the author(s) have dedicated all copyright
 and related and neighboring rights to this software to the public domain worldwide.
