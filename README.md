@@ -1,9 +1,9 @@
 # limbus-buildgen
 ![version](http://img.shields.io/badge/version-0.2.0-blue.svg) [![Public Domain](http://img.shields.io/badge/public%20domain%3F-yes-blue.svg)](http://creativecommons.org/publicdomain/zero/1.0/) [![SemVer](http://img.shields.io/badge/SemVer-2.0.0-blue.svg)](http://semver.org/spec/v2.0.0.html) ![development stage](http://img.shields.io/badge/development%20stage-alpha-orange.svg)
 
-limbus-buildgen generates build files for small C/C++ code-bases that do not need a very complicated build process. Thus the generators can be kept small which makes them easy to test and port to other platforms.
+limbus-buildgen generates build files for small C/C++ code-bases that do not need a very complicated build process. Thus this library can be kept small which makes it easy to test and port to other platforms.
 
-The project consists of a set of Common.js modules written in pure ECMAScript which can be imported into your project. A CLI front-end is also available to generate build files without additional code.
+The project consists of a set of Common.js modules written in ES5.1 which can be imported into your project. A CLI front-end is also available to generate build files without additional code.
 
 ## Use
 ```
@@ -21,18 +21,31 @@ Options:
 ## Configure
 The JSON configuration files support the following properties:
 
-The following options are required:
+#### Required
 * **type** Specifies the type of project to build, can be either "application", "dynamic-library" or "static-library".
 * **files** Specifies a list of source files.
-* **host** Specifies the target host, i.e. the desired platform that the makefile should compile with.
+* **host** Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with. *See the table below for valid identifiers.*
 * **outputName** Specifies the name of the final executable.
 
-The following options are optional:
-* **outputPath** Specifies a path to prepend to the outputName.
+#### Optional
+* **outputPath** Specifies a path to prepend to the outputName. *It defaults to the current working directory.*
 * **includePaths** Specifies where to find header files to include.
 * **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is.
 * **linkerFlags** Specifies any extra linkers flags that will be passed to the compiler as is.
 * **libraries** Specifies any libraries to link with when building an application or dynamic library.
+
+#### Valid host identifiers
+|Identifier|Target OS & compiler|
+|-|
+|linux|Linux & GCC|
+|linux-gcc|Linux & GCC|
+|linux-clang|Linux & Clang|
+|darwin|Mac OS X & Clang|
+|darwin-clang|Mac OS X & Clang|
+|win32|Windows & CL|
+|win32-cl|Windows & CL|
+|freebsd|FreeBSD & Clang|
+|freebsd-clang|FreeBSD & Clang|
 
 #### Example configuration file
 
@@ -67,7 +80,7 @@ var makefile = makefile_generator.generate({
     // The following options are required:
     // Specifies the type of project to build, can be either 'application', 'dynamic-library' or 'static-library'.
     type: 'application',
-    // Specifies the target host, i.e. the desired platform that the makefile should compile with.
+    // Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.
     host: 'darwin-clang',
     // Specifies a list of source files.
     files: [
@@ -78,7 +91,7 @@ var makefile = makefile_generator.generate({
 
     // The following options are optional:
     // Specifies a path to prepend to the outputName.
-    "outputPath": "some/path",
+    outputPath: "some/path",
     // Specifies where to find header files to include.
     includePaths: [
         'include/'
@@ -95,7 +108,7 @@ var makefile = makefile_generator.generate({
 ```
 
 ## Support
-The unit- & integration tests are automatically run against several combinations of target hosts, architectures and Node.js versions at every commit.
+The unit- & integration tests are automatically run against several combinations of target hosts, build configurations and Node.js versions at every commit.
 
 #### Target platforms
 | Target Host   | Build Status | Built Configurations | Node.js Versions   |
@@ -104,7 +117,7 @@ The unit- & integration tests are automatically run against several combinations
 | linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
 | linux-clang | | | |
 | darwin-clang  | | | |
-| freebsd-clang | | | |
+| freebsd-clang |||||
 
 ## Compile
 limbus-buildgen compiles using build files that it generated itself.
@@ -149,19 +162,25 @@ npm run-script coverage
 
 This will generate a file named `coverage.html` in the project root directory which can be viewed in a browser.
 
-#### Roadmap
-Planned for a 0.2 version:
-* A Visual Studio 2013 project generator.
-* Create release bundled with dependencies.
-* Override all configuration properties using flags
+## Roadmap
 
-Towards a 1.0 release:
-* Continous integration on all supported platforms.
-* Provide an integrated executable for the front-end.
-* Provide npm packages for both executable and libraries.
-* Cross compilation to Android on supported platforms.
-* A Xcode 6 project generator for iOS cross compilation.
-* Emscripten compilation target
+#### Planned for a 0.5 version
+* Provide an integrated executable for the front-end
+* Provide npm packages for both executable and libraries
+* Create release bundled with dependencies
+* Override all configuration properties using flags
+* Automate Windows dependency fetching
+* Improve documentation
+
+##### Towards a 1.0 release
+* Continuous integration for all supported targets
+* A Visual Studio project generator
+* Cross compilation to iOS
+* Cross compilation to Android
+* Emscripten compiler support
+
+##### Further into the future
+* Cross compilation to Windows
 
 ## Copy
 limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
