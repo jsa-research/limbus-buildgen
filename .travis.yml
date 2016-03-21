@@ -21,5 +21,5 @@ env:
 
 before_install: . utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION && . utility-scripts/echo-versions.sh
 install: npm install && dependencies/fetch_dependencies.sh
-script: make -f Makefile.`uname -s | tr 'A-Z' 'a-z'`-$BUILDGEN_TARGET_COMPILER && npm test && npm run coverage-travis-ci
+script: make -f Makefile.`uname -s | tr 'A-Z' 'a-z'`-$BUILDGEN_TARGET_COMPILER && npm run test -- -t 20000 && npm run coverage-travis-ci
 after_script: npm run coverage-coveralls-io
