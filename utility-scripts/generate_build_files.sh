@@ -13,10 +13,17 @@ generate_for_platform() {
     ./duk limbus-buildgen.js --buildFile Makefile.$1 --host $1 build_configs/build.json
 }
 
-generate_for_platform freebsd
 generate_for_platform linux
+generate_for_platform linux-clang
+generate_for_platform linux-gcc
 generate_for_platform darwin
+generate_for_platform darwin-clang
+generate_for_platform darwin-gcc
 generate_for_platform win32
+generate_for_platform win32-cl
+generate_for_platform freebsd
+generate_for_platform freebsd-clang
+generate_for_platform freebsd-gcc
 
 # This is used for sending coverage information from the C sources to coveralls.io
 ./duk limbus-buildgen.js --buildFile Makefile.coverage build_configs/coverage.json

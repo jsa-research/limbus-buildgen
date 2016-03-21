@@ -33,7 +33,9 @@ var compilerInfoTable = {
     gcc: {
         hosts: [
             'linux',
-            'linux-gcc'
+            'linux-gcc',
+            'darwin-gcc',
+            'freebsd-gcc'
         ],
         generator: require('./gcc-compiler-generator'),
         objectFileSuffix: '.c.o'
@@ -68,7 +70,7 @@ var compilerByHost = function (host) {
             });
         }
         return compilerFound;
-    
+
     } else {
         return 'gcc';
     }
@@ -80,7 +82,7 @@ var isHostValid = function (host) {
             return true;
         }
     }
-    
+
     return false;
 };
 
@@ -102,13 +104,13 @@ var validateConfig = function (config) {
     typeCheck.string(config, 'compilerFlags');
     typeCheck.string(config, 'linkerFlags');
     typeCheck.stringArray(config, 'libraries');
-    
+
     config.files.forEach(function (file) {
         if (!file.match(/\.\w+$/)) {
             throw new Error("file_has_no_extension");
         }
     });
-    
+
     if (!isHostValid(config.host)) {
         throw new Error('invalid_host');
     }
@@ -174,7 +176,7 @@ var generateCompileInstructions = function (config) {
 
 exports.generate = function (config) {
     validateConfig(config);
-    
+
     return makefileBuilder.build({
         all: generateCompileInstructions(config)
     });

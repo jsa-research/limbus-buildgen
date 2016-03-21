@@ -15,15 +15,17 @@ var util = require('../units/util');
 
 var hostsByCompiler = {
     clang: [
+        'linux-clang',
         'darwin',
         'darwin-clang',
-        'linux-clang',
         'freebsd',
         'freebsd-clang'
     ],
     gcc: [
         'linux',
-        'linux-gcc'
+        'linux-gcc',
+        'darwin-gcc',
+        'freebsd-gcc'
     ],
     cl: [
         'win32',
@@ -215,7 +217,7 @@ describe('makefile-generator', function () {
             it('should throw "invalid_host" if host is not one of the predefined hosts', function () {
                 [
                     'made up host',
-                    'darwin-gcc',
+                    'darwin-cl',
                     'darw',
                     'osx'
 

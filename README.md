@@ -38,14 +38,16 @@ The JSON configuration files support the following properties:
 |Identifier|Target OS & compiler|
 |:--|:--|
 |linux|Linux & GCC|
-|linux-gcc|Linux & GCC|
 |linux-clang|Linux & Clang|
+|linux-gcc|Linux & GCC|
 |darwin|Mac OS X & Clang|
 |darwin-clang|Mac OS X & Clang|
+|darwin-gcc|Mac OS X & GCC|
 |win32|Windows & CL|
 |win32-cl|Windows & CL|
 |freebsd|FreeBSD & Clang|
 |freebsd-clang|FreeBSD & Clang|
+|freebsd-gcc|FreeBSD & GCC|
 
 #### Example configuration file
 
@@ -107,17 +109,20 @@ var makefile = makefile_generator.generate({
 });
 ```
 
-## Support
-The unit- & integration tests are automatically run against several combinations of target hosts, build configurations and Node.js versions at every commit.
+## Tested
+Unit- & integration tests are automatically run against several combinations of target hosts, build configurations and Node.js versions at every push.
 
-#### Target platforms
+#### Integration matrix
 | Target Host   | Build Status | Built Configurations | Node.js Versions   |
 | :------------ | :----------: | :------------------- | :----------------- |
-| win32-cl | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x86 Release, x64 Release | 4.4.0 |
+| linux-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
 | linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
-| linux-clang | | | |
 | darwin-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
+| darwin-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
+| win32-cl | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x86 Release, x64 Release | 4.4.0 |
 | freebsd-clang |||||
+
+*FreeBSD is tested from time to time during development of new features but as there is currently no continuous integration on a FreeBSD host it should be considered less stable than the other target hosts.*
 
 ## Compile
 limbus-buildgen compiles using build files that it generated itself.

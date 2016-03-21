@@ -32,14 +32,16 @@ var validTypes = [
 
 var validHosts = [
     'linux',
-    'linux-gcc',
     'linux-clang',
+    'linux-gcc',
     'darwin',
     'darwin-clang',
+    'darwin-gcc',
     'win32',
     'win32-cl',
     'freebsd',
-    'freebsd-clang'
+    'freebsd-clang',
+    'freebsd-gcc'
 ];
 
 var stringProperties = [

@@ -159,14 +159,16 @@ describe('config-validator', function () {
                 };
 
                 validateHost('linux');
-                validateHost('linux-gcc');
                 validateHost('linux-clang');
+                validateHost('linux-gcc');
                 validateHost('darwin');
                 validateHost('darwin-clang');
+                validateHost('darwin-gcc');
                 validateHost('win32');
                 validateHost('win32-cl');
                 validateHost('freebsd');
                 validateHost('freebsd-clang');
+                validateHost('freebsd-gcc');
             });
         });
 
