@@ -36,7 +36,7 @@ The JSON configuration files support the following properties:
 
 #### Valid host identifiers
 |Identifier|Target OS & compiler|
-|-|
+|:--|:--|
 |linux|Linux & GCC|
 |linux-gcc|Linux & GCC|
 |linux-clang|Linux & Clang|
