@@ -124,8 +124,10 @@ Unit- & integration tests are automatically run against several combinations of 
 
 *FreeBSD is tested from time to time during development of new features but as there is currently no continuous integration on a FreeBSD host it should be considered less stable than the other target hosts.*
 
-## Compile
+## Build
 limbus-buildgen compiles using build files that it generated itself.
+
+It has very few dependencies that it downloads automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio installed. Most Unixes come with a C compiler suite.*)
 
 #### Linux/OS X/FreeBSD
 Run `make` in the project root directory to build.
@@ -186,6 +188,7 @@ This will generate a file named `coverage.html` in the project root directory wh
 
 ##### Further into the future
 * Cross compilation to Windows
+* Modify makefile to find compilers and use whichever is available.
 
 ## Copy
 limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
