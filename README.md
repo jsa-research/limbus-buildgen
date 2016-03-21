@@ -172,6 +172,7 @@ This will generate a file named `coverage.html` in the project root directory wh
 ## Roadmap
 
 #### Planned for a 0.5 version
+This release is intended to streamline the interface. And produce a done release that is not fully feature-complete.
 * Provide an integrated executable for the front-end
 * Provide npm packages for both executable and libraries
 * Create release bundled with dependencies
@@ -179,8 +180,10 @@ This will generate a file named `coverage.html` in the project root directory wh
 * Automate Windows dependency fetching
 * Improve documentation
 * Create make.bat for streamlining Windows builds
+* Modify makefile generator so that makefiles make use of make's "implicit variables"
 
 ##### Towards a 1.0 release
+This release will implement the rest of the features to make it feature-complete.
 * Continuous integration for all supported targets
 * A Visual Studio project generator
 * Cross compilation to iOS
@@ -188,6 +191,7 @@ This will generate a file named `coverage.html` in the project root directory wh
 * Emscripten compiler support
 
 ##### Further into the future
+Features which aren't needed for feature-completeness but are nice to have.
 * Cross compilation to Windows
 * Modify makefile to find compilers and use whichever is available.
 
