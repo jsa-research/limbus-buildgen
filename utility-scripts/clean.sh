@@ -10,5 +10,6 @@
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 rm -fR node_modules/
+rm -fR nvm/
 rm -fR dependencies/duktape-*/
 rm -f duk
