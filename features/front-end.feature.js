@@ -113,26 +113,6 @@ describe('Front-end', function () {
         });
     });
 
-    it('should fail with "Unknown property \'<property>\' in configuration" if the config file contains an unknown property', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
-            config: {
-                type: 'application',
-                host: process.platform,
-                files: [
-                    'simple.c'
-                ],
-                someUnknownProperty: 'this should fail',
-                outputName: 'simple',
-            },
-            command: 'simple'
-        }, function (error) {
-            (!error).should.be.false
-            error.stdout.should.containEql('Unknown property \'someUnknownProperty\' in configuration');
-            done();
-        });
-    });
-
     it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function (done) {
         util.generateCompileAndRun({
             setup: setup,

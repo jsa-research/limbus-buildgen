@@ -12,6 +12,7 @@
 var _ = require('./publicdash');
 var typeCheck = require('./type-check');
 var makefileBuilder = require('./makefile-builder');
+var ConfigValidator = require('./config-validator');
 
 var compilerInfoTable = {
     clang: {
@@ -71,54 +72,6 @@ var compilerByHost = function (host) {
     }
 };
 
-var isHostValid = function (host) {
-    for (var compiler in compilerInfoTable) {
-        if (compilerInfoTable[compiler].hosts.indexOf(host) != -1) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-var validConfigProperties = [
-    'type',
-    'host',
-    'files',
-    'outputName',
-    'outputPath',
-    'compilerFlags',
-    'linkerFlags',
-    'includePaths',
-    'libraries'
-];
-
-var validateConfig = function (config) {
-    typeCheck.string(config, 'host', 'required');
-    typeCheck.stringArray(config, 'files', 'required');
-    typeCheck.string(config, 'compilerFlags');
-    typeCheck.string(config, 'linkerFlags');
-    typeCheck.stringArray(config, 'libraries');
-
-    config.files.forEach(function (file) {
-        if (!file.match(/\.\w+$/)) {
-            throw new Error("file_has_no_extension");
-        }
-    });
-
-    if (!isHostValid(config.host)) {
-        throw new Error('invalid_host');
-    }
-
-    for (var property in config) {
-        if (validConfigProperties.indexOf(property) === -1) {
-            var error = new Error('unknown_config_property');
-            error.unknownProperty = property;
-            throw error;
-        }
-    }
-};
-
 var parseFileName = function (fileName) {
     var match = fileName.match(/^(.+)\.(\w+)$/);
     if (match) {
@@ -170,7 +123,11 @@ var generateCompileInstructions = function (config) {
 };
 
 exports.generate = function (config) {
-    validateConfig(config);
+    var validationResult = ConfigValidator.validate(config);
+
+    if (validationResult.valid === false) {
+        throw new Error(validationResult.error + ': ' + validationResult.property);
+    }
 
     return makefileBuilder.build({
         all: generateCompileInstructions(config)

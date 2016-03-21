@@ -65,7 +65,8 @@ var validateRequiredProperties = function (config) {
     return _.reduce(requiredProperties, function (result, property) {
         if (result.valid && config[property] === undefined) {
             result.valid = false;
-            result.error = 'missing ' + property;
+            result.error = 'missing property';
+            result.property = property;
         }
         return result;
     }, {valid: true});
@@ -79,14 +80,16 @@ var validateForInvalidValues = function (config) {
     if (!isValidValue(validTypes, config.type)) {
         return {
             valid: false,
-            error: 'invalid type'
+            error: 'invalid property',
+            property: 'type'
         };
     }
 
     if (!isValidValue(validHosts, config.host)) {
         return {
             valid: false,
-            error: 'invalid host'
+            error: 'invalid property',
+            property: 'host'
         };
     }
 
@@ -99,7 +102,8 @@ var validateStringProperties = function (config) {
     return _.reduce(stringProperties, function (result, property) {
         if (result.valid && config[property] !== undefined && typeof config[property] !== 'string') {
             result.valid = false;
-            result.error = property + ' is not a string';
+            result.error = 'property is not a string';
+            result.property = property;
         }
         return result;
     }, {valid: true});
@@ -122,7 +126,8 @@ var validateStringArrayProperties = function (config) {
             config[property] !== undefined &&
             (!Array.isArray(config[property]) || arrayContainsNonString(config[property]))) {
             result.valid = false;
-            result.error = property + ' is not a string array';
+            result.error = 'property is not a string array';
+            result.property = property;
         }
         return result;
     }, {valid: true});
@@ -147,13 +152,60 @@ var validateProperties = function (config) {
     };
 };
 
+var validateFileExtensions = function (config) {
+    return _.reduce(config.files, function (result, file) {
+        if (result.valid && file.match(/\.\w/) === null) {
+            return {
+                valid: false,
+                error: 'no extension',
+                property: 'files'
+            };
+        }
+        return result;
+    }, {valid: true});
+};
+
+var validateFilenames = function (config) {
+    if (config.outputName.match(/[\/\\]/) !== null ||
+        config.outputName === '.' ||
+        config.outputName === '..') {
+
+        return {
+            valid: false,
+            error: 'cannot be path',
+            property: 'outputName'
+        };
+    }
+
+    return {
+        valid: true
+    };
+};
+
+var validateFileArrays = function (config) {
+    if (config.files.length === 0) {
+        return {
+            valid: false,
+            error: 'no input files',
+            property: 'files'
+        };
+    }
+
+    return {
+        valid: true
+    };
+};
+
 ConfigValidator.validate = function (config) {
     var validators = [
         validateRequiredProperties,
         validateForInvalidValues,
         validateStringProperties,
         validateStringArrayProperties,
-        validateProperties
+        validateProperties,
+        validateFileExtensions,
+        validateFilenames,
+        validateFileArrays
     ];
 
     return _.reduce(validators, function (result, validator) {

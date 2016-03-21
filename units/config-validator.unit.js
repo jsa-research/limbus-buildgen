@@ -54,7 +54,8 @@ describe('config-validator', function () {
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('missing type');
+                result.error.should.equal('missing property');
+                result.property.should.equal('type');
             });
 
             it('should return {valid: false, error: "missing host"} when missing a host', function () {
@@ -64,7 +65,8 @@ describe('config-validator', function () {
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('missing host');
+                result.error.should.equal('missing property');
+                result.property.should.equal('host');
             });
 
             it('should return {valid: false, error: "missing files"} when missing source files', function () {
@@ -74,7 +76,8 @@ describe('config-validator', function () {
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('missing files');
+                result.error.should.equal('missing property');
+                result.property.should.equal('files');
             });
 
             it('should return {valid: false, error: "missing outputName"} when missing an output name', function () {
@@ -84,7 +87,20 @@ describe('config-validator', function () {
                     files: ['main.c']
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('missing outputName');
+                result.error.should.equal('missing property');
+                result.property.should.equal('outputName');
+            });
+
+            it('should return {valid: false, error: "no input files"} given an empty files array', function () {
+                var result = ConfigValidator.validate({
+                    type: 'application',
+                    host: 'linux',
+                    files: [],
+                    outputName: 'app'
+                });
+                result.valid.should.be.false();
+                result.error.should.equal('no input files');
+                result.property.should.equal('files');
             });
         });
 
@@ -97,7 +113,8 @@ describe('config-validator', function () {
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('invalid type');
+                result.error.should.equal('invalid property');
+                result.property.should.equal('type');
 
                 result = ConfigValidator.validate({
                     type: 'other-invalid-type',
@@ -106,7 +123,8 @@ describe('config-validator', function () {
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('invalid type');
+                result.error.should.equal('invalid property');
+                result.property.should.equal('type');
             });
 
             it('should return {valid: true} when type is a valid value', function () {
@@ -135,7 +153,8 @@ describe('config-validator', function () {
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('invalid host');
+                result.error.should.equal('invalid property');
+                result.property.should.equal('host');
 
                 result = ConfigValidator.validate({
                     type: 'application',
@@ -144,7 +163,8 @@ describe('config-validator', function () {
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('invalid host');
+                result.error.should.equal('invalid property');
+                result.property.should.equal('host');
             });
 
             it('should return {valid: true} when host is a valid value', function () {
@@ -181,7 +201,8 @@ describe('config-validator', function () {
                     outputName: 1
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('outputName is not a string');
+                result.error.should.equal('property is not a string');
+                result.property.should.equal('outputName');
             });
 
             it('should return {valid: false, error: "outputPath is not a string"} when outputPath is not a string', function () {
@@ -193,7 +214,8 @@ describe('config-validator', function () {
                     outputPath: 123
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('outputPath is not a string');
+                result.error.should.equal('property is not a string');
+                result.property.should.equal('outputPath');
             });
 
             it('should return {valid: false, error: "compilerFlags is not a string"} when compilerFlags is not a string', function () {
@@ -205,7 +227,8 @@ describe('config-validator', function () {
                     compilerFlags: 123
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('compilerFlags is not a string');
+                result.error.should.equal('property is not a string');
+                result.property.should.equal('compilerFlags');
             });
 
             it('should return {valid: false, error: "linkerFlags is not a string"} when linkerFlags is not a string', function () {
@@ -217,7 +240,8 @@ describe('config-validator', function () {
                     linkerFlags: 123
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('linkerFlags is not a string');
+                result.error.should.equal('property is not a string');
+                result.property.should.equal('linkerFlags');
             });
         });
 
@@ -230,7 +254,8 @@ describe('config-validator', function () {
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('files is not a string array');
+                result.error.should.equal('property is not a string array');
+                result.property.should.equal('files');
             });
 
             it('should return {valid: false, error: "includePaths is not a string array"} if includePaths is not a string array', function () {
@@ -242,7 +267,8 @@ describe('config-validator', function () {
                     includePaths: [3]
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('includePaths is not a string array');
+                result.error.should.equal('property is not a string array');
+                result.property.should.equal('includePaths');
             });
 
             it('should return {valid: false, error: "libraries is not a string array"} if libraries is not a string array', function () {
@@ -254,7 +280,82 @@ describe('config-validator', function () {
                     libraries: [3]
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('libraries is not a string array');
+                result.error.should.equal('property is not a string array');
+                result.property.should.equal('libraries');
+            });
+        });
+
+        describe('File extensions', function () {
+            it('should return {valid: false, error: "no extension", property: "files"} given a file in files with no extension', function () {
+                var result = ConfigValidator.validate({
+                    type: 'application',
+                    host: 'linux',
+                    files: ['other-file'],
+                    outputName: 'app',
+                });
+                result.valid.should.be.false();
+                result.error.should.equal('no extension');
+                result.property.should.equal('files');
+
+                result = ConfigValidator.validate({
+                    type: 'application',
+                    host: 'linux',
+                    files: ['main.c', 'other-file'],
+                    outputName: 'app',
+                });
+                result.valid.should.be.false();
+                result.error.should.equal('no extension');
+                result.property.should.equal('files');
+
+                result = ConfigValidator.validate({
+                    type: 'application',
+                    host: 'linux',
+                    files: ['main.c', 'file'],
+                    outputName: 'app',
+                });
+                result.valid.should.be.false();
+                result.error.should.equal('no extension');
+                result.property.should.equal('files');
+
+                result = ConfigValidator.validate({
+                    type: 'application',
+                    host: 'linux',
+                    files: ['file.'],
+                    outputName: 'app',
+                });
+                result.valid.should.be.false();
+                result.error.should.equal('no extension');
+                result.property.should.equal('files');
+
+                result = ConfigValidator.validate({
+                    type: 'application',
+                    host: 'linux',
+                    files: ['file.1'],
+                    outputName: 'app',
+                });
+                result.valid.should.be.true();
+            });
+        });
+
+        describe('Filenames are not paths', function () {
+            it('should return {valid: false, error: "cannot be path", property: "outputName"} given a path in outputName', function () {
+                var invalidOutputName = function (outputName) {
+                    var result = ConfigValidator.validate({
+                        type: 'application',
+                        host: 'linux',
+                        files: ['main.c'],
+                        outputName: outputName,
+                    });
+                    result.valid.should.be.false();
+                    result.error.should.equal('cannot be path');
+                    result.property.should.equal('outputName');
+                };
+
+                invalidOutputName('app/');
+                invalidOutputName('/app');
+                invalidOutputName('\\');
+                invalidOutputName('.');
+                invalidOutputName('..');
             });
         });
     });
