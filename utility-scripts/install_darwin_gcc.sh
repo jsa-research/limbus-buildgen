@@ -14,7 +14,9 @@
 
 if test "$BUILDGEN_TARGET_COMPILER" = "gcc" -a `uname` = "Darwin"
 then
+    PRE_BUILD_DIR=`pwd`
     brew tap homebrew/versions
     brew update > /dev/null
     brew install homebrew/versions/gcc6
+    cd $PRE_BUILD_DIR
 fi
