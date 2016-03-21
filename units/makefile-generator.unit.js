@@ -121,11 +121,11 @@ describe('makefile-generator', function () {
         });
     });
 
-    describe('makefile where host is freebsd', function () {
+    describe('makefile where OS is freebsd', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
                 type: 'application',
-                host: 'freebsd',
+                host: 'freebsd-gcc',
                 files: [
                     'test.c'
                 ],
@@ -136,11 +136,11 @@ describe('makefile-generator', function () {
         });
     });
 
-    describe('makefile where host is linux', function () {
+    describe('makefile where os is linux', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
                 type: 'application',
-                host: 'linux',
+                host: 'linux-clang',
                 files: [
                     'test.c'
                 ],

@@ -13,11 +13,6 @@ var _ = require('./publicdash');
 var typeCheck = require('./type-check');
 var makefileBuilder = require('./makefile-builder');
 
-var standardLinkerFlags = {
-    freebsd: '-lm',
-    linux: '-lm'
-};
-
 var compilerInfoTable = {
     clang: {
         hosts: [
@@ -166,7 +161,7 @@ var generateCompileInstructions = function (config) {
     var compiler = compilerByHost(config.host);
     var compilerInfo = compilerInfoTable[compiler];
 
-    if (config.type !== 'static-library' && (config.host === 'linux' || config.host === 'freebsd')) {
+    if (config.type !== 'static-library' && (config.host.indexOf('linux') !== -1 || config.host.indexOf('freebsd') !== -1)) {
         config.libraries = config.libraries || [];
         config.libraries.push('m');
     }
