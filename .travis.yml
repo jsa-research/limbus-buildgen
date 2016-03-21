@@ -17,7 +17,7 @@ env:
   - BUILDGEN_NODE_VERSION="4.4.0"
   - BUILDGEN_NODE_VERSION="5.9.0"
 
-before_install: . ./utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION && echo NVM version: `nvm --version` && echo Node.js version: `node -v` && echo NPM version: `npm -v` && echo uname output: `uname -rsv`
+before_install: . utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION && . utility-scripts/echo-versions.sh
 install: npm install
 script: make && npm test && npm run coverage-travis-ci
 after_script: npm run coverage-coveralls-io
