@@ -178,6 +178,7 @@ This will generate a file named `coverage.html` in the project root directory wh
 * Override all configuration properties using flags
 * Automate Windows dependency fetching
 * Improve documentation
+* Create make.bat for streamlining Windows builds
 
 ##### Towards a 1.0 release
 * Continuous integration for all supported targets
