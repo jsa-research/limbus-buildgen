@@ -19,7 +19,7 @@ env:
   - BUILDGEN_NODE_VERSION="4.4.0" BUILDGEN_TARGET_COMPILER="gcc"
   - BUILDGEN_NODE_VERSION="5.9.0" BUILDGEN_TARGET_COMPILER="gcc"
 
-before_install: . utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION ; brew update ; brew install gcc ; . utility-scripts/echo-versions.sh
+before_install: . utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION ; brew tap homebrew/versions ; brew update > /dev/null ; brew install homebrew/versions/gcc6 ; . utility-scripts/echo-versions.sh
 install: npm install ; dependencies/fetch_dependencies.sh
 script: make -f Makefile.`uname -s | tr 'A-Z' 'a-z'`-$BUILDGEN_TARGET_COMPILER && npm run test -- -t 20000 && npm run coverage-travis-ci
 after_script: npm run coverage-coveralls-io
