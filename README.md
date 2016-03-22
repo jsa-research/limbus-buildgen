@@ -129,13 +129,10 @@ limbus-buildgen compiles using build files that it generated itself.
 
 It has very few dependencies that it downloads automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio installed. Most Unixes come with a C compiler suite.*)
 
-#### Linux/OS X/FreeBSD
-Run `make` in the project root directory to build.
+#### Compiling
+Run `make` in the project root directory to compile.
 
-#### Windows
-You will need to download some dependencies. If you have PowerShell 3.0 installed you can run the script `dependencies\fetch_dependencies.ps1` in the project root directory and it will download the required dependencies. Otherwise, you can download them manually, see [Download dependencies manually](#download-dependencies-manually).
-
-When you have the dependencies, open "VS2013 x86 Native Tools Command Prompt" and run `nmake /f Makefile.win32` in the project root directory.
+*Windows users will need PowerShell 3.0 installed to automatically download the dependencies. If this is not possible, see [Download dependencies manually](#download-dependencies-manually)*
 
 #### Download dependencies manually
 limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape 1.4.0 from `http://duktape.org/` and extract it into `dependencies/duktape-1.4.0`.
@@ -179,7 +176,6 @@ This release is intended to streamline the interface. And produce a done release
 * Override all configuration properties using flags
 * Automate Windows dependency fetching
 * Improve documentation
-* Create make.bat for streamlining Windows builds
 * Modify makefile generator so that makefiles make use of make's "implicit variables"
 
 ##### Towards a 1.0 release
