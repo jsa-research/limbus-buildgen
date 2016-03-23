@@ -175,7 +175,6 @@ This release is intended to streamline the interface. And produce a done release
 * Provide npm packages for both executable and libraries
 * Create release bundled with dependencies
 * Override all configuration properties using flags
-* Automate Windows dependency fetching
 * Improve documentation
 * Modify makefile generator so that makefiles make use of make's "implicit variables"
 
