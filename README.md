@@ -35,19 +35,19 @@ The JSON configuration files support the following properties:
 * **libraries** Specifies any libraries to link with when building an application or dynamic library.
 
 #### Valid host identifiers
-|Identifier|Target OS & compiler|
-|:--|:--|
-|linux|Linux & GCC|
-|linux-clang|Linux & Clang|
-|linux-gcc|Linux & GCC|
-|darwin|Mac OS X & Clang|
-|darwin-clang|Mac OS X & Clang|
-|darwin-gcc|Mac OS X & GCC|
-|win32|Windows & CL|
-|win32-cl|Windows & CL|
-|freebsd|FreeBSD & Clang|
-|freebsd-clang|FreeBSD & Clang|
-|freebsd-gcc|FreeBSD & GCC|
+|Identifier|Target OS|Compiler|
+|:--|:--|:--|
+|linux|Linux|GNU GCC|
+|linux-clang|Linux|Clang/LLVM|
+|linux-gcc|Linux|GNU GCC|
+|darwin|Mac OS X|Clang/LLVM|
+|darwin-clang|Mac OS X|Clang/LLVM|
+|darwin-gcc|Mac OS X|GNU GCC|
+|win32|Windows|CL|
+|win32-cl|Windows|CL|
+|freebsd|FreeBSD|Clang/LLVM|
+|freebsd-clang|FreeBSD|Clang/LLVM|
+|freebsd-gcc|FreeBSD|GNU GCC|
 
 #### Example configuration file
 
