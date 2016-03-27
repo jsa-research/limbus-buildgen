@@ -15,8 +15,7 @@ install:
     - ps: Install-Product node $env:nodejs_version
     - npm --version
     - npm install
-    - 'Powershell.exe -executionpolicy remotesigned -File dependencies\fetch_dependencies.ps1'
-    - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /%target_arch% /%target_config%'
+    - make /%target_arch% /%target_config%
 
 build_script:
     - nmake /f Makefile.win32 && npm test
