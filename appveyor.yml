@@ -18,7 +18,7 @@ install:
     - make /%target_arch% /%target_config%
 
 build_script:
-    - nmake /f Makefile.win32 && npm test
+    - npm test
 
 environment:
     matrix:
