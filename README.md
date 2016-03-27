@@ -125,9 +125,12 @@ Unit- & integration tests are automatically run against several combinations of 
 *FreeBSD is tested from time to time during development of new features but as there is currently no continuous integration on a FreeBSD host it should be considered less stable than the other target hosts.*
 
 ## Build
-limbus-buildgen compiles using build files that it generated itself.
+In the root project directory, run:
+```
+make
+```
 
-Run `make` in the project root directory to compile.
+limbus-buildgen compiles using build files that it generated itself.
 
 *Windows users will need PowerShell 3.0 installed to automatically download the dependencies. If this is not possible, see [Download dependencies manually](#download-dependencies-manually)*
 
