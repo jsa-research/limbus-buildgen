@@ -125,14 +125,18 @@ Unit- & integration tests are automatically run against several combinations of 
 *FreeBSD is tested from time to time during development of new features but as there is currently no continuous integration on a FreeBSD host it should be considered less stable than the other target hosts.*
 
 ## Build
+In the root project directory, run:
+```
+make
+```
+
 limbus-buildgen compiles using build files that it generated itself.
 
-It has very few dependencies that it downloads automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio installed. Most Unixes come with a C compiler suite.*)
-
-#### Compiling
-Run `make` in the project root directory to compile.
-
 *Windows users will need PowerShell 3.0 installed to automatically download the dependencies. If this is not possible, see [Download dependencies manually](#download-dependencies-manually)*
+
+#### Dependencies
+
+It has very few dependencies that it downloads automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio installed. Most Unixes come with a C compiler suite.*)
 
 #### Download dependencies manually
 limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape 1.4.0 from `http://duktape.org/` and extract it into `dependencies/duktape-1.4.0`.
@@ -174,7 +178,6 @@ This release is intended to streamline the interface. And produce a done release
 * Provide npm packages for both executable and libraries
 * Create release bundled with dependencies
 * Override all configuration properties using flags
-* Automate Windows dependency fetching
 * Improve documentation
 * Modify makefile generator so that makefiles make use of make's "implicit variables"
 
