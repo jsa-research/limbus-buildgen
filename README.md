@@ -125,26 +125,26 @@ Unit- & integration tests are automatically run against several combinations of 
 *FreeBSD is tested from time to time during development of new features but as there is currently no continuous integration on a FreeBSD host it should be considered less stable than the other target hosts.*
 
 ## Build
-In the root project directory, run:
+For all platforms, open a terminal and run the following command in the root project directory:
 ```
 make
 ```
 
-limbus-buildgen compiles using build files that it generated itself.
+limbus-buildgen compiles using build files that it generated itself. To re-generate the makefiles run `utility-scripts/generate_build_files.sh` on a Unix-like OS.
 
 *Windows users will need PowerShell 3.0 installed to automatically download the dependencies. If this is not possible, see [Download dependencies manually](#download-dependencies-manually)*
 
 #### Dependencies
 
-It has very few dependencies that it downloads automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio installed. Most Unixes come with a C compiler suite.*)
+There are very few dependencies and they are downloaded automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio or the Windows SDK installed. Most Unixes come with a C compiler suite.*)
 
 #### Download dependencies manually
-limbus-buildgen uses Duktape as its Javascript interpreter. You can download Duktape 1.4.0 from `http://duktape.org/` and extract it into `dependencies/duktape-1.4.0`.
+Duktape is used for Javascript execution. You can download the Duktape 1.4.0 release package from `http://duktape.org/` and extract it into `dependencies/duktape-1.4.0`.
 
 ## Development
 [![Dependencies](https://david-dm.org/redien/limbus-buildgen.svg)](https://david-dm.org/redien/limbus-buildgen) [![devDependencies](https://david-dm.org/redien/limbus-buildgen/dev-status.svg)](https://david-dm.org/redien/limbus-buildgen#info=devDependencies)
 
-For development you need some extra development dependencies.
+For development you need some extra development dependencies. Install them using NPM with:
 
 ```
 npm install
@@ -158,7 +158,7 @@ Run both unit- and integration tests using
 npm test
 ```
 
-To run each separately, use `npm run-script unit-test` for unit tests and `npm run-script integration-test` for integration tests.
+To run each separately, use `npm run unit-test` for unit tests and `npm run integration-test` for integration tests.
 
 #### Code coverage
 [![Coverage Status](https://img.shields.io/coveralls/redien/limbus-buildgen.svg)](https://coveralls.io/r/redien/limbus-buildgen?branch=master)
@@ -195,6 +195,7 @@ Features which aren't needed for feature-completeness but are nice to have.
 * Modify makefile to find compilers and use whichever is available.
 
 ## Copy
+```
 limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
 
 Written in 2014-2016 by Jesper Oskarsson jesosk@gmail.com
@@ -205,3 +206,4 @@ This software is distributed without any warranty.
 
 You should have received a copy of the CC0 Public Domain Dedication along with this software.
 If not, see <[http://creativecommons.org/publicdomain/zero/1.0/](http://creativecommons.org/publicdomain/zero/1.0/)>.
+```
