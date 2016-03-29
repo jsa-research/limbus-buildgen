@@ -13,13 +13,12 @@ var should = require('should');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var util = require('./util.js');
-var shell = require('../source/shell.js');
+var shell = require('./shell.js');
 
 var setup = function () {
-    /* Single file */
-    fs.writeFileSync(
-        "temp/simple.c",
-        fs.readFileSync("features/front-end/simple.c"));
+    util.copyFiles([
+        'simple.c'
+    ], 'features/front-end/', 'temp/');
 };
 
 describe('Front-end', function () {
@@ -58,7 +57,7 @@ describe('Front-end', function () {
     });
 
     it('should fail with "Too many arguments" if too many non-flag arguments are passed', function (done) {
-        shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' file.json file2.json', null, function (error, stdout, stderr) {
+        shell.exec(util.frontEndExecutable + ' file.json file2.json', null, function (error, stdout, stderr) {
             (!error).should.be.false;
             stdout.should.containEql('Too many arguments');
             done();
@@ -66,7 +65,7 @@ describe('Front-end', function () {
     });
 
     it('should fail with "No configuration file" if no config file is provided', function (done) {
-        shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js'), null, function (error, stdout, stderr) {
+        shell.exec(util.frontEndExecutable, null, function (error, stdout, stderr) {
             (!error).should.be.false;
             stdout.should.containEql('No configuration file');
             done();
@@ -74,7 +73,7 @@ describe('Front-end', function () {
     });
 
     it('should output usage information if given the --help flag', function (done) {
-        shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --help', null, function (error, stdout, stderr) {
+        shell.exec(util.frontEndExecutable + ' --help', null, function (error, stdout, stderr) {
             (!error).should.be.true;
             stdout.should.containEql('Usage:');
             done();
@@ -90,7 +89,7 @@ describe('Front-end', function () {
         var fails = [];
 
         util.forEachAsync(requiresValue, function (flag, index, done) {
-            shell.exec(shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --' + flag, null, function (error, stdout, stderr) {
+            shell.exec(util.frontEndExecutable + ' --' + flag, null, function (error, stdout, stderr) {
                 if (error && stdout.indexOf('Flag --' + flag + ' is missing a value') !== -1) {
                     fails.push(error);
                 }

@@ -10,8 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var makefile_generator = require('../source/makefile-generator');
-var shell = require('../source/shell');
+var shell = require('./shell');
 var fs = require('fs');
+
+exports.frontEndExecutable = shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js');
 
 var setupTestEnvironment = function (performWork, callback) {
     shell.mkdirClean('temp', null, function (callback) {
@@ -80,7 +82,7 @@ exports.generateCompileAndRun = function (options, done) {
                             if (error !== null) {
                                 return callback(error);
                             }
-                            
+
                             if (expectOutputToMatch && !stdout.match(expectOutputToMatch)) {
                                 return callback(new Error("Output '" + stdout + "' does not match " + expectOutputToMatch));
                             }
@@ -91,7 +93,7 @@ exports.generateCompileAndRun = function (options, done) {
                 });
             });
         };
-        
+
         if (Array.isArray(options.config)) {
             return exports.forEachAsync(options.config, generateOneConfig, callback);
         } else {
@@ -114,6 +116,12 @@ exports.forEachAsync = function (array, callback, done) {
             return done();
         }
     };
-    
+
     return next(0);
+};
+
+exports.copyFiles = function (files, inputDirectory, outputDirectory) {
+    files.forEach(function (file) {
+        fs.writeFileSync(outputDirectory + file, fs.readFileSync(inputDirectory + file));
+    });
 };

@@ -12,7 +12,7 @@
 var should = require('should');
 var fs = require('fs');
 var util = require('./util.js');
-var shell = require('../source/shell.js');
+var shell = require('./shell.js');
 
 var javascriptExamples = [];
 var jsonExamples = [];
@@ -34,9 +34,9 @@ readme.replace(/## Use[\s\S]+?```([\s\S]+?)```/, function (match, info) {
 
 
 var setup = function () {
-    fs.writeFileSync(
-        "temp/main.c",
-        fs.readFileSync("features/readme-examples/main.c"));
+    util.copyFiles([
+        'main.c'
+    ], 'features/readme-examples/', 'temp/');
 };
 
 var generateWithExample = function (example, done) {

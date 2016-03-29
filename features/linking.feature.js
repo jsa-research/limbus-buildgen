@@ -14,39 +14,16 @@ var fs = require('fs');
 var util = require('./util.js');
 
 var setup = function () {
-    /* Includes and linking */
-    fs.writeFileSync(
-        "temp/linked.c",
-        fs.readFileSync("features/linking/linked.c"));
-
-    fs.writeFileSync(
-        "temp/linked_dynamic.c",
-        fs.readFileSync("features/linking/linked_dynamic.c"));
-
-    fs.writeFileSync(
-        "temp/source/mylibrary.c",
-        fs.readFileSync("features/linking/source/mylibrary.c"));
-
-    fs.writeFileSync(
-        "temp/include/mylibrary.h",
-        fs.readFileSync("features/linking/include/mylibrary.h"));
-
-    fs.writeFileSync(
-        "temp/source/mydynamiclibrary.c",
-        fs.readFileSync("features/linking/source/mydynamiclibrary.c"));
-
-    fs.writeFileSync(
-        "temp/include/mydynamiclibrary.h",
-        fs.readFileSync("features/linking/include/mydynamiclibrary.h"));
-
-    /* Check for libm */
-    fs.writeFileSync(
-        "temp/math.c",
-        fs.readFileSync("features/linking/math.c"));
-
-    fs.writeFileSync(
-        "temp/simple.c",
-        fs.readFileSync("features/linking/simple.c"));
+    util.copyFiles([
+        'linked.c',
+        'linked_dynamic.c',
+        'source/mylibrary.c',
+        'include/mylibrary.h',
+        'source/mydynamiclibrary.c',
+        'include/mydynamiclibrary.h',
+        'math.c',
+        'simple.c'
+    ], 'features/linking/', 'temp/');
 };
 
 describe('Linking', function () {
