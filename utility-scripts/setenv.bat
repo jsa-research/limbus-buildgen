@@ -6,6 +6,51 @@ REM down to the oldest Windows SDK
 
 REM Passes any arguments to the actual implementations.
 
-echo Configuring environment with %* ...
+set SETENV_ARGS=
+set SETENV_ARGS_STR=
+set VSDEVCMD_ARGS=
+set VSDEVCMD_ARGS_STR=
 
-((call "C:\Program Files (x86)\Microsoft Visual Studio 16.0\Common7\Tools\VsDevCmd.bat" %* 2>NUL) && echo Using Visual Studio 16.0) || ((call "C:\Program Files (x86)\Microsoft Visual Studio 15.0\Common7\Tools\VsDevCmd.bat" %* 2>NUL) && echo Using Visual Studio 15.0) || ((call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat" %* 2>NUL) && echo Using Visual Studio 14.0) || ((call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\VsDevCmd.bat" %* 2>NUL) && echo Using Visual Studio 12.0) || ((call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\vsvars32.bat" %* 2>NUL) && echo Using Visual Studio 11.0) || ((call "C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" %* 2>NUL) && echo Using Visual Studio 10.0) || ((call "C:\Program Files\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" %* 2>NUL) && echo Using Visual Studio 9.0) || ((call "C:\Program Files\Microsoft SDKs\Windows\v12.1\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 12.1) || ((call "C:\Program Files\Microsoft SDKs\Windows\v12\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 12) || ((call "C:\Program Files\Microsoft SDKs\Windows\v11.1\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 11.1) || ((call "C:\Program Files\Microsoft SDKs\Windows\v11\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 11) || ((call "C:\Program Files\Microsoft SDKs\Windows\v10.1\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 10.1) || ((call "C:\Program Files\Microsoft SDKs\Windows\v10\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 10) || ((call "C:\Program Files\Microsoft SDKs\Windows\v8.1\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 8.1) || ((call "C:\Program Files\Microsoft SDKs\Windows\v8.0\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 8.0) || ((call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 7.1) || ((call "C:\Program Files\Microsoft SDKs\Windows\v7.0\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 7.0) || ((call "C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 6.1) || ((call "C:\Program Files\Microsoft SDKs\Windows\v6.0\Bin\SetEnv.cmd" %* 2>NUL) && echo Using Windows SDK 6.0)
+REM Append correct flags
+ECHO.%*| FIND /I "x64">Nul && (
+  set SETENV_ARGS=/x64 %SETENV_ARGS%
+  set VSDEVCMD_ARGS=x86_amd64 %VSDEVCMD_ARGS%
+)
+ECHO.%*| FIND /I "x86">Nul && (
+  set SETENV_ARGS=/x86 %SETENV_ARGS%
+  set VSDEVCMD_ARGS=x86 %VSDEVCMD_ARGS%
+)
+ECHO.%*| FIND /I "Release">Nul && (
+  set SETENV_ARGS=/Release %SETENV_ARGS%
+)
+ECHO.%*| FIND /I "Debug">Nul && (
+  set SETENV_ARGS=/Debug %SETENV_ARGS%
+)
+ECHO.%*| FIND /I "vista">Nul && (
+  set SETENV_ARGS=/vista %SETENV_ARGS%
+)
+ECHO.%*| FIND /I "xp">Nul && (
+  set SETENV_ARGS=/xp %SETENV_ARGS%
+)
+ECHO.%*| FIND /I "2003">Nul && (
+  set SETENV_ARGS=/2003 %SETENV_ARGS%
+)
+ECHO.%*| FIND /I "2008">Nul && (
+  set SETENV_ARGS=/2008 %SETENV_ARGS%
+)
+ECHO.%*| FIND /I "win7">Nul && (
+  set SETENV_ARGS=/win7 %SETENV_ARGS%
+)
+
+REM Remove trailing space
+IF "%SETENV_ARGS%"=="" GOTO SKIP_SETENV_ARGS
+set SETENV_ARGS=%SETENV_ARGS:~0,-1%
+set SETENV_ARGS_STR=with SetEnv.cmd %SETENV_ARGS%
+:SKIP_SETENV_ARGS
+IF "%VSDEVCMD_ARGS%"=="" GOTO SKIP_VSDEVCMD_ARGS
+set VSDEVCMD_ARGS=%VSDEVCMD_ARGS:~0,-1%
+set VSDEVCMD_ARGS_STR=with VsDevCmd.bat %VSDEVCMD_ARGS%
+:SKIP_VSDEVCMD_ARGS
+
+REM Actually call the implementations
+((call "C:\Program Files (x86)\Microsoft Visual Studio 16.0\Common7\Tools\VsDevCmd.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 16.0 %VSDEVCMD_ARGS_STR%) || ((call "C:\Program Files (x86)\Microsoft Visual Studio 15.0\Common7\Tools\VsDevCmd.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 15.0 %VSDEVCMD_ARGS_STR%) || ((call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 14.0 %VSDEVCMD_ARGS_STR%) || ((call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\VsDevCmd.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 12.0 %VSDEVCMD_ARGS_STR%) || ((call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\Tools\vsvars32.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 11.0 %VSDEVCMD_ARGS_STR%) || ((call "C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 10.0 %VSDEVCMD_ARGS_STR%) || ((call "C:\Program Files\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 9.0 %VSDEVCMD_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v12.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 12.1 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v12\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 12 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v11.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 11.1 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v11\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 11 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v10.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 10.1 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v10\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 10 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v8.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 8.1 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v8.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 8.0 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 7.1 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v7.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 7.0 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 6.1 %SETENV_ARGS_STR%) || ((call "C:\Program Files\Microsoft SDKs\Windows\v6.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 6.0 %SETENV_ARGS_STR%)

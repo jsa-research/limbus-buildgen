@@ -15,7 +15,7 @@ install:
     - ps: Install-Product node $env:nodejs_version
     - npm --version
     - npm install
-    - cmd: make /%target_arch% /%target_config%
+    - make /%target_arch% /%target_config%
 
 build_script:
     - npm test
