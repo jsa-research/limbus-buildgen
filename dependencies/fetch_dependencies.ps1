@@ -14,9 +14,10 @@ $duktape_final_directory = $dependencies_folder + "\duktape-" + $duktape_version
 $duktape_intermediary_directory = $dependencies_folder + "\duktape-releases-" + $duktape_version
 
 if (!(Test-Path $duktape_final_directory)) {
+  $progressPreference = 'silentlyContinue'
   Invoke-WebRequest $duktape_archive_url -OutFile $duktape_archive_destination
-  [System.Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem')
-  [System.IO.Compression.ZipFile]::ExtractToDirectory($duktape_archive_destination, $dependencies_folder)
+  [System.Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') | Out-Null
+  [System.IO.Compression.ZipFile]::ExtractToDirectory($duktape_archive_destination, $dependencies_folder) | Out-Null
   Move-Item $duktape_intermediary_directory $duktape_final_directory
   Remove-Item $duktape_archive_destination -Force
 }
