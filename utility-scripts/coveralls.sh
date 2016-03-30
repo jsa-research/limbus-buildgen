@@ -22,13 +22,13 @@ then
 
     # Cover tests
     make -f Makefile.coverage
-    mocha --require blanket -R mocha-lcov-reporter "**/*.unit.js" "**/*.feature.js" > javascript-coverage.info
+    mocha  -t 20000 --require blanket -R mocha-lcov-reporter "**/*.unit.js" "**/*.feature.js" > javascript-coverage.info
 
     # Merge coverage files
     lcov -b . -d . -c -o c-coverage.info
     lcov --extract c-coverage.info "`pwd -P`/source/*" -o c-coverage.info
     ./node_modules/lcov-result-merger/bin/lcov-result-merger.js '*-coverage.info' 'coverage.info'
-    
+
     # Send to coveralls.io
     cat coverage.info | ./node_modules/coveralls/bin/coveralls.js
 fi
