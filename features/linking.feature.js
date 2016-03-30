@@ -59,7 +59,7 @@ describe('Linking', function () {
             host: process.platform,
             files: ['simple.c'],
             outputName: 'app',
-            linkerFlags: process.platform === 'win32' ? '/KEYFILE' : '-nostdlib'
+            linkerFlags: process.platform === 'win32' ? '/NODEFAULTLIB' : '-nostdlib'
         }).should.be.rejected();
     });
 
