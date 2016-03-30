@@ -130,13 +130,13 @@ For all platforms, open a terminal and run the following command in the root pro
 make
 ```
 
-limbus-buildgen compiles using build files that it generated itself. To re-generate the makefiles run `utility-scripts/generate_build_files.sh` on a Unix-like OS.
-
-*Windows users will need PowerShell 3.0 installed to automatically download the dependencies. If this is not possible, see [Download dependencies manually](#download-dependencies-manually)*
+limbus-buildgen compiles using build files that it generated itself. To re-generate the makefiles run `utility-scripts/generate_build_files.sh` on a Unix-like OS after building.
 
 #### Dependencies
 
 There are very few dependencies and they are downloaded automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio or the Windows SDK installed. Most Unixes come with a C compiler suite.*)
+
+*Windows users will need PowerShell 3.0+ (which comes with Windows 7 SP1 or later) installed to automatically download the dependencies. If this is not possible, see [Download dependencies manually](#download-dependencies-manually)*
 
 #### Download dependencies manually
 Duktape is used for Javascript execution. You can download the Duktape 1.4.0 release package from `http://duktape.org/` and extract it into `dependencies/duktape-1.4.0`.
