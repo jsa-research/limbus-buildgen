@@ -60,47 +60,47 @@ describe('config-validator', function () {
         });
 
         describe('Missing required properties', function () {
-            it('should return {valid: false, error: "missing type"} when missing a type', function () {
+            it('should return {valid: false, error: "missing required property", property: "type"} when missing a type', function () {
                 var result = ConfigValidator.validate({
                     host: 'linux',
                     files: ['main.c'],
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('missing property');
+                result.error.should.equal('missing required property');
                 result.property.should.equal('type');
             });
 
-            it('should return {valid: false, error: "missing host"} when missing a host', function () {
+            it('should return {valid: false, error: "missing required property", property: "host"} when missing a host', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     files: ['main.c'],
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('missing property');
+                result.error.should.equal('missing required property');
                 result.property.should.equal('host');
             });
 
-            it('should return {valid: false, error: "missing files"} when missing source files', function () {
+            it('should return {valid: false, error: "missing required property", property: "files"} when missing source files', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',
                     outputName: 'app'
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('missing property');
+                result.error.should.equal('missing required property');
                 result.property.should.equal('files');
             });
 
-            it('should return {valid: false, error: "missing outputName"} when missing an output name', function () {
+            it('should return {valid: false, error: "missing required property", property: "outputName"} when missing an output name', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',
                     files: ['main.c']
                 });
                 result.valid.should.be.false();
-                result.error.should.equal('missing property');
+                result.error.should.equal('missing required property');
                 result.property.should.equal('outputName');
             });
 
@@ -118,7 +118,7 @@ describe('config-validator', function () {
         });
 
         describe('Valid type values', function () {
-            it('should return {valid: false, error: "invalid type"} when type is an invalid value', function () {
+            it('should return {valid: false, error: "invalid property", property: "type"} when type is an invalid value', function () {
                 var result = ConfigValidator.validate({
                     type: 'invalid-type',
                     host: 'linux',
@@ -158,7 +158,7 @@ describe('config-validator', function () {
         });
 
         describe('Valid host values', function () {
-            it('should return {valid: false, error: "invalid host"} when host is an invalid value', function () {
+            it('should return {valid: false, error: "invalid property", property: "host"} when host is an invalid value', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'invalid-host',
@@ -206,7 +206,7 @@ describe('config-validator', function () {
         });
 
         describe('Valid string properties', function () {
-            it('should return {valid: false, error: "outputName is not a string"} when outputName is not a string', function () {
+            it('should return {valid: false, error: "property is not a string", property: "outputName"} when outputName is not a string', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',
@@ -218,7 +218,7 @@ describe('config-validator', function () {
                 result.property.should.equal('outputName');
             });
 
-            it('should return {valid: false, error: "outputPath is not a string"} when outputPath is not a string', function () {
+            it('should return {valid: false, error: "property is not a string", property: "outputPath"} when outputPath is not a string', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',
@@ -231,7 +231,7 @@ describe('config-validator', function () {
                 result.property.should.equal('outputPath');
             });
 
-            it('should return {valid: false, error: "compilerFlags is not a string"} when compilerFlags is not a string', function () {
+            it('should return {valid: false, error: "property is not a string", property: "compilerFlags"} when compilerFlags is not a string', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',
@@ -244,7 +244,7 @@ describe('config-validator', function () {
                 result.property.should.equal('compilerFlags');
             });
 
-            it('should return {valid: false, error: "linkerFlags is not a string"} when linkerFlags is not a string', function () {
+            it('should return {valid: false, error: "property is not a string", property: "linkerFlags"} when linkerFlags is not a string', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',
@@ -259,7 +259,7 @@ describe('config-validator', function () {
         });
 
         describe('Valid string array properties', function () {
-            it('should return {valid: false, error: "files is not a string array"} if files is not a string array', function () {
+            it('should return {valid: false, error: "property is not a string array", property: "files"} if files is not a string array', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',
@@ -271,7 +271,7 @@ describe('config-validator', function () {
                 result.property.should.equal('files');
             });
 
-            it('should return {valid: false, error: "includePaths is not a string array"} if includePaths is not a string array', function () {
+            it('should return {valid: false, error: "property is not a string array", property: "includePaths"} if includePaths is not a string array', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',
@@ -284,7 +284,7 @@ describe('config-validator', function () {
                 result.property.should.equal('includePaths');
             });
 
-            it('should return {valid: false, error: "libraries is not a string array"} if libraries is not a string array', function () {
+            it('should return {valid: false, error: "property is not a string array", property: "libraries"} if libraries is not a string array', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',
                     host: 'linux',

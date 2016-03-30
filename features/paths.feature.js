@@ -10,7 +10,6 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var should = require('should');
-var fs = require('fs');
 var util = require('./util.js');
 var shell = require('./shell.js');
 
@@ -28,6 +27,8 @@ describe('Paths', function () {
     it('should use the outputPath', function () {
         return util.buildSimple({
             type: 'application',
+            host: process.platform,
+            files: ['simple.c'],
             outputPath: 'abc',
             outputName: 'app'
         }, 'abc/app');
@@ -36,6 +37,8 @@ describe('Paths', function () {
     it('should remove trailing path separators from outputPath', function () {
         return util.buildSimple({
             type: 'application',
+            host: process.platform,
+            files: ['simple.c'],
             outputPath: 'abc/',
             outputName: 'app'
         }, 'abc/app');

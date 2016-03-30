@@ -10,7 +10,6 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var should = require('should');
-var fs = require('fs');
 var util = require('./util.js');
 var shell = require('./shell.js');
 

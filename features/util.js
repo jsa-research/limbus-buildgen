@@ -124,9 +124,6 @@ exports.generateCompileAndRun = function (options) {
 };
 
 exports.buildSimple = function (config, command) {
-    config.type = config.type || 'application';
-    config.files = config.files || ['simple.c'];
-    config.outputName = config.outputName || 'simple';
     command = command || config.outputName;
 
     return exports.generateCompileAndRun({
@@ -138,6 +135,6 @@ exports.buildSimple = function (config, command) {
         config: config,
         command: command,
         expectOutputToMatch: '42',
-        parameters: '--host ' + process.platform
+        parameters: ''
     });
 };

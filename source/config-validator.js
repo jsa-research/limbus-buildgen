@@ -65,7 +65,7 @@ var validateRequiredProperties = function (config) {
     return _.reduce(requiredProperties, function (result, property) {
         if (result.valid && config[property] === undefined) {
             result.valid = false;
-            result.error = 'missing property';
+            result.error = 'missing required property';
             result.property = property;
         }
         return result;
