@@ -196,6 +196,20 @@ var validateFileArrays = function (config) {
     };
 };
 
+var validateMiscConstraints = function (config) {
+    if (config.type === 'static-library' && (config.libraries !== undefined && config.libraries.length > 0)) {
+        return {
+            valid: false,
+            error: 'given libraries with static-library',
+            property: 'libraries'
+        };
+    }
+
+    return {
+        valid: true
+    };
+};
+
 ConfigValidator.validate = function (config) {
     var validators = [
         validateRequiredProperties,
@@ -205,7 +219,8 @@ ConfigValidator.validate = function (config) {
         validateProperties,
         validateFileExtensions,
         validateFilenames,
-        validateFileArrays
+        validateFileArrays,
+        validateMiscConstraints
     ];
 
     return _.reduce(validators, function (result, validator) {

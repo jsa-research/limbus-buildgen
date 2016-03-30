@@ -46,6 +46,19 @@ describe('config-validator', function () {
             result.valid.should.be.true();
         });
 
+        it('should return {valid: false, error: "given libraries with static-library", property: "libraries"} if given libraries to link while type is "static-library"', function () {
+            var result = ConfigValidator.validate({
+                type: 'static-library',
+                host: 'linux',
+                files: ['main.c'],
+                outputName: 'static_library',
+                libraries: ['another_library']
+            });
+            result.valid.should.be.false();
+            result.error.should.equal('given libraries with static-library');
+            result.property.should.equal('libraries');
+        });
+
         describe('Missing required properties', function () {
             it('should return {valid: false, error: "missing type"} when missing a type', function () {
                 var result = ConfigValidator.validate({
