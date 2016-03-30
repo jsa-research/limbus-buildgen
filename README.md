@@ -191,8 +191,13 @@ This release will implement the rest of the features to make it feature-complete
 
 ##### Further into the future
 Features which aren't needed for feature-completeness but are nice to have.
-* Cross compilation to Windows
+* Cross compilation to Windows using MinGW
 * Modify makefile to find compilers and use whichever is available.
+* Support for more compiler suites:
+  - AMD's Open64
+  - Intel's C++ compiler
+  - MinGW
+  - Solaris Studio
 
 ## Copy
 limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
