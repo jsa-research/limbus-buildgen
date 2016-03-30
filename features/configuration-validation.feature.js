@@ -25,7 +25,7 @@ describe('Configuration Validation', function () {
     it('should compile given a minimal config', function () {
         return util.buildSimple({
             type: 'application',
-            host: 'linux',
+            host: process.platform,
             files: ['simple.c'],
             outputName: 'app'
         });

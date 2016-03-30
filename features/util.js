@@ -90,7 +90,7 @@ var execute = function (type, command, expectOutputToMatch) {
         return Promise.resolve();
     }
 
-    return shell.exec(shell.path('./') + command, {cwd: 'temp'}).then(function (result) {
+    return shell.exec(shell.path('./' + command), {cwd: 'temp'}).then(function (result) {
         if (expectOutputToMatch && !result.stdout.match(expectOutputToMatch)) {
             return Promise.reject(new Error("Output '" + result.stdout + "' does not match " + expectOutputToMatch));
         } else {

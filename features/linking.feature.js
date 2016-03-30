@@ -59,7 +59,7 @@ describe('Linking', function () {
             host: process.platform,
             files: ['simple.c'],
             outputName: 'app',
-            linkerFlags: '--invalid-flag'
+            linkerFlags: process.platform === 'win32' ? '/invalid-flag' : '--invalid-flag'
         }).should.be.rejected();
     });
 
