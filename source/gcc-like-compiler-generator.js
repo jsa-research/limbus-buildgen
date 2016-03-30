@@ -9,20 +9,8 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var typeCheck = require('./type-check');
-
 exports.inject = function (compiler, exports) {
     exports.compilerCommand = function (options) {
-        typeCheck.string(options, 'type', 'required');
-        if (options.type !== 'static-library' &&
-            options.type !== 'application' &&
-            options.type !== 'dynamic-library') {
-            throw new Error('invalid_type');
-        }
-        typeCheck.string(options, 'file', 'required');
-        typeCheck.string(options, 'flags');
-        typeCheck.stringArray(options, 'includePaths');
-
         var extraFlags = '';
         if (options.includePaths !== undefined) {
             var separator = ' -I';
@@ -38,28 +26,6 @@ exports.inject = function (compiler, exports) {
     };
 
     exports.linkerCommand = function (options) {
-        typeCheck.string(options, 'type', 'required');
-        if (options.type !== 'static-library' &&
-            options.type !== 'application' &&
-            options.type !== 'dynamic-library') {
-            throw new Error('invalid_type');
-        }
-        typeCheck.string(options, 'outputName', 'required');
-        typeCheck.string(options, 'outputPath');
-        typeCheck.string(options, 'flags');
-        typeCheck.stringArray(options, 'objectFiles', 'required');
-        typeCheck.stringArray(options, 'libraries');
-
-        if (options.outputName.match(/\//)) {
-            throw new Error("output_name_does_not_take_a_path");
-        }
-
-        if (options.type === 'static-library' &&
-            options.libraries !== undefined &&
-            options.libraries.length > 0) {
-            throw new Error('linking_libraries_is_not_valid_for_static_libraries');
-        }
-
         var extraFlags = '';
         if (options.libraries !== undefined) {
             var separator = ' -L./ -l';

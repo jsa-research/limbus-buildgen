@@ -10,7 +10,6 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var _ = require('./publicdash');
-var typeCheck = require('./type-check');
 var makefileBuilder = require('./makefile-builder');
 var ConfigValidator = require('./config-validator');
 
