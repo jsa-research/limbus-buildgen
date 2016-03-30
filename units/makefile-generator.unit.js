@@ -11,7 +11,6 @@
 
 var should = require('should');
 var makefile_generator = require('../source/makefile-generator');
-var util = require('../units/util');
 
 var hostsByCompiler = {
     clang: [

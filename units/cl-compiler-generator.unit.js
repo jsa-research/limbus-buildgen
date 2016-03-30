@@ -11,7 +11,6 @@
 
 var should = require('should');
 var ClCompilerGenerator = require('../source/cl-compiler-generator');
-var CompilerGenerator = require('../units/compiler-generator');
 
 describe('cl-compiler-generator', function () {
     describe('Compiling', function () {
@@ -71,7 +70,24 @@ describe('cl-compiler-generator', function () {
             compilerCommand.should.containEql('/D_USRDLL /D_WINDLL');
         });
 
-        CompilerGenerator.injectCompilerInterfaceSpecs(ClCompilerGenerator.compilerCommand);
+        it('should include extra compiler flags', function () {
+            var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'application',
+                file: 'file.c',
+                flags: '/flag'
+            });
+
+            compilerCommand.should.containEql('/flag');
+        });
+
+        it('should take a path as file', function () {
+            var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'application',
+                file: './some/path/to/file.c'
+            });
+
+            compilerCommand.should.match(/\.\\some\\path\\to\\file\.c/);
+        });
     });
 
     describe('Linking', function () {
@@ -108,7 +124,7 @@ describe('cl-compiler-generator', function () {
             linkerCommand.should.containEql('anotherlibrary.lib');
         });
 
-        it('should convert paths to use backslashes instead of forward ones', function () {
+        it('should convert object file paths to use backslashes instead of forward ones', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 objectFiles: [
                     'object/file/in/a/path.obj'
@@ -144,6 +160,45 @@ describe('cl-compiler-generator', function () {
             linkerCommand.should.match(/^link \/DLL \/OUT\:name\.dll file\.obj/);
         });
 
-        CompilerGenerator.injectLinkerInterfaceSpecs(ClCompilerGenerator.linkerCommand);
+        it('should include extra linker flags', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'application',
+                objectFiles: [
+                    'file.obj'
+                ],
+                outputName: 'name',
+                flags: '/flag'
+            });
+
+            linkerCommand.should.containEql('/flag');
+        });
+
+        describe('outputPath', function () {
+            it('should be prepended to outputName if given', function () {
+                var linkerCommand = ClCompilerGenerator.linkerCommand({
+                    type: 'application',
+                    objectFiles: [
+                        'file.obj'
+                    ],
+                    outputName: 'name',
+                    outputPath: 'some/directory'
+                });
+
+                linkerCommand.should.containEql('some\\directory\\name');
+            });
+
+            it('should handle trailing slashes', function () {
+                var linkerCommand = ClCompilerGenerator.linkerCommand({
+                    type: 'application',
+                    objectFiles: [
+                        'file.obj'
+                    ],
+                    outputName: 'name',
+                    outputPath: 'some/directory/'
+                });
+
+                linkerCommand.should.containEql('some\\directory\\name');
+            });
+        });
     });
 });

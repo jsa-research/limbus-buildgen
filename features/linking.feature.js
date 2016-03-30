@@ -53,6 +53,16 @@ describe('Linking', function () {
         });
     });
 
+    it('should pass linker flags as is', function () {
+        return util.buildSimple({
+            type: 'application',
+            host: process.platform,
+            files: ['simple.c'],
+            outputName: 'app',
+            linkerFlags: '--invalid-flag'
+        }).should.be.rejected();
+    });
+
     it('should link with libm by default', function () {
         return util.generateCompileAndRun({
             config: {

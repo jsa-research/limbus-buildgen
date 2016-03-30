@@ -10,11 +10,10 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var should = require('should');
-var CompilerGenerator = require('../units/compiler-generator');
 
 var injectSpecs = function (compiler) {
     var GccCompilerGenerator = require('../source/' + compiler + '-compiler-generator');
-    
+
     describe(compiler + '-compiler-generator', function () {
         describe('Compiling', function () {
             it('should compile a file into an object file with the same name', function () {
@@ -59,7 +58,24 @@ var injectSpecs = function (compiler) {
                 compilerCommand.should.containEql('-fpic');
             });
 
-            CompilerGenerator.injectCompilerInterfaceSpecs(GccCompilerGenerator.compilerCommand);
+            it('should include extra compiler flags', function () {
+                var compilerCommand = GccCompilerGenerator.compilerCommand({
+                    type: 'application',
+                    file: 'file.c',
+                    flags: '--flag'
+                });
+
+                compilerCommand.should.containEql('--flag');
+            });
+
+            it('should take a path as file', function () {
+                var compilerCommand = GccCompilerGenerator.compilerCommand({
+                    type: 'application',
+                    file: './some/path/to/file.c'
+                });
+
+                compilerCommand.should.match(/\.\/some\/path\/to\/file\.c/);
+            });
         });
 
         describe('Linking', function () {
@@ -121,7 +137,47 @@ var injectSpecs = function (compiler) {
                 linkerCommand.should.containEql('-o libname.so');
             });
 
-            CompilerGenerator.injectLinkerInterfaceSpecs(GccCompilerGenerator.linkerCommand);
+
+            it('should include extra linker flags', function () {
+                var linkerCommand = GccCompilerGenerator.linkerCommand({
+                    type: 'application',
+                    objectFiles: [
+                        'file.obj'
+                    ],
+                    outputName: 'name',
+                    flags: '--flag'
+                });
+
+                linkerCommand.should.containEql('--flag');
+            });
+
+            describe('outputPath', function () {
+                it('should be prepended to outputName if given', function () {
+                    var linkerCommand = GccCompilerGenerator.linkerCommand({
+                        type: 'application',
+                        objectFiles: [
+                            'file.o'
+                        ],
+                        outputName: 'name',
+                        outputPath: 'some/directory'
+                    });
+
+                    linkerCommand.should.containEql('some/directory/name');
+                });
+
+                it('should handle trailing slashes', function () {
+                    var linkerCommand = GccCompilerGenerator.linkerCommand({
+                        type: 'application',
+                        objectFiles: [
+                            'file.o'
+                        ],
+                        outputName: 'name',
+                        outputPath: 'some/directory/'
+                    });
+
+                    linkerCommand.should.containEql('some/directory/name');
+                });
+            });
         });
     });
 };
