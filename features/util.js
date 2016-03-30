@@ -125,3 +125,21 @@ exports.copyFiles = function (files, inputDirectory, outputDirectory) {
         fs.writeFileSync(outputDirectory + file, fs.readFileSync(inputDirectory + file));
     });
 };
+
+exports.buildSimple = function (config, done) {
+    config.type = config.type || 'application';
+    config.files = config.files || ['simple.c'];
+    config.outputName = config.outputName || 'simple';
+
+    exports.generateCompileAndRun({
+        setup: function () {
+            exports.copyFiles([
+                'simple.c'
+            ], 'features/front-end/', 'temp/');
+        },
+        config: config,
+        command: config.outputName,
+        expectOutputToMatch: '42',
+        parameters: '--host ' + process.platform
+    }, done);
+};
