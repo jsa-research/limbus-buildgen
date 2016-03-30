@@ -16,6 +16,7 @@ var shell = require('./shell.js');
 
 var javascriptExamples = [];
 var jsonExamples = [];
+var jsonExampleExpressions = [];
 var usageInformation;
 
 var readme = fs.readFileSync('README.md').toString();
@@ -25,6 +26,7 @@ readme.replace(/```javascript([\s\S]+?)```/gi, function (match, example) {
 });
 readme.replace(/```json([\s\S]+?)```/gi, function (match, example) {
     jsonExamples.push(example);
+    jsonExampleExpressions.push("require('source/makefile-generator').generate(" + example + ");");
     return match;
 });
 readme.replace(/## Use[\s\S]+?```([\s\S]+?)```/, function (match, info) {
@@ -33,34 +35,48 @@ readme.replace(/## Use[\s\S]+?```([\s\S]+?)```/, function (match, info) {
 });
 
 
-var setup = function () {
-    util.copyFiles([
-        'main.c'
-    ], 'features/readme-examples/', 'temp/');
+var generateWithExample = function (example) {
+    return Promise.resolve().then(function () {
+        return util.writeFile('temp/example.js', Promise.resolve(example));
+    }).then(function () {
+        return shell.exec(shell.path('./duk') + ' ' + shell.path('temp/example.js'), {cwd: null});
+    });
 };
 
-var generateWithExample = function (example, done) {
-    shell.mkdirClean('temp', null, function (done) {
-        fs.writeFileSync('temp/example.js', example);
-        shell.exec(shell.path('./duk') + ' ' + shell.path('temp/example.js'), {cwd: null}, done);
-    }, done);
+var generateExamples = function (examples) {
+    var promise = Promise.resolve();
+
+    examples.forEach(function (example) {
+        promise = promise.then(function () {
+            return generateWithExample(example);
+        });
+    });
+
+    return promise;
 };
 
 describe('README Examples', function () {
+    beforeEach(function () {
+        return util.beforeEach().then(function () {
+            return shell.copyFiles([
+                'main.c'
+            ], 'features/readme-examples/', 'temp/');
+        });
+    });
+
+    afterEach(function () {
+        return util.afterEach();
+    });
+
     describe('Javascript API examples', function () {
-        it('should run without throwing errors', function (done) {
-            util.forEachAsync(javascriptExamples, function (example, index, done) {
-                return generateWithExample(example, done);
-            }, done);
+        it('should run without throwing errors', function () {
+            return generateExamples(javascriptExamples);
         });
     });
 
     describe('JSON configurations', function () {
-        it('should generate successfully using makefile-generator', function (done) {
-            util.forEachAsync(jsonExamples, function (json, index, done) {
-                var example = "require('source/makefile-generator').generate(" + json + ");";
-                return generateWithExample(example, done);
-            }, done);
+        it('should generate successfully using makefile-generator', function () {
+            return generateExamples(jsonExampleExpressions);
         });
 
         it('should actually be valid JSON', function () {
@@ -72,10 +88,10 @@ describe('README Examples', function () {
 
     describe('Usage information', function () {
         var usageCommand = shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --help';
-        it('should match the output of `' + usageCommand + '`', function (done) {
-            shell.exec(usageCommand, {cwd: null}, function (error, stdout, stderr) {
-                usageInformation.replace(/\r\n/g, '\n').should.containEql(stdout.replace(/\r\n/g, '\n'));
-                done();
+
+        it('should match the output of `' + usageCommand + '`', function () {
+            return shell.exec(usageCommand).then(function (result) {
+                return usageInformation.replace(/\r\n/g, '\n').should.containEql(result.stdout.replace(/\r\n/g, '\n'));
             });
         });
     });

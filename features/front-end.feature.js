@@ -11,20 +11,20 @@
 
 var should = require('should');
 var fs = require('fs');
-var exec = require('child_process').exec;
 var util = require('./util.js');
 var shell = require('./shell.js');
 
-var setup = function () {
-    util.copyFiles([
-        'simple.c'
-    ], 'features/front-end/', 'temp/');
-};
-
 describe('Front-end', function () {
-    it('should take a flag to specify the target host', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    beforeEach(function () {
+        return util.beforeEach();
+    });
+
+    afterEach(function () {
+        return util.afterEach();
+    });
+
+    it('should take a flag to specify the target host', function () {
+        return util.generateCompileAndRun({
             config: {
                 type: 'application',
                 files: [
@@ -35,12 +35,11 @@ describe('Front-end', function () {
             command: 'simple',
             expectOutputToMatch: '42',
             parameters: '--host ' + process.platform
-        }, done);
+        });
     });
 
-    it('should take a flag to specify the output build file name', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    it('should take a flag to specify the output build file name', function () {
+        return util.generateCompileAndRun({
             config: {
                 type: 'application',
                 host: process.platform,
@@ -53,68 +52,55 @@ describe('Front-end', function () {
             command: 'simple',
             expectOutputToMatch: '42',
             parameters: '--buildFile Makefile.platform'
-        }, done);
-    });
-
-    it('should fail with "Too many arguments" if too many non-flag arguments are passed', function (done) {
-        shell.exec(util.frontEndExecutable + ' file.json file2.json', null, function (error, stdout, stderr) {
-            (!error).should.be.false;
-            stdout.should.containEql('Too many arguments');
-            done();
         });
     });
 
-    it('should fail with "No configuration file" if no config file is provided', function (done) {
-        shell.exec(util.frontEndExecutable, null, function (error, stdout, stderr) {
-            (!error).should.be.false;
-            stdout.should.containEql('No configuration file');
-            done();
+    it('should fail with "Too many arguments" if too many non-flag arguments are passed', function () {
+        return shell.exec(util.frontEndExecutable + ' file.json file2.json').then(function () {
+            return Promise.reject(new Error('Did not fail'));
+        }, function (error) {
+            return error.stdout.should.containEql('Too many arguments');
         });
     });
 
-    it('should output usage information if given the --help flag', function (done) {
-        shell.exec(util.frontEndExecutable + ' --help', null, function (error, stdout, stderr) {
-            (!error).should.be.true;
-            stdout.should.containEql('Usage:');
-            done();
+    it('should fail with "No configuration file" if no config file is provided', function () {
+        return shell.exec(util.frontEndExecutable).then(function () {
+            return Promise.reject(new Error('Did not fail'));
+        }, function (error) {
+            return error.stdout.should.containEql('No configuration file');
         });
     });
 
-    it('should fail with "Flag <flag> is missing a value" if a flag requiring a value is missing one', function (done) {
-        var requiresValue = [
-            'host',
-            'buildFile'
-        ];
-
-        var fails = [];
-
-        util.forEachAsync(requiresValue, function (flag, index, done) {
-            shell.exec(util.frontEndExecutable + ' --' + flag, null, function (error, stdout, stderr) {
-                if (error && stdout.indexOf('Flag --' + flag + ' is missing a value') !== -1) {
-                    fails.push(error);
-                }
-                done();
-            });
-        }, function () {
-            fails.length.should.equal(requiresValue.length);
-            done();
+    it('should output usage information if given the --help flag', function () {
+        return shell.exec(util.frontEndExecutable + ' --help').then(function (result) {
+            return result.stdout.should.containEql('Usage:');
         });
     });
 
-    it('should fail if the config file is not valid JSON', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    it('should fail with "Flag <flag> is missing a value" if a flag requiring a value is missing one', function () {
+        return Promise.all([
+            shell.exec(util.frontEndExecutable + ' --host').then(function () {
+                return Promise.reject(new Error('Did not fail'));
+            }, function (error) {
+                return error.stdout.should.containEql('Flag --host is missing a value');
+            }),
+            shell.exec(util.frontEndExecutable + ' --buildFile').then(function () {
+                return Promise.reject(new Error('Did not fail'));
+            }, function (error) {
+                return error.stdout.should.containEql('Flag --buildFile is missing a value');
+            })
+        ]);
+    });
+
+    it('should fail if the config file is not valid JSON', function () {
+        return util.generateCompileAndRun({
             config: "{ files: 'test.c' }",
             command: 'simple'
-        }, function (error) {
-            (!error).should.be.false;
-            done();
-        });
+        }).should.be.rejected();
     });
 
-    it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function () {
+        return util.generateCompileAndRun({
             config: {
                 type: 'application',
                 host: process.platform,
@@ -125,10 +111,10 @@ describe('Front-end', function () {
             },
             command: 'simple',
             parameters: '--some-flag value'
+        }).then(function () {
+            return Promise.reject(new Error('Did not fail'));
         }, function (error) {
-            (!error).should.be.false;
-            error.message.should.containEql("Unknown flag '--some-flag'");
-            done();
+            return error.message.should.containEql("Unknown flag '--some-flag'");
         });
     });
 });

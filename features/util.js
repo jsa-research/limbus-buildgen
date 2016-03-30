@@ -13,36 +13,53 @@ var makefile_generator = require('../source/makefile-generator');
 var shell = require('./shell');
 var fs = require('fs');
 
+var writeFile = function (path, dataPromise) {
+    return new Promise(function(resolve, reject) {
+        dataPromise.then(function (data) {
+            fs.writeFile(path, data, function (error) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    });
+};
+exports.writeFile = writeFile;
+
+var readFile = function (path) {
+    return new Promise(function(resolve, reject) {
+        fs.readFile(path, function (error, data) {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(data.toString());
+            }
+        });
+    });
+};
+exports.readFile = readFile;
+
 exports.frontEndExecutable = shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js');
 
-var setupTestEnvironment = function (performWork, callback) {
-    shell.mkdirClean('temp', null, function (callback) {
-        return shell.mkdirClean('source', 'temp', function (callback) {
-            return shell.mkdirClean('include', 'temp', function (callback) {
-                return shell.cp('source/*.js', 'temp/source/', null, function (error) {
-                    if (error !== null) {
-                        return callback(error);
-                    } else {
-                        return performWork(callback);
-                    }
-                });
-            }, callback);
-        }, callback);
-    }, callback);
+exports.beforeEach = function () {
+    return shell.mkdir('temp').then(function () {
+        return shell.mkdir('temp/source');
+    }).then(function () {
+        return shell.cp('source/*.js', 'temp/source/');
+    }).then(function () {
+        return shell.copyFiles([
+            'simple.c'
+        ], 'features/common/', 'temp/');
+    });
 };
 
-var compile = function (makefile, workingDirectory, done) {
-    var make;
-    if (process.platform === 'win32') {
-        make = 'nmake /f ' + (makefile || 'Makefile');
-    } else {
-        make = 'make -f ' + (makefile || 'Makefile')
-    }
-
-    shell.exec(make, {cwd: workingDirectory}, done);
+exports.afterEach = function () {
+    return shell.rm('temp');
 };
 
-var generate = function (config, parameters, done) {
+var generate = function (config, parameters) {
     var buildConfig;
     if (typeof config === 'string') {
         buildConfig = config;
@@ -50,96 +67,77 @@ var generate = function (config, parameters, done) {
         buildConfig = JSON.stringify(config);
     }
 
-    fs.writeFileSync('temp/build_config.json', buildConfig);
+    var buildgenPath = shell.path('../duk') + ' ' + shell.path('../limbus-buildgen.js');
 
-    return shell.exec(shell.path('../duk') + ' ' + shell.path('../limbus-buildgen.js') + ' ' + (parameters || '') + ' build_config.json', {cwd: 'temp'}, done);
-};
-
-exports.generateCompileAndRun = function (options, done) {
-    var parameters = options.parameters;
-    var setup = options.setup;
-    var makefile = options.makefile;
-    var command = options.command;
-    var expectOutputToMatch = options.expectOutputToMatch;
-
-    setupTestEnvironment(function (callback) {
-        var generateOneConfig = function (config, index, callback) {
-            return generate(config, parameters, function (error) {
-                if (error !== null) {
-                    return callback(error);
-                }
-
-                setup();
-                return compile(makefile, 'temp', function (error) {
-                    if (error !== null) {
-                        return callback(error);
-                    }
-
-                    if (config.type !== 'application') {
-                        return callback();
-                    } else {
-                        return shell.exec(shell.path('./') + command, {cwd: 'temp'}, function (error, stdout, stderr) {
-                            if (error !== null) {
-                                return callback(error);
-                            }
-
-                            if (expectOutputToMatch && !stdout.match(expectOutputToMatch)) {
-                                return callback(new Error("Output '" + stdout + "' does not match " + expectOutputToMatch));
-                            }
-
-                            return callback();
-                        });
-                    }
-                });
-            });
-        };
-
-        if (Array.isArray(options.config)) {
-            return exports.forEachAsync(options.config, generateOneConfig, callback);
-        } else {
-            return generateOneConfig(options.config, 0, callback);
-        }
-    }, done);
-};
-
-exports.forEachAsync = function (array, callback, done) {
-    function next(index) {
-        if (index < array.length) {
-            return callback(array[index], index, function (error) {
-                if (error) {
-                    return done(error);
-                } else {
-                    return next(index + 1);
-                }
-            });
-        } else {
-            return done();
-        }
-    };
-
-    return next(0);
-};
-
-exports.copyFiles = function (files, inputDirectory, outputDirectory) {
-    files.forEach(function (file) {
-        fs.writeFileSync(outputDirectory + file, fs.readFileSync(inputDirectory + file));
+    return writeFile('temp/build_config.json', Promise.resolve(buildConfig)).then(function () {
+        return shell.exec(buildgenPath + ' ' + (parameters || '') + ' build_config.json', {cwd: 'temp'});
     });
 };
 
-exports.buildSimple = function (config, done) {
+var compile = function (makefile) {
+    var make;
+    if (process.platform === 'win32') {
+        make = 'nmake /f ' + (makefile || 'Makefile');
+    } else {
+        make = 'make -f ' + (makefile || 'Makefile')
+    }
+
+    return shell.exec(make, {cwd: 'temp'});
+};
+
+var execute = function (type, command, expectOutputToMatch) {
+    if (type !== 'application') {
+        return Promise.resolve();
+    }
+
+    return shell.exec(shell.path('./') + command, {cwd: 'temp'}).then(function (result) {
+        if (expectOutputToMatch && !result.stdout.match(expectOutputToMatch)) {
+            return Promise.reject(new Error("Output '" + result.stdout + "' does not match " + expectOutputToMatch));
+        } else {
+            return Promise.resolve();
+        }
+    });
+};
+
+exports.generateCompileAndRun = function (options) {
+    var promiseForConfig = function (config) {
+        return generate(config, options.parameters).then(function () {
+            return compile(options.makefile);
+        }).then(function () {
+            return execute(config.type, options.command, options.expectOutputToMatch);
+        });
+    };
+
+    if (Array.isArray(options.config)) {
+        var promise = Promise.resolve();
+
+        options.config.forEach(function (config) {
+            promise = promise.then(function () {
+                return promiseForConfig(config);
+            });
+        });
+
+        return promise;
+    } else {
+        return promiseForConfig(options.config);
+    }
+};
+
+exports.buildSimple = function (config, command) {
     config.type = config.type || 'application';
     config.files = config.files || ['simple.c'];
     config.outputName = config.outputName || 'simple';
+    command = command || config.outputName;
 
-    exports.generateCompileAndRun({
+    return exports.generateCompileAndRun({
         setup: function () {
-            exports.copyFiles([
+            return exports.copyFiles([
                 'simple.c'
             ], 'features/front-end/', 'temp/');
         },
         config: config,
-        command: config.outputName,
+        command: command,
         expectOutputToMatch: '42',
         parameters: '--host ' + process.platform
-    }, done);
+    });
 };

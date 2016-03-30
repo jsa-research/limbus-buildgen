@@ -13,62 +13,60 @@ exports.path = function (path) {
     return path ? path.replace(/\//g, require('path').sep) : path;
 };
 
-exports.exec = function (command, options, callback) {
-    require('child_process').exec(
-        command,
-        options ? {cwd: exports.path(options.cwd)} : null,
-        function (error, stdout, stderr) {
-            if (error) {
-                error.message += stdout + stderr;
-                error.stdout = stdout;
-                error.stderr = stderr;
-            }
-            return callback(error, stdout, stderr);
-        });
+exports.exec = function (command, options) {
+    return new Promise(function(resolve, reject) {
+        require('child_process').exec(
+            command,
+            {
+                cwd: (options && options.cwd) ? exports.path(options.cwd) : undefined
+            },
+            function (error, stdout, stderr) {
+                if (error) {
+                    error.message += stdout + stderr;
+                    error.stdout = stdout;
+                    error.stderr = stderr;
+                    reject(error);
+                } else {
+                    resolve({stdout: stdout, stderr: stderr});
+                }
+            });
+    });
 };
 
-exports.rm = function (path, workingDirectory, callback) {
+exports.rm = function (path, workingDirectory) {
     var rm = 'rm -Rf ';
     if (process.platform === 'win32') {
         rm = 'rmdir /S /Q ';
     }
 
-    exports.exec(rm + exports.path(path), {cwd: workingDirectory}, function (error, stdout, stderr) {
-        return callback(error);
-    });
+    return exports.exec(rm + exports.path(path), {cwd: workingDirectory});
 };
 
-exports.cp = function (source, destination, workingDirectory, callback) {
+exports.cp = function (source, destination, workingDirectory) {
     var cp = 'cp ';
     if (process.platform === 'win32') {
         cp = 'copy /Y ';
     }
 
-    return exports.exec(cp + exports.path(source) + ' ' + exports.path(destination), null, function (error, stdout, stderr) {
-        return callback(error);
-    });
+    return exports.exec(cp + exports.path(source) + ' ' + exports.path(destination), {cwd: workingDirectory});
 };
 
-exports.mkdir = function (path, workingDirectory, callback) {
-    exports.exec('mkdir ' + exports.path(path), {cwd: workingDirectory}, function (error, stdout, stderr) {
-        return callback(error);
-    });
+exports.mkdir = function (path, workingDirectory) {
+    return exports.exec('mkdir ' + exports.path(path), {cwd: workingDirectory});
 };
 
-exports.mkdirClean = function (path, workingDirectory, performAction, callback) {
-    exports.mkdir(path, workingDirectory, function (error) {
-        if (error === null) {
-            return performAction(function (result) {
-                exports.rm(path, workingDirectory, function (error) {
-                    if (error === null) {
-                        return callback(result);
-                    } else {
-                        return callback(error);
-                    }
-                });
-            });
-        } else {
-            return callback(error);
-        }
+exports.copyFiles = function (files, inputDirectory, outputDirectory, workingDirectory) {
+    var copyFilePromise = function (file) {
+        return exports.cp(inputDirectory + file, outputDirectory + file, workingDirectory);
+    };
+
+    var filePromise = Promise.resolve();
+
+    files.forEach(function (file) {
+        filePromise = filePromise.then(function () {
+            return copyFilePromise(file);
+        });
     });
+
+    return filePromise;
 };

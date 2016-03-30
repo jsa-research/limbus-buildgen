@@ -15,10 +15,29 @@ var util = require('./util.js');
 var shell = require('./shell.js');
 
 describe('Paths', function () {
-    it('should remove trailing path separators from outputPath', function (done) {
-        util.buildSimple({
+    beforeEach(function () {
+        return util.beforeEach().then(function () {
+            return shell.mkdir('temp/abc');
+        });
+    });
+
+    afterEach(function () {
+        return util.afterEach();
+    });
+
+    it('should use the outputPath', function () {
+        return util.buildSimple({
             type: 'application',
-            outputPath: '../temp/',
-        }, done);
+            outputPath: 'abc',
+            outputName: 'app'
+        }, 'abc/app');
+    });
+
+    it('should remove trailing path separators from outputPath', function () {
+        return util.buildSimple({
+            type: 'application',
+            outputPath: 'abc/',
+            outputName: 'app'
+        }, 'abc/app');
     });
 });

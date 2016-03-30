@@ -12,24 +12,31 @@
 var should = require('should');
 var fs = require('fs');
 var util = require('./util.js');
-
-var setup = function () {
-    util.copyFiles([
-        'linked.c',
-        'linked_dynamic.c',
-        'source/mylibrary.c',
-        'include/mylibrary.h',
-        'source/mydynamiclibrary.c',
-        'include/mydynamiclibrary.h',
-        'math.c',
-        'simple.c'
-    ], 'features/linking/', 'temp/');
-};
+var shell = require('./shell.js');
 
 describe('Linking', function () {
-    it('should compile and link correctly given several source files and includes', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    beforeEach(function () {
+        return util.beforeEach().then(function () {
+            return shell.mkdir('temp/include');
+        }).then(function () {
+            return shell.copyFiles([
+                'linked.c',
+                'linked_dynamic.c',
+                'source/mylibrary.c',
+                'include/mylibrary.h',
+                'source/mydynamiclibrary.c',
+                'include/mydynamiclibrary.h',
+                'math.c',
+            ], 'features/linking/', 'temp/');
+        });
+    });
+
+    afterEach(function () {
+        return util.afterEach();
+    });
+
+    it('should compile and link correctly given several source files and includes', function () {
+        return util.generateCompileAndRun({
             config: {
                 type: 'application',
                 host: process.platform,
@@ -44,12 +51,11 @@ describe('Linking', function () {
             },
             command: 'linked',
             expectOutputToMatch: /42/
-        }, done);
+        });
     });
 
-    it('should link with libm by default', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    it('should link with libm by default', function () {
+        return util.generateCompileAndRun({
             config: {
                 type: 'application',
                 host: process.platform,
@@ -60,12 +66,11 @@ describe('Linking', function () {
             },
             command: 'math',
             expectOutputToMatch: /42/
-        }, done);
+        });
     });
 
-    it('should compile to an executable with outputName', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    it('should compile to an executable with outputName', function () {
+        return util.generateCompileAndRun({
             config: {
                 type: 'application',
                 host: process.platform,
@@ -76,12 +81,11 @@ describe('Linking', function () {
             },
             command: 'my_executable',
             expectOutputToMatch: /42/
-        }, done);
+        });
     });
 
-    it('should compile a static library and then be able to link to it', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    it('should compile a static library and then be able to link to it', function () {
+        return util.generateCompileAndRun({
             config: [
                 {
                     type: 'static-library',
@@ -108,12 +112,11 @@ describe('Linking', function () {
             ],
             command: 'linked_with_library',
             expectOutputToMatch: /42/
-        }, done);
+        });
     });
 
-    it('should compile a dynamic library and then be able to link to it', function (done) {
-        util.generateCompileAndRun({
-            setup: setup,
+    it('should compile a dynamic library and then be able to link to it', function () {
+        return util.generateCompileAndRun({
             config: [
                 {
                     type: 'static-library',
@@ -155,6 +158,6 @@ describe('Linking', function () {
             ],
             command: 'linked_with_library',
             expectOutputToMatch: /42/
-        }, done);
+        });
     });
 });
