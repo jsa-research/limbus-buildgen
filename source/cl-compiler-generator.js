@@ -62,5 +62,5 @@ exports.linkerCommand = function (options) {
         outputPath = '';
     }
 
-    return command + outputPath + options.outputName + outputNameSuffix + extraFlags + ' ' + _.map(options.objectFiles, processPath).join(' ');
+    return command + processPath(outputPath) + options.outputName + outputNameSuffix + extraFlags + ' ' + _.map(options.objectFiles, processPath).join(' ');
 };
