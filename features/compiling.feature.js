@@ -32,7 +32,7 @@ describe('Compiling', function () {
             host: process.platform,
             files: ['simple.c'],
             outputName: 'app',
-            compilerFlags: process.platform === 'win32' ? '/invalid-flag' : '--invalid-flag'
+            compilerFlags: process.platform === 'win32' ? '/X' : '-S'
         }).should.be.rejected();
     });
 
