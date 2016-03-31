@@ -29,11 +29,10 @@ readme.replace(/```json([\s\S]+?)```/gi, function (match, example) {
     jsonExampleExpressions.push("require('source/makefile-generator').generate(" + example + ");");
     return match;
 });
-readme.replace(/## Use[\s\S]+?```([\s\S]+?)```/, function (match, info) {
+readme.replace(/```(\s+Usage\:[\s\S]+?)```/, function (match, info) {
     usageInformation = info;
     return match;
 });
-
 
 var generateWithExample = function (example) {
     return Promise.resolve().then(function () {

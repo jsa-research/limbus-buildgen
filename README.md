@@ -8,7 +8,8 @@ limbus-buildgen generates build files for small C/C++ code-bases that do not nee
 The project consists of a set of Common.js modules written in ES5.1 which can be imported into your project. A CLI front-end is also available to generate build files without additional code.
 
 #### Table of contents
-* [Usage](#usage)
+* [Installation](#installation)
+* [Using the CLI](#usage)
 * [Configuration](#configuration)
 * [Javascript API](#javascript-api)
 * [Continuous Integration](#continuous-integration)
@@ -17,8 +18,11 @@ The project consists of a set of Common.js modules written in ES5.1 which can be
 * [Roadmap](#roadmap)
 * [Copyright](#copyright)
 
+<a name="installation"></a>
+## Installation
+
 <a name="usage"></a>
-## Usage
+## Using the CLI
 ```
 Usage: ./duk limbus-buildgen.js [flags] <path to JSON configuration file>
 
@@ -38,23 +42,17 @@ The JSON configuration files support the following properties:
 #### Required
 * **type** Specifies the type of project to build.
 * **files** Specifies a list of source files.
-* **host** Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with. *See the table below for valid identifiers.*
+* **host** Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.
 * **outputName** Specifies the name of the final executable.
 
 #### Optional
-* **outputPath** Specifies a path to prepend to the outputName. *It defaults to the current working directory.*
+* **outputPath** Specifies a path to prepend to the outputName. *It defaults to the build directory.*
 * **includePaths** Specifies where to find header files to include.
 * **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is.
 * **linkerFlags** Specifies any extra linkers flags that will be passed to the linker as is.
 * **libraries** Specifies any libraries to link with when building an application or dynamic library.
 
 #### Example configuration file
-The following example can be generated using:
-
-```
-./duk limbus-buildgen.js configuration.json
-```
-
 ###### configuration.json
 ```json
 {
@@ -76,6 +74,11 @@ The following example can be generated using:
     ]
 }
 ```
+A makefile for the above example can be generated using:
+```
+./duk limbus-buildgen.js configuration.json
+```
+
 
 #### Valid types
 There are three types of projects which can be generated:
@@ -104,8 +107,9 @@ The following host identifiers can be used to target the corresponding operating
 |freebsd-gcc|FreeBSD|GNU GCC|
 
 #### Input files
-The `input` property takes an array of strings. Each strings contains a path to the input file relative to the build directory.
+The `input` property takes an array of strings. Each string contains a [path](#paths) to a input file relative to the build directory.
 
+<a name="outputName"></a>
 #### Output name
 The property `outputName` takes a string with the name of the final executable or library. Depending on the compiler and type, the name given by `outputName` is prepended, appended or both to form a system specific file name.
 
@@ -123,11 +127,16 @@ Given a configuration with `"outputName": "file"` the following table shows the 
 |CL|static-library|file.lib|
 |CL|dynamic-library|file.dll|
 
+The output name cannot be a [path](#paths).
+
 #### Output path
+The `outputPath` property takes a string with a [path](#paths) to be prepended to the [outputName](#outputName) to give the final location of the executable or library when built. The path can have a trailing [path separator](#paths) but does not require one.
 
 #### Include paths
+The `includePaths` property takes an array of strings. Each string contains a [path](#paths) relative to the build directory to use to include header files.
 
 #### Compiler flags
+Compiler flags are added to the compile command.
 
 #### Linker flags
 Linker flags are added to the link command. Which link command is used depends on the type and compiler specified. This needs to be taken into account when flags are added to the configuration.
@@ -147,6 +156,15 @@ The following table describes what commands are used for all compiler/type combi
 |CL|dynamic-library|link|
 
 #### Libraries
+The `libraries` property takes an array of strings. Each string contains a [path](#paths) to a library file to link to.
+
+<a name="paths"></a>
+#### Paths
+All paths in the configuration are given as POSIX paths. The generators take care of adapting the paths to the final build operating system.
+
+`.` specifies the current directory.
+`..` specifies the parent directory of the current one.
+`/` separates each directory with the last part giving the target file or directory of the path.
 
 <a name="javascript-api"></a>
 ## Javascript API
@@ -198,7 +216,8 @@ Unit- & integration tests are automatically run against several combinations of 
 | darwin-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
 | darwin-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
 | win32-cl | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x86 Release, x64 Release | 4.4.0 |
-| freebsd-clang |||||
+| freebsd-clang ||||
+| freebsd-gcc |||||
 
 *FreeBSD is tested from time to time during development of new features but as there is currently no continuous integration on a FreeBSD host it should be considered less stable than the other target hosts.*
 
@@ -213,7 +232,7 @@ limbus-buildgen compiles using build files that it generated itself. To re-gener
 
 #### Dependencies
 
-There are very few dependencies and they are downloaded automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio or the Windows SDK installed. Most Unixes come with a C compiler suite.*)
+There are very few dependencies and they are downloaded automatically when built. However it is assumed that a standard C compiler is installed. (*For Windows users this means having Visual Studio or the Windows SDK installed in their default installation directory. Most Unixes come with a C compiler suite.*)
 
 *Windows users will need PowerShell 3.0+ installed (which comes with Windows 7 SP1 or later) to automatically download the dependencies. If this is not possible, see [Download dependencies manually](#build-download-dependencies-manually)*
 
@@ -260,8 +279,9 @@ This release is intended to streamline the interface. And produce a done release
 * Provide npm packages for both executable and libraries
 * Create release bundled with dependencies
 * Override all configuration properties using flags
-* Improve documentation
+* Complete documentation
 * Modify makefile generator so that makefiles make use of make's "implicit variables"
+* Library include paths
 
 ##### Planned for a 0.6 release
 This release will implement cross compilation to iOS and Android.
