@@ -40,17 +40,22 @@ Options:
 The JSON configuration files support the following properties:
 
 #### Required
-* **type** Specifies the type of project to build.
-* **files** Specifies a list of source files.
-* **host** Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.
-* **outputName** Specifies the name of the final executable.
+
+|Property|Description|
+|:--:|:--|
+|[type](#configuration-type)|Specifies the type of project to build.|
+|[host](#configuration-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
+|[files](#configuration-files)|Specifies a list of source files.|
+|[outputName](#configuration-outputName)|Specifies the name of the final executable.|
 
 #### Optional
-* **outputPath** Specifies a path to prepend to the outputName. *It defaults to the build directory.*
-* **includePaths** Specifies where to find header files to include.
-* **compilerFlags** Specifies any extra compiler flags that will be passed to the compiler as is.
-* **linkerFlags** Specifies any extra linkers flags that will be passed to the linker as is.
-* **libraries** Specifies any libraries to link with when building an application or dynamic library.
+|Property|Description|
+|:--:|:--|
+|[outputPath](#configuration-outputPath)|Specifies a path to prepend to the outputName. *It defaults to the build directory.*|
+|[includePaths](#configuration-includePaths)|Specifies where to find header files to include.|
+|[compilerFlags](#configuration-compilerFlags)|Specifies any extra compiler flags that will be passed to the compiler as is.|
+|[linkerFlags](#configuration-linkerFlags)|Specifies any extra linkers flags that will be passed to the linker as is.|
+|[libraries](#configuration-libraries)|Specifies any libraries to link with when building an application or dynamic library.|
 
 #### Example configuration file
 ###### configuration.json
@@ -79,8 +84,10 @@ A makefile for the above example can be generated using:
 ./duk limbus-buildgen.js configuration.json
 ```
 
+#### Configuration Properties
 
-#### Valid types
+<a name="configuration-type"></a>
+###### type
 There are three types of projects which can be generated:
 
 |Type|Description|
@@ -89,7 +96,8 @@ There are three types of projects which can be generated:
 |static-library|A library that can be linked to at compile-time|
 |dynamic-library|A library that can be linked to at run-time|
 
-#### Valid host identifiers
+<a name="configuration-host"></a>
+###### host
 The following host identifiers can be used to target the corresponding operating system & compiler:
 
 |Identifier|Target OS|Compiler|
@@ -106,11 +114,12 @@ The following host identifiers can be used to target the corresponding operating
 |freebsd-clang|FreeBSD|Clang/LLVM|
 |freebsd-gcc|FreeBSD|GNU GCC|
 
-#### Input files
+<a name="configuration-input"></a>
+###### input
 The `input` property takes an array of strings. Each string contains a [path](#paths) to a input file relative to the build directory.
 
-<a name="outputName"></a>
-#### Output name
+<a name="configuration-outputName"></a>
+###### outputName
 The property `outputName` takes a string with the name of the final executable or library. Depending on the compiler and type, the name given by `outputName` is prepended, appended or both to form a system specific file name.
 
 Given a configuration with `"outputName": "file"` the following table shows the resulting file name:
@@ -129,16 +138,20 @@ Given a configuration with `"outputName": "file"` the following table shows the 
 
 The output name cannot be a [path](#paths).
 
-#### Output path
+<a name="configuration-outputPath"></a>
+###### outputPath
 The `outputPath` property takes a string with a [path](#paths) to be prepended to the [outputName](#outputName) to give the final location of the executable or library when built. The path can have a trailing [path separator](#paths) but does not require one.
 
-#### Include paths
+<a name="configuration-includePaths"></a>
+###### includePaths
 The `includePaths` property takes an array of strings. Each string contains a [path](#paths) relative to the build directory to use to include header files.
 
-#### Compiler flags
+<a name="configuration-compilerFlags"></a>
+###### compilerFlags
 Compiler flags are added to the compile command.
 
-#### Linker flags
+<a name="configuration-linkerFlags"></a>
+###### linkerFlags
 Linker flags are added to the link command. Which link command is used depends on the type and compiler specified. This needs to be taken into account when flags are added to the configuration.
 
 The following table describes what commands are used for all compiler/type combinations:
@@ -155,7 +168,8 @@ The following table describes what commands are used for all compiler/type combi
 |CL|static-library|lib|
 |CL|dynamic-library|link|
 
-#### Libraries
+<a name="configuration-libraries"></a>
+###### libraries
 The `libraries` property takes an array of strings. Each string contains a [path](#paths) to a library file to link to.
 
 <a name="paths"></a>
@@ -274,7 +288,8 @@ This will generate a file named `coverage.html` in the project root directory wh
 ## Roadmap
 
 #### Planned for a 0.5 version
-This release is intended to streamline the interface. And produce a done release that is not fully feature-complete.
+This release is intended to streamline the user experience and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
+
 * Provide an integrated executable for the front-end
 * Provide npm packages for both executable and libraries
 * Create release bundled with dependencies
@@ -282,30 +297,44 @@ This release is intended to streamline the interface. And produce a done release
 * Complete documentation
 * Modify makefile generator so that makefiles make use of make's "implicit variables"
 * Library include paths
+* Provide configuration overrides for when different arguments are passed
 
 ##### Planned for a 0.6 release
-This release will implement cross compilation to iOS and Android.
+This release will implement cross compilation to mobile devices.
+
 * Cross compilation to iOS
 * Cross compilation to Android
 
 ##### Planned for a 0.7 release
 This release will implement cross compilation to web browsers through Emscripten.
+
 * Emscripten compiler support
 
-##### Towards a 1.0 release
+##### Planned for a 0.8 release
 This release will implement the rest of the features to make it feature-complete.
-* Continuous integration for all supported targets
+
 * A Visual Studio project generator
+
+##### Towards a 1.0 release
+This release will stabilize the project to make it ready for production.
+
+* Continuous integration for all supported targets
 
 ##### Further into the future
 Features which aren't needed for feature-completeness but are nice to have.
+
 * Cross compilation to Windows using MinGW
 * Modify makefile to find compilers and use whichever is available.
 * Support for more compiler suites:
-  - AMD's Open64
-  - Intel's C++ compiler
-  - MinGW
-  - Solaris Studio
+    - AMD's Open64
+    - Intel's C++ compiler
+    - MinGW
+    - Solaris Studio
+* Support for more build systems:
+    - Ninja
+    - Code::Blocks
+    - JetBrain's CLion
+    - NetBeans C++
 
 <a name="copyright"></a>
 ## Copyright
