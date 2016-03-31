@@ -45,7 +45,7 @@ The JSON configuration files support the following properties:
 |:--:|:--|
 |[type](#configuration-type)|Specifies the type of project to build.|
 |[host](#configuration-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
-|[files](#configuration-files)|Specifies a list of source files.|
+|[input](#configuration-input)|Specifies a list of source files.|
 |[outputName](#configuration-outputName)|Specifies the name of the final executable.|
 
 #### Optional
