@@ -164,7 +164,7 @@ The following table describes what commands are used and how flags are inserted 
 |Clang|application|clang -o executable file.o [flags]|
 |Clang|static-library|ar rcs[flags] liblibrary.a file.o|
 |Clang|dynamic-library|clang -shared -o liblibrary.so file.o [flags]|
-|CL|application|cl /Feexecutable file.obj [flags]|
+|CL|application|cl /Feexecutable.exe file.obj [flags]|
 |CL|static-library|lib /OUT:library file.obj [flags]|
 |CL|dynamic-library|link /DLL /OUT:library file.obj [flags]|
 

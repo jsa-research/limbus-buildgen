@@ -27,12 +27,12 @@ exports.inject = function (compiler, exports) {
 
     exports.linkerCommand = function (options) {
         var extraFlags = '';
+        if (options.flags !== undefined) {
+            extraFlags += options.flags;
+        }
         if (options.libraries !== undefined) {
             var separator = ' -L./ -l';
             extraFlags += separator + options.libraries.join(separator);
-        }
-        if (options.flags !== undefined) {
-            extraFlags += ' ' + options.flags;
         }
 
         var outputPath;
@@ -48,10 +48,10 @@ exports.inject = function (compiler, exports) {
             return 'ar rcs' + extraFlags + ' ' + outputPath + 'lib' + options.outputName + '.a ' + objectFiles;
 
         } else if (options.type === 'dynamic-library') {
-            return compiler + ' -shared -o ' + outputPath + 'lib' + options.outputName + '.so ' + objectFiles + extraFlags;
+            return compiler + ' -shared -o ' + outputPath + 'lib' + options.outputName + '.so ' + objectFiles + ' ' + extraFlags;
 
         } else {
-            return compiler + ' -o ' + outputPath + options.outputName + ' ' + objectFiles + extraFlags;
+            return compiler + ' -o ' + outputPath + options.outputName + ' ' + objectFiles + ' ' + extraFlags;
         }
     };
 };
