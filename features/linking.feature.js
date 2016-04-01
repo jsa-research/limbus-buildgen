@@ -67,7 +67,7 @@ describe('Linking', function () {
             },
             'dynamic-library': {
                 'cl': '/NODEFAULTLIB',
-                'clang': '-nostdlib',
+                'clang': '-o',
                 'gcc': '-o'
             }
         };
