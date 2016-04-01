@@ -39,7 +39,7 @@ exports.linkerCommand = function (options) {
         extraFlags += ' ' + options.libraries.join('.lib ') + '.lib';
     }
     if (options.flags) {
-        extraFlags += ' ' + options.flags;
+        extraFlags += ' /link ' + options.flags;
     }
 
     var command,
@@ -62,5 +62,5 @@ exports.linkerCommand = function (options) {
         outputPath = '';
     }
 
-    return command + processPath(outputPath) + options.outputName + outputNameSuffix + extraFlags + ' ' + _.map(options.objectFiles, processPath).join(' ');
+    return command + processPath(outputPath) + options.outputName + outputNameSuffix + ' ' + _.map(options.objectFiles, processPath).join(' ') + extraFlags;
 };

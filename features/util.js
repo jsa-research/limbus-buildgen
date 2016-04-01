@@ -13,6 +13,21 @@ var makefile_generator = require('../source/makefile-generator');
 var shell = require('./shell');
 var fs = require('fs');
 
+exports.hostCompiler = (process.env.BUILDGEN_TARGET_COMPILER ? process.env.BUILDGEN_TARGET_COMPILER : undefined);
+
+// Defines default values for hostCompiler based on platform.
+if (exports.hostCompiler === undefined) {
+    if (process.platform === 'win32') {
+        exports.hostCompiler = 'cl';
+    } else if (process.platform === 'linux') {
+        exports.hostCompiler = 'gcc';
+    } else {
+        exports.hostCompiler = 'clang';
+    }
+}
+
+exports.host = process.platform + '-' + exports.hostCompiler;
+
 var writeFile = function (path, dataPromise) {
     return new Promise(function(resolve, reject) {
         dataPromise.then(function (data) {

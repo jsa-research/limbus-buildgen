@@ -33,7 +33,7 @@ describe('Front-end', function () {
             },
             command: 'simple',
             expectOutputToMatch: '42',
-            parameters: '--host ' + process.platform
+            parameters: '--host ' + util.host
         });
     });
 
@@ -41,7 +41,7 @@ describe('Front-end', function () {
         return util.generateCompileAndRun({
             config: {
                 type: 'application',
-                host: process.platform,
+                host: util.host,
                 files: [
                     'simple.c'
                 ],
@@ -102,7 +102,7 @@ describe('Front-end', function () {
         return util.generateCompileAndRun({
             config: {
                 type: 'application',
-                host: process.platform,
+                host: util.host,
                 files: [
                     'simple.c'
                 ],

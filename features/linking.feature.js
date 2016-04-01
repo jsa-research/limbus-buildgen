@@ -38,7 +38,7 @@ describe('Linking', function () {
         return util.generateCompileAndRun({
             config: {
                 type: 'application',
-                host: process.platform,
+                host: util.host,
                 files: [
                     'linked.c',
                     'source/mylibrary.c'
@@ -54,20 +54,84 @@ describe('Linking', function () {
     });
 
     it('should pass linker flags as is', function () {
-        return util.buildSimple({
-            type: 'application',
-            host: process.platform,
-            files: ['simple.c'],
-            outputName: 'app',
-            linkerFlags: process.platform === 'win32' ? '/NODEFAULTLIB' : '-nostdlib'
-        }).should.be.rejected();
+        var failFlags = {
+            'application': {
+                'cl': '/NODEFAULTLIB',
+                'clang': '-nostdlib',
+                'gcc': '-nostdlib'
+            },
+            'static-library': {
+                'cl': '/SUBSYSTEM:BOOT_APPLICATIO',
+                'clang': 'q',
+                'gcc': 'q'
+            },
+            'dynamic-library': {
+                'cl': '/NODEFAULTLIB',
+                'clang': '-nostdlib',
+                'gcc': '-nostdlib'
+            }
+        };
+        var succeedFlags = {
+            'application': {
+                'cl': '/link /VERSION:1.0',
+                'clang': '-s',
+                'gcc': '-s'
+            },
+            'static-library': {
+                'cl': '/WX:NO',
+                'clang': 'v',
+                'gcc': 'v'
+            },
+            'dynamic-library': {
+                'cl': '/VERSION:1.0',
+                'clang': '-s',
+                'gcc': '-s'
+            }
+        };
+
+        var linkerFlagsShouldFailForType = function(type, flags) {
+            return util.buildSimple({
+                type: type,
+                host: util.host,
+                files: ['simple.c'],
+                outputName: 'app',
+                linkerFlags: failFlags[type][util.hostCompiler]
+            }).then(function () {
+                return Promise.reject(new Error(type + ' did not fail'));
+            }, function () {
+                return Promise.resolve();
+            });
+        };
+        var linkerFlagsShouldSucceedForType = function(type, flags) {
+            return util.buildSimple({
+                type: type,
+                host: util.host,
+                files: ['simple.c'],
+                outputName: 'app',
+                linkerFlags: succeedFlags[type][util.hostCompiler]
+            });
+        };
+
+        return Promise.resolve().then(function () {
+            return linkerFlagsShouldSucceedForType('application');
+        }).then(function () {
+            return linkerFlagsShouldSucceedForType('static-library');
+        }).then(function () {
+            return linkerFlagsShouldSucceedForType('dynamic-library');
+        }).then(function () {
+            return linkerFlagsShouldFailForType('application');
+        }).then(function () {
+            return linkerFlagsShouldFailForType('static-library');
+        }).then(function () {
+            return linkerFlagsShouldFailForType('dynamic-library');
+        });
     });
 
     it('should link with libm by default', function () {
         return util.generateCompileAndRun({
             config: {
                 type: 'application',
-                host: process.platform,
+                host: util.host,
                 files: [
                     'math.c'
                 ],
@@ -82,7 +146,7 @@ describe('Linking', function () {
         return util.generateCompileAndRun({
             config: {
                 type: 'application',
-                host: process.platform,
+                host: util.host,
                 files: [
                     'simple.c'
                 ],
@@ -98,7 +162,7 @@ describe('Linking', function () {
             config: [
                 {
                     type: 'static-library',
-                    host: process.platform,
+                    host: util.host,
                     files: [
                         'source/mylibrary.c'
                     ],
@@ -106,7 +170,7 @@ describe('Linking', function () {
                 },
                 {
                     type: 'application',
-                    host: process.platform,
+                    host: util.host,
                     files: [
                         'linked.c'
                     ],
@@ -129,7 +193,7 @@ describe('Linking', function () {
             config: [
                 {
                     type: 'static-library',
-                    host: process.platform,
+                    host: util.host,
                     files: [
                         'source/mylibrary.c'
                     ],
@@ -137,7 +201,7 @@ describe('Linking', function () {
                 },
                 {
                     type: 'dynamic-library',
-                    host: process.platform,
+                    host: util.host,
                     files: [
                         'source/mydynamiclibrary.c'
                     ],
@@ -148,7 +212,7 @@ describe('Linking', function () {
                 },
                 {
                     type: 'application',
-                    host: process.platform,
+                    host: util.host,
                     files: [
                         'linked_dynamic.c'
                     ],
