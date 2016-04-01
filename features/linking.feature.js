@@ -67,8 +67,8 @@ describe('Linking', function () {
             },
             'dynamic-library': {
                 'cl': '/NODEFAULTLIB',
-                'clang': '-invalid-flag',
-                'gcc': '-invalid-flag'
+                'clang': '-nostdlib',
+                'gcc': '-nostdlib'
             }
         };
         var succeedFlags = {
