@@ -1,6 +1,6 @@
 
 // limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
-// Written in 2014 by Jesper Oskarsson jesosk@gmail.com
+// Written in 2014-2016 by Jesper Oskarsson jesosk@gmail.com
 //
 // To the extent possible under law, the author(s) have dedicated all copyright
 // and related and neighboring rights to this software to the public domain worldwide.
@@ -29,11 +29,10 @@ readme.replace(/```json([\s\S]+?)```/gi, function (match, example) {
     jsonExampleExpressions.push("require('source/makefile-generator').generate(" + example + ");");
     return match;
 });
-readme.replace(/## Use[\s\S]+?```([\s\S]+?)```/, function (match, info) {
+readme.replace(/```(\s+Usage\:[\s\S]+?)```/, function (match, info) {
     usageInformation = info;
     return match;
 });
-
 
 var generateWithExample = function (example) {
     return Promise.resolve().then(function () {
