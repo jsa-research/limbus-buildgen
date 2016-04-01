@@ -154,19 +154,19 @@ Compiler flags are added to the compile command.
 ###### linkerFlags
 Linker flags are added to the link command. Which link command is used depends on the type and compiler specified. This needs to be taken into account when flags are added to the configuration.
 
-The following table describes what commands are used for all compiler/type combinations:
+The following table describes what commands are used and how flags are inserted for all compiler/type combinations:
 
 |Compiler|Type|Command|
 |:--|:--|:--|
-|GNU GCC|application|gcc|
-|GNU GCC|static-library|ar|
-|GNU GCC|dynamic-library|gcc|
-|Clang|application|clang|
-|Clang|static-library|ar|
-|Clang|dynamic-library|clang|
-|CL|application|cl|
-|CL|static-library|lib|
-|CL|dynamic-library|link|
+|GNU GCC|application|gcc -o executable file.o [flags]|
+|GNU GCC|static-library|ar rcs[flags] liblibrary.a file.o|
+|GNU GCC|dynamic-library|gcc -shared -o liblibrary.so file.o [flags]|
+|Clang|application|clang -o executable file.o [flags]|
+|Clang|static-library|ar rcs[flags] liblibrary.a file.o|
+|Clang|dynamic-library|clang -shared -o liblibrary.so file.o [flags]|
+|CL|application|cl /Feexecutable file.obj [flags]|
+|CL|static-library|lib /OUT:library file.obj [flags]|
+|CL|dynamic-library|link /DLL /OUT:library file.obj [flags]|
 
 <a name="configuration-libraries"></a>
 ###### libraries

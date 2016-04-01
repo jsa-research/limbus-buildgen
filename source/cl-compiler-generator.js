@@ -39,7 +39,7 @@ exports.linkerCommand = function (options) {
         extraFlags += ' ' + options.libraries.join('.lib ') + '.lib';
     }
     if (options.flags) {
-        extraFlags += ' /link ' + options.flags;
+        extraFlags += ' ' + options.flags;
     }
 
     var command,

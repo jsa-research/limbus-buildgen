@@ -56,7 +56,7 @@ describe('Linking', function () {
     it('should pass linker flags as is', function () {
         var failFlags = {
             'application': {
-                'cl': '/NODEFAULTLIB',
+                'cl': '/link /NODEFAULTLIB',
                 'clang': '-nostdlib',
                 'gcc': '-nostdlib'
             },

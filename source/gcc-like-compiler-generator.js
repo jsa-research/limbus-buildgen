@@ -35,19 +35,6 @@ exports.inject = function (compiler, exports) {
             extraFlags += ' ' + options.flags;
         }
 
-        var command;
-        var outputName;
-        if (options.type === 'static-library') {
-            command = 'ar rcs ';
-            outputName = 'lib' + options.outputName + '.a';
-        } else if (options.type === 'dynamic-library') {
-            command = compiler + ' -shared -o ';
-            outputName = 'lib' + options.outputName + '.so';
-        } else {
-            command = compiler + ' -o ';
-            outputName = options.outputName;
-        }
-
         var outputPath;
         if (options.outputPath) {
             outputPath = options.outputPath.replace(/\/$/, '') + '/';
@@ -55,6 +42,16 @@ exports.inject = function (compiler, exports) {
             outputPath = '';
         }
 
-        return command + outputPath + outputName + ' ' + options.objectFiles.join(' ') + extraFlags;
+        var objectFiles = options.objectFiles.join(' ');
+
+        if (options.type === 'static-library') {
+            return 'ar rcs' + extraFlags + ' ' + outputPath + 'lib' + options.outputName + '.a ' + objectFiles;
+
+        } else if (options.type === 'dynamic-library') {
+            return compiler + ' -shared -o ' + outputPath + 'lib' + options.outputName + '.so ' + objectFiles + extraFlags;
+
+        } else {
+            return compiler + ' -o ' + outputPath + options.outputName + ' ' + objectFiles + extraFlags;
+        }
     };
 };
