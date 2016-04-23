@@ -24,7 +24,7 @@ The project consists of a set of Common.js modules written in ES5.1 which can be
 <a name="usage"></a>
 ## Using the CLI
 ```
-Usage: ./duk limbus-buildgen.js [flags] <path to JSON configuration file>
+Usage: limbus-buildgen [flags] <path to JSON configuration file>
 
 Options:
 
@@ -81,7 +81,7 @@ The JSON configuration files support the following properties:
 ```
 A makefile for the above example can be generated using:
 ```
-./duk limbus-buildgen.js configuration.json
+limbus-buildgen configuration.json
 ```
 
 #### Configuration Properties

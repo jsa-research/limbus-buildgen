@@ -86,7 +86,7 @@ describe('README Examples', function () {
     });
 
     describe('Usage information', function () {
-        var usageCommand = shell.path('./duk') + ' --help';
+        var usageCommand = shell.path('./limbus-buildgen') + ' --help';
 
         it('should match the output of `' + usageCommand + '`', function () {
             return shell.exec(usageCommand).then(function (result) {

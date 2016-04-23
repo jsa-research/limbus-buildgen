@@ -7,7 +7,7 @@
     "includePaths": [
         "dependencies/duktape-1.4.0/src/"
     ],
-    "outputName": "duk",
+    "outputName": "limbus-buildgen",
     "compilerFlags": "-g -O0 --coverage",
     "host": "linux",
     "type": "application"

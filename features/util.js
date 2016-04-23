@@ -56,7 +56,7 @@ var readFile = function (path) {
 };
 exports.readFile = readFile;
 
-exports.frontEndExecutable = shell.path('./duk');
+exports.frontEndExecutable = shell.path('./limbus-buildgen');
 
 exports.beforeEach = function () {
     return shell.mkdir('temp').then(function () {
@@ -83,7 +83,7 @@ var generate = function (config, parameters) {
     }
 
     return writeFile('temp/build_config.json', Promise.resolve(buildConfig)).then(function () {
-        return shell.exec(shell.path('../duk') + ' ' + (parameters || '') + ' build_config.json', {cwd: 'temp'});
+        return shell.exec(shell.path('../limbus-buildgen') + ' ' + (parameters || '') + ' build_config.json', {cwd: 'temp'});
     });
 };
 

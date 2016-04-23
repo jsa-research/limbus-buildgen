@@ -29,14 +29,7 @@ var getFlagValue = function (flags, index) {
     return flags[index + 1];
 };
 
-var argumentsToSlice;
-if (process.argv[0].indexOf('duk') !== -1) {
-    argumentsToSlice = 1;
-} else {
-    argumentsToSlice = 2;
-}
-
-var processArguments = process.argv.slice(argumentsToSlice);
+var processArguments = process.argv.slice(1);
 var makefile,
     configPath,
     host;
@@ -58,7 +51,7 @@ var flagHandlers = {
     },
     '--help': function () {
         console.log("\n" +
-                    "Usage: ./duk limbus-buildgen.js [flags] <path to JSON configuration file>\n" +
+                    "Usage: limbus-buildgen [flags] <path to JSON configuration file>\n" +
                     "\n" +
                     "Options:\n" +
                     "\n" +

@@ -7,6 +7,6 @@
     "includePaths": [
         "dependencies/duktape-1.4.0/src/"
     ],
-    "outputName": "duk",
+    "outputName": "limbus-buildgen",
     "type": "application"
 }

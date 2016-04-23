@@ -13,9 +13,9 @@
 /node_modules/
 /nvm/
 
-/duk
-/duk.exe
-/duk.dSYM
+/limbus-buildgen
+/limbus-buildgen.exe
+/limbus-buildgen.dSYM
 /*coverage.info
 *.obj
 *.o

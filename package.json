@@ -2,8 +2,11 @@
   "name": "limbus-buildgen",
   "version": "0.1.0",
   "description": "A \"build anywhere\" build system.",
-  "main": "duk limbus-buildgen.js",
+  "main": "limbus-buildgen",
   "directories": {},
+  "bin": {
+    "limbus-buildgen": "./limbus-buildgen"
+  },
   "devDependencies": {
     "blanket": "1.2.2",
     "coveralls": "2.11.8",
