@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <duktape.h>
 #include "platform.h"
+#include "packed_javascript_source.h"
 
 char** arguments;
 int argument_count;
@@ -131,30 +132,24 @@ static const char* module_loader = "\
 Duktape.modSearch = function (id) {\
     if (id === 'fs') {\
         return \"\\\
-exports.readFileSync = function (filepath) {\\\
-    var fileBuffer = sea_platform.read_file(filepath);\\\
-    if (sea_platform.buffer_is_valid(fileBuffer)) {\\\
-        var data = sea_platform.buffer_data_to_string(fileBuffer);\\\
-        sea_platform.buffer_destruct(fileBuffer);\\\
-        return data;\\\
-    } else {\\\
-        throw new Error('Could not read file: ' + filepath);\\\
-    }\\\
-};\\\
-exports.writeFileSync = function (filepath, data) {\\\
-    var buffer = sea_platform.buffer_construct_with_string(data);\\\
-    sea_platform.write_file(filepath, buffer);\\\
-    sea_platform.buffer_destruct(buffer);\\\
-};\";\
+        exports.readFileSync = function (filepath) {\\\
+            var fileBuffer = sea_platform.read_file(filepath);\\\
+            if (sea_platform.buffer_is_valid(fileBuffer)) {\\\
+                var data = sea_platform.buffer_data_to_string(fileBuffer);\\\
+                sea_platform.buffer_destruct(fileBuffer);\\\
+                return data;\\\
+            } else {\\\
+                throw new Error('Could not read file: ' + filepath);\\\
+            }\\\
+        };\\\
+        exports.writeFileSync = function (filepath, data) {\\\
+            var buffer = sea_platform.buffer_construct_with_string(data);\\\
+            sea_platform.write_file(filepath, buffer);\\\
+            sea_platform.buffer_destruct(buffer);\\\
+        };\";\
     }\
-    var fileBuffer = sea_platform.read_file(id + '.js');\
-    if (sea_platform.buffer_is_valid(fileBuffer)) {\
-        var source = sea_platform.buffer_data_to_string(fileBuffer);\
-        sea_platform.buffer_destruct(fileBuffer);\
-        return source;\
-    } else {\
-        throw new Error('module not found: ' + id);\
-    }\
+\
+    throw new Error('module not found: ' + id);\
 };\
 \
 console = {\
@@ -178,41 +173,31 @@ static void compile_and_execute_module_loader(duk_context* context) {
 }
 
 int main(int argc, char* argv[]) {
-    void* source;
     int errorCode = -1;
 
-    if (argc < 2) {
-        fprintf(stderr, "No input file\n");
-        return -1;
+    int status;
+    duk_context* context = duk_create_heap_default();
+    duk_push_lstring(context,
+                     javascript_source,
+                     javascript_source_length);
+    duk_push_string(context, "limbus-buildgen.js");
+
+    register_platform(context);
+    compile_and_execute_module_loader(context);
+
+    arguments = argv;
+    argument_count = argc;
+
+    status = duk_safe_call(context, compile_and_execute, 2, 1);
+    if (status != DUK_EXEC_SUCCESS) {
+        (void)duk_safe_call(context, get_stack_trace, 1, 1);
+        fprintf(stderr, "%s\n", duk_safe_to_string(context, -1));
+    } else {
+        duk_pop(context);
+        errorCode = 0;
     }
 
-    source = sea_platform_read_file(argv[1]);
-    if (sea_platform_buffer_is_valid(source)) {
-        int status;
-        duk_context* context = duk_create_heap_default();
-        duk_push_lstring(context,
-                         sea_platform_buffer_data_as_c_pointer(source),
-                         sea_platform_buffer_size(source));
-        duk_push_string(context, argv[1]);
-        sea_platform_buffer_destruct(source);
-
-        register_platform(context);
-        compile_and_execute_module_loader(context);
-
-        arguments = argv;
-        argument_count = argc;
-
-        status = duk_safe_call(context, compile_and_execute, 2, 1);
-        if (status != DUK_EXEC_SUCCESS) {
-            (void)duk_safe_call(context, get_stack_trace, 1, 1);
-            fprintf(stderr, "%s\n", duk_safe_to_string(context, -1));
-        } else {
-            duk_pop(context);
-            errorCode = 0;
-        }
-
-        duk_destroy_heap(context);
-    }
+    duk_destroy_heap(context);
 
     return errorCode;
 }

@@ -26,7 +26,7 @@ readme.replace(/```javascript([\s\S]+?)```/gi, function (match, example) {
 });
 readme.replace(/```json([\s\S]+?)```/gi, function (match, example) {
     jsonExamples.push(example);
-    jsonExampleExpressions.push("require('source/makefile-generator').generate(" + example + ");");
+    jsonExampleExpressions.push("require('../source/makefile-generator').generate(" + example + ");");
     return match;
 });
 readme.replace(/```(\s+Usage\:[\s\S]+?)```/, function (match, info) {
@@ -38,7 +38,7 @@ var generateWithExample = function (example) {
     return Promise.resolve().then(function () {
         return util.writeFile('temp/example.js', Promise.resolve(example));
     }).then(function () {
-        return shell.exec(shell.path('./duk') + ' ' + shell.path('temp/example.js'), {cwd: null});
+        return shell.exec('node ' + shell.path('temp/example.js'), {cwd: null});
     });
 };
 
@@ -86,7 +86,7 @@ describe('README Examples', function () {
     });
 
     describe('Usage information', function () {
-        var usageCommand = shell.path('./duk') + ' ' + shell.path('./limbus-buildgen.js') + ' --help';
+        var usageCommand = shell.path('./duk') + ' --help';
 
         it('should match the output of `' + usageCommand + '`', function () {
             return shell.exec(usageCommand).then(function (result) {

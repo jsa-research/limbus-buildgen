@@ -9,7 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var makefileGenerator = require('./source/makefile-generator');
+var makefileGenerator = require('./makefile-generator');
 var fs = require('fs');
 
 var exitWithError = function (error) {
@@ -29,7 +29,14 @@ var getFlagValue = function (flags, index) {
     return flags[index + 1];
 };
 
-var processArguments = process.argv.slice(2);
+var argumentsToSlice;
+if (process.argv[0].indexOf('duk') !== -1) {
+    argumentsToSlice = 1;
+} else {
+    argumentsToSlice = 2;
+}
+
+var processArguments = process.argv.slice(argumentsToSlice);
 var makefile,
     configPath,
     host;

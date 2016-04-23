@@ -184,7 +184,7 @@ All paths in the configuration are given as POSIX paths. The generators take car
 ## Javascript API
 #### Generate Makefiles
 ```javascript
-var makefile_generator = require('source/makefile-generator');
+var makefile_generator = require('../source/makefile-generator');
 
 // Returns a string with the generated makefile.
 var makefile = makefile_generator.generate({
