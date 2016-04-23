@@ -90,7 +90,7 @@ var generate = function (config, parameters) {
 var compile = function (makefile) {
     var make;
     if (process.platform === 'win32') {
-        make = 'nmake /f ' + (makefile || 'Makefile');
+        make = '..\\utility-scripts\\setenv.bat && nmake /f ' + (makefile || 'Makefile');
     } else {
         make = 'make -f ' + (makefile || 'Makefile')
     }
