@@ -11,6 +11,9 @@
 
 @echo off
 
+:: Exit script if the environment is already set up.
+nmake /? 2>NUL >NUL && exit /b
+
 :: Tries to set up development environment starting with the latest visual studio
 :: down to the oldest Windows SDK
 
