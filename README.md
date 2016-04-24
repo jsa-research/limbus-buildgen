@@ -27,6 +27,11 @@ limbus-buildgen is distributed with a range of different package managers to be 
 npm install -g limbus-buildgen
 ```
 
+#### Homebrew
+```
+brew install https://raw.githubusercontent.com/redien/limbus-buildgen/master/limbus-buildgen.rb
+```
+
 #### Manually download ZIP
 You can also download the ZIP from https://github.com/redien/limbus-buildgen/archive/master.zip and [build manually from source](#building-from-source).
 
