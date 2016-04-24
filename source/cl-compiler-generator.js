@@ -52,7 +52,7 @@ exports.linkerCommand = function (options) {
         command = 'lib /OUT:';
         outputNameSuffix = '.lib';
     } else if (options.type === 'dynamic-library') {
-        command = 'link /DLL /OUT:';
+        command = 'cl /LD /Fe';
         outputNameSuffix = '.dll';
     } else {
         command = 'cl /Fe';

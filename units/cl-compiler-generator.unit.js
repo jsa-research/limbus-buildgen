@@ -174,7 +174,7 @@ describe('cl-compiler-generator', function () {
                 type: 'dynamic-library'
             });
 
-            linkerCommand.should.match(/^link \/DLL \/OUT:name\.dll file\.obj/);
+            linkerCommand.should.match(/^cl \/LD \/Fename\.dll file\.obj/);
         });
 
         it('should include extra linker flags', function () {
