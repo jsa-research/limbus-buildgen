@@ -321,12 +321,15 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for a 0.5 version
 This release is intended to streamline the user experience and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
+* Provide future proofed Javascript API
+* Complete documentation
 * Create release bundled with dependencies
 * Override all configuration properties using flags
-* Complete documentation
-* Provide future proofed Javascript API
-* Modify makefile generator so that makefiles make use of make's "implicit variables"
 * Provide configuration overrides for when different arguments are passed
+* Modify makefile generator so that makefiles make use of make's "implicit variables"
+* Make sure GCC is tested against on OS X when running on CI
+* Make sure compilation for x86 and x64 work
+* Figure out debug/release builds
 
 ##### Planned for a 0.6 release
 This release will implement cross compilation to mobile devices.
