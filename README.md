@@ -324,8 +324,8 @@ This release is intended to streamline the user experience and produce a done re
 * Create release bundled with dependencies
 * Override all configuration properties using flags
 * Complete documentation
+* Provide future proofed Javascript API
 * Modify makefile generator so that makefiles make use of make's "implicit variables"
-* Library include paths
 * Provide configuration overrides for when different arguments are passed
 
 ##### Planned for a 0.6 release
