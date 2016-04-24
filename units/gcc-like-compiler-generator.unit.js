@@ -80,12 +80,12 @@ describe('gcc-like-compiler-generator', function () {
     describe('Linking', function () {
         it('should link several object files into one executable with outputName', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+                type: 'application',
+                outputName: 'name',
                 objectFiles: [
                     'test.c.o',
                     'second.c.o'
-                ],
-                outputName: 'name',
-                type: 'application'
+                ]
             });
 
             linkerCommand.should.match(new RegExp('^gcc-like '));
@@ -96,11 +96,9 @@ describe('gcc-like-compiler-generator', function () {
 
         it('should link with any specified libraries in libraries', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
-                objectFiles: [
-                    'test.c.o'
-                ],
-                outputName: 'name',
                 type: 'application',
+                outputName: 'name',
+                objectFiles: [ 'test.c.o' ],
                 libraries: [
                     'mylibrary',
                     'anotherlibrary'
@@ -114,10 +112,8 @@ describe('gcc-like-compiler-generator', function () {
         it('should link as a static library if "type" === "static-library"', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
                 type: 'static-library',
-                objectFiles: [
-                    'test.c.o'
-                ],
                 outputName: 'name',
+                objectFiles: [ 'test.c.o' ]
             });
 
             linkerCommand.should.containEql('ar rcs libname.a');
@@ -126,10 +122,8 @@ describe('gcc-like-compiler-generator', function () {
         it('should link as a dynamic library if "type" === "dynamic-library"', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
                 type: 'dynamic-library',
-                objectFiles: [
-                    'test.c.o'
-                ],
-                outputName: 'name'
+                outputName: 'name',
+                objectFiles: [ 'test.c.o' ]
             });
 
             linkerCommand.should.containEql('-shared');
@@ -140,10 +134,8 @@ describe('gcc-like-compiler-generator', function () {
         it('should include extra linker flags', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
                 type: 'application',
-                objectFiles: [
-                    'file.obj'
-                ],
                 outputName: 'name',
+                objectFiles: [ 'test.c.o' ],
                 flags: '--flag'
             });
 
@@ -154,11 +146,9 @@ describe('gcc-like-compiler-generator', function () {
             it('should be prepended to outputName if given', function () {
                 var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
                     type: 'application',
-                    objectFiles: [
-                        'file.o'
-                    ],
                     outputName: 'name',
-                    outputPath: 'some/directory/'
+                    outputPath: 'some/directory/',
+                    objectFiles: [ 'test.c.o' ]
                 });
 
                 linkerCommand.should.containEql('some/directory/name');
@@ -169,9 +159,7 @@ describe('gcc-like-compiler-generator', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
                 type: 'application',
                 outputName: 'name',
-                objectFiles: [
-                    'file.o'
-                ],
+                objectFiles: [ 'test.c.o' ],
                 libraryPaths: [
                     'path',
                     'other_path'
