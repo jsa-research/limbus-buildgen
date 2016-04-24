@@ -22,8 +22,5 @@
 *.gcda
 *.gcno
 
-# ci_script.sh
-/ci_public/
-
 coverage.html
 packed*.js
