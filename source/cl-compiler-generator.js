@@ -41,6 +41,10 @@ exports.linkerCommand = function (options) {
     if (options.flags) {
         extraFlags += ' ' + options.flags;
     }
+    if (options.libraryPaths) {
+        var separator = ' /LIBPATH:';
+        extraFlags += separator + options.libraryPaths.join(separator);
+    }
 
     var command,
         outputNameSuffix;

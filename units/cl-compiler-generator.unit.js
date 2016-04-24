@@ -107,6 +107,23 @@ describe('cl-compiler-generator', function () {
             linkerCommand.should.containEql('/Feexecutable');
         });
 
+        it('should add any specified library paths in libraryPaths', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'application',
+                objectFiles: [
+                    'file.obj',
+                ],
+                outputName: 'executable',
+                libraryPaths: [
+                    'path',
+                    'other_path'
+                ]
+            });
+
+            linkerCommand.should.match(/\/LIBPATH:path/);
+            linkerCommand.should.match(/\/LIBPATH:other_path/);
+        });
+
         it('should link with any specified libraries in libraries', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 objectFiles: [
