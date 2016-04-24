@@ -120,8 +120,7 @@ describe('cl-compiler-generator', function () {
                 ]
             });
 
-            linkerCommand.should.match(/\/LIBPATH:path/);
-            linkerCommand.should.match(/\/LIBPATH:other_path/);
+            linkerCommand.should.match(/\/link \/LIBPATH:path \/LIBPATH:other_path$/);
         });
 
         it('should link with any specified libraries in libraries', function () {
@@ -187,7 +186,7 @@ describe('cl-compiler-generator', function () {
                 flags: '/flag'
             });
 
-            linkerCommand.should.containEql('/flag');
+            linkerCommand.should.match(/\/link \/flag$/);
         });
 
         describe('outputPath', function () {

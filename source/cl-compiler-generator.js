@@ -34,10 +34,12 @@ exports.compilerCommand = function (options) {
 };
 
 exports.linkerCommand = function (options) {
-    var extraFlags = '';
+    var libraries = '';
     if (options.libraries) {
-        extraFlags += ' ' + options.libraries.join('.lib ') + '.lib';
+        libraries += ' ' + options.libraries.join('.lib ') + '.lib';
     }
+
+    var extraFlags = '';
     if (options.flags) {
         extraFlags += ' ' + options.flags;
     }
@@ -66,5 +68,5 @@ exports.linkerCommand = function (options) {
         outputPath = '';
     }
 
-    return command + processPath(outputPath) + options.outputName + outputNameSuffix + ' ' + _.map(options.objectFiles, processPath).join(' ') + extraFlags;
+    return command + processPath(outputPath) + options.outputName + outputNameSuffix + ' ' + _.map(options.objectFiles, processPath).join(' ') + libraries + ' /link' + extraFlags;
 };
