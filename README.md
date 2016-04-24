@@ -304,8 +304,6 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for a 0.5 version
 This release is intended to streamline the user experience and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
-* Provide an integrated executable for the front-end
-* Provide npm packages for both executable and libraries
 * Create release bundled with dependencies
 * Override all configuration properties using flags
 * Complete documentation
@@ -316,6 +314,7 @@ This release is intended to streamline the user experience and produce a done re
 ##### Planned for a 0.6 release
 This release will implement cross compilation to mobile devices.
 
+* Autoconf support
 * Cross compilation to iOS
 * Cross compilation to Android
 
