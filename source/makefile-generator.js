@@ -12,6 +12,8 @@
 var _ = require('./publicdash');
 var makefileBuilder = require('./makefile-builder');
 var ConfigValidator = require('./config-validator');
+var gccLikeCompilerGenerator = require('./gcc-like-compiler-generator');
+var clCompilerGenerator = require('./cl-compiler-generator');
 
 var compilerInfoTable = {
     clang: {
@@ -22,7 +24,8 @@ var compilerInfoTable = {
             'freebsd',
             'freebsd-clang'
         ],
-        generator: require('./clang-compiler-generator'),
+        compilerCommand: function (options) { return gccLikeCompilerGenerator.compilerCommand('clang', options); },
+        linkerCommand: function (options) { return gccLikeCompilerGenerator.linkerCommand('clang', options); },
         objectFileSuffix: '.c.o'
     },
     gcc: {
@@ -32,7 +35,8 @@ var compilerInfoTable = {
             'darwin-gcc',
             'freebsd-gcc'
         ],
-        generator: require('./gcc-compiler-generator'),
+        compilerCommand: function (options) { return gccLikeCompilerGenerator.compilerCommand('gcc', options); },
+        linkerCommand: function (options) { return gccLikeCompilerGenerator.linkerCommand('gcc', options); },
         objectFileSuffix: '.c.o'
     },
     cl: {
@@ -40,7 +44,8 @@ var compilerInfoTable = {
             'win32',
             'win32-cl'
         ],
-        generator: require('./cl-compiler-generator'),
+        compilerCommand: clCompilerGenerator.compilerCommand,
+        linkerCommand: clCompilerGenerator.linkerCommand,
         objectFileSuffix: '.obj'
     }
 };
@@ -87,7 +92,7 @@ var parseFileName = function (fileName) {
 var generateCompileInstructionsForCompiler = function (compiler, outputName, config) {
     var filenames = _.filter(_.map(config.files, parseFileName), _.not.isNull);
     var instructions = _.map(filenames, function (filename) {
-        return compiler.generator.compilerCommand({
+        return compiler.compilerCommand({
             type: config.type,
             file: filename.full,
             includePaths: config.includePaths,
@@ -98,7 +103,7 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
         return filename.name + compiler.objectFileSuffix;
     });
 
-    instructions.push(compiler.generator.linkerCommand({
+    instructions.push(compiler.linkerCommand({
         objectFiles: objectFiles,
         outputName: outputName,
         outputPath: config.outputPath,
