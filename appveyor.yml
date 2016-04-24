@@ -15,7 +15,6 @@ install:
     - ps: Install-Product node $env:BUILDGEN_NODE_VERSION
     - npm --version
     - npm install
-    - make /%TARGET_ARCH% /%TARGET_CONFIG%
 
 build_script:
     - npm test
@@ -24,15 +23,6 @@ environment:
     matrix:
           # AppVeyor does not seem to have 5.9.0 yet.
         - BUILDGEN_NODE_VERSION: 4.4.0
-          TARGET_ARCH: x86
-          TARGET_CONFIG: Release
-          BUILDGEN_TARGET_COMPILER: cl
-
-          # The x64 build does not depend on the node version.
-          # We only test x64 to make sure building x64 binaries works as expected.
-        - BUILDGEN_NODE_VERSION: 4.4.0
-          TARGET_ARCH: x64
-          TARGET_CONFIG: Release
           BUILDGEN_TARGET_COMPILER: cl
 
 matrix:
