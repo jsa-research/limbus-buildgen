@@ -21,6 +21,7 @@ var optionalProperties = [
     'compilerFlags',
     'linkerFlags',
     'includePaths',
+    'libraryPaths',
     'libraries'
 ];
 
@@ -54,6 +55,7 @@ var stringProperties = [
 var stringArrayProperties = [
     'files',
     'includePaths',
+    'libraryPaths',
     'libraries'
 ];
 

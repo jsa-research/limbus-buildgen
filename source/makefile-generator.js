@@ -102,6 +102,7 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
         objectFiles: objectFiles,
         outputName: outputName,
         outputPath: config.outputPath,
+        libraryPaths: config.libraryPaths,
         flags: config.linkerFlags,
         libraries: config.libraries,
         type: config.type

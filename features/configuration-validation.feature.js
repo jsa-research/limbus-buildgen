@@ -182,6 +182,16 @@ describe('Configuration Validation', function () {
             }, /property is not a string array/i, /includePaths/);
         });
 
+        it('should give error "property is not a string array" with property "libraryPaths" when libraryPaths is not a string', function () {
+            return configShouldFailWith({
+                type: 'application',
+                host: 'linux',
+                files: ['simple.c'],
+                outputName: 'app',
+                libraryPaths: [1]
+            }, /property is not a string array/i, /libraryPaths/);
+        });
+
         it('should give error "property is not a string array" with property "libraries" when libraries is not a string', function () {
             return configShouldFailWith({
                 type: 'application',

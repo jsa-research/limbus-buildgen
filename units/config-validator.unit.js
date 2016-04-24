@@ -284,6 +284,19 @@ describe('config-validator', function () {
                 result.property.should.equal('includePaths');
             });
 
+            it('should return {valid: false, error: "property is not a string array", property: "libraryPaths"} if libraryPaths is not a string array', function () {
+                var result = ConfigValidator.validate({
+                    type: 'application',
+                    host: 'linux',
+                    files: ['main.c'],
+                    outputName: 'app',
+                    libraryPaths: [3]
+                });
+                result.valid.should.be.false();
+                result.error.should.equal('property is not a string array');
+                result.property.should.equal('libraryPaths');
+            });
+
             it('should return {valid: false, error: "property is not a string array", property: "libraries"} if libraries is not a string array', function () {
                 var result = ConfigValidator.validate({
                     type: 'application',

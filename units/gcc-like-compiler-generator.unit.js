@@ -178,6 +178,23 @@ var injectSpecs = function (compiler) {
                     linkerCommand.should.containEql('some/directory/name');
                 });
             });
+
+            it('should add any specified library paths in libraryPaths', function () {
+                var linkerCommand = GccCompilerGenerator.linkerCommand({
+                    type: 'application',
+                    outputName: 'name',
+                    objectFiles: [
+                        'file.o'
+                    ],
+                    libraryPaths: [
+                        'path',
+                        'other_path'
+                    ]
+                });
+
+                linkerCommand.should.containEql('-Lpath');
+                linkerCommand.should.containEql('-Lother_path');
+            });
         });
     });
 };

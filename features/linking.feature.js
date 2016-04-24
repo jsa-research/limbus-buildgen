@@ -233,4 +233,39 @@ describe('Linking', function () {
             expectOutputToMatch: /42/
         });
     });
+
+    it('should search libraryPaths to find libraries to link', function () {
+        return util.generateCompileAndRun({
+            config: [
+                {
+                    type: 'static-library',
+                    host: util.host,
+                    files: [
+                        'source/mylibrary.c'
+                    ],
+                    outputName: 'my_lib_name',
+                    outputPath: 'source'
+                },
+                {
+                    type: 'application',
+                    host: util.host,
+                    files: [
+                        'linked.c'
+                    ],
+                    libraries: [
+                        'my_lib_name'
+                    ],
+                    includePaths: [
+                        'include'
+                    ],
+                    libraryPaths: [
+                        'source'
+                    ],
+                    outputName: 'linked_with_library'
+                }
+            ],
+            command: 'linked_with_library',
+            expectOutputToMatch: /42/
+        });
+    });
 });

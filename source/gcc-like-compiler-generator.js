@@ -34,6 +34,10 @@ exports.inject = function (compiler, exports) {
             var separator = ' -L./ -l';
             extraFlags += separator + options.libraries.join(separator);
         }
+        if (options.libraryPaths !== undefined) {
+            var separator = ' -L';
+            extraFlags += separator + options.libraryPaths.join(separator);
+        }
 
         var outputPath;
         if (options.outputPath) {

@@ -72,6 +72,7 @@ The JSON configuration files support the following properties:
 |:--:|:--|
 |[outputPath](#configuration-outputPath)|Specifies a path to prepend to the outputName. *It defaults to the build directory.*|
 |[includePaths](#configuration-includePaths)|Specifies where to find header files to include.|
+|[libraryPaths](#configuration-libraryPaths)|Specifies where to find libraries to link.|
 |[compilerFlags](#configuration-compilerFlags)|Specifies any extra compiler flags that will be passed to the compiler as is.|
 |[linkerFlags](#configuration-linkerFlags)|Specifies any extra linkers flags that will be passed to the linker as is.|
 |[libraries](#configuration-libraries)|Specifies any libraries to link with when building an application or dynamic library.|
@@ -90,6 +91,9 @@ The JSON configuration files support the following properties:
     "outputPath": "some/path",
     "includePaths": [
         "include/"
+    ],
+    "libraryPaths": [
+        "build/"
     ],
     "compilerFlags": "-g -O0 -coverage",
     "linkerFlags": "-coverage",
@@ -165,6 +169,10 @@ The `outputPath` property takes a string with a [path](#paths) to be prepended t
 ###### includePaths
 The `includePaths` property takes an array of strings. Each string contains a [path](#paths) relative to the build directory to use to include header files.
 
+<a name="configuration-libraryPaths"></a>
+###### libraryPaths
+The `libraryPaths` property takes an array of strings. Each string contains a [path](#paths) relative to the build directory to use to search for libraries to link.
+
 <a name="configuration-compilerFlags"></a>
 ###### compilerFlags
 Compiler flags are added to the compile command.
@@ -225,6 +233,10 @@ var makefile = makefile_generator.generate({
     // Specifies where to find header files to include.
     includePaths: [
         'include/'
+    ],
+    // Specifies where to find libraries to link.
+    libraryPaths: [
+        'build/'
     ],
     // Specifies any extra compiler flags that will be passed to the compiler as is.
     compilerFlags: '-g -O0 -coverage',
