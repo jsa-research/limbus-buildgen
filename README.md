@@ -20,6 +20,15 @@ The project consists of a set of Common.js modules written in ES5.1 which can be
 
 <a name="installation"></a>
 ## Installation
+limbus-buildgen is distributed with a range of different package managers to be available by default on as many systems as possible.
+
+#### NPM
+```
+npm install -g limbus-buildgen
+```
+
+#### Manually download ZIP
+You can also download the ZIP from https://github.com/redien/limbus-buildgen/archive/master.zip and [build manually from source](#building-from-source).
 
 <a name="usage"></a>
 ## Using the CLI
