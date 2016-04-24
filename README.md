@@ -32,6 +32,11 @@ npm install -g limbus-buildgen
 brew install https://raw.githubusercontent.com/redien/limbus-buildgen/master/limbus-buildgen.rb
 ```
 
+#### Git
+```
+git clone https://github.com/redien/limbus-buildgen.git && cd limbus-buildgen && make
+```
+
 #### Manually download ZIP
 You can also download the ZIP from https://github.com/redien/limbus-buildgen/archive/master.zip and [build manually from source](#building-from-source).
 
