@@ -197,19 +197,6 @@ describe('cl-compiler-generator', function () {
                         'file.obj'
                     ],
                     outputName: 'name',
-                    outputPath: 'some/directory'
-                });
-
-                linkerCommand.should.containEql('some\\directory\\name');
-            });
-
-            it('should handle trailing slashes', function () {
-                var linkerCommand = ClCompilerGenerator.linkerCommand({
-                    type: 'application',
-                    objectFiles: [
-                        'file.obj'
-                    ],
-                    outputName: 'name',
                     outputPath: 'some/directory/'
                 });
 

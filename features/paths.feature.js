@@ -43,4 +43,14 @@ describe('Paths', function () {
             outputName: 'app'
         }, 'abc/app');
     });
+
+    it('should treat an empty outputPath as none was given', function () {
+        return util.buildSimple({
+            type: 'application',
+            host: util.host,
+            files: ['simple.c'],
+            outputPath: '',
+            outputName: 'app'
+        }, 'app');
+    });
 });

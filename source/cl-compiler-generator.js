@@ -61,12 +61,7 @@ exports.linkerCommand = function (options) {
         outputNameSuffix = '';
     }
 
-    var outputPath;
-    if (options.outputPath) {
-        outputPath = options.outputPath.replace(/\/$/, '') + '/';
-    } else {
-        outputPath = '';
-    }
+    var outputPath = options.outputPath || '';
 
     return command + processPath(outputPath) + options.outputName + outputNameSuffix + ' ' + _.map(options.objectFiles, processPath).join(' ') + libraries + ' /link' + extraFlags;
 };

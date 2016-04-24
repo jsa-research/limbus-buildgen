@@ -12,6 +12,7 @@
 var _ = require('./publicdash');
 var makefileBuilder = require('./makefile-builder');
 var ConfigValidator = require('./config-validator');
+var ConfigPathNormalizer = require('./config-path-normalizer');
 var gccLikeCompilerGenerator = require('./gcc-like-compiler-generator');
 var clCompilerGenerator = require('./cl-compiler-generator');
 
@@ -133,6 +134,8 @@ exports.generate = function (config) {
     if (validationResult.valid === false) {
         throw new Error(validationResult.error + ': ' + validationResult.property);
     }
+
+    ConfigPathNormalizer.normalize(config);
 
     return makefileBuilder.build({
         all: generateCompileInstructions(config)

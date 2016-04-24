@@ -158,19 +158,6 @@ describe('gcc-like-compiler-generator', function () {
                         'file.o'
                     ],
                     outputName: 'name',
-                    outputPath: 'some/directory'
-                });
-
-                linkerCommand.should.containEql('some/directory/name');
-            });
-
-            it('should handle trailing slashes', function () {
-                var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
-                    type: 'application',
-                    objectFiles: [
-                        'file.o'
-                    ],
-                    outputName: 'name',
                     outputPath: 'some/directory/'
                 });
 
