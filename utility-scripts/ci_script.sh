@@ -37,7 +37,7 @@ echo Installing dependencies... >> $CI_LOG
 npm install >> $CI_LOG
 dependencies/fetch_dependencies.sh >> $CI_LOG
 echo Running tests... >> $CI_LOG
-npm run test -- -t 20000 && npm run coverage-travis-ci >> $CI_LOG
+npm run test -- -t 20000 >> $CI_LOG
 if [ $? -eq 0 ]
 then curl -sL $CI_PASSING_BADGE > $CI_BADGE ; echo TESTS PASSING! >> $CI_LOG
 else curl -sL $CI_FAILING_BADGE > $CI_BADGE ; echo TESTS FAILING! >> $CI_LOG
