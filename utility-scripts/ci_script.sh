@@ -29,15 +29,15 @@ echo BUILDGEN_NODE_VERSION: >> $CI_LOG
 echo $BUILDGEN_NODE_VERSION >> $CI_LOG
 echo BUILDGEN_TARGET_COMPILER: >> $CI_LOG
 echo $BUILDGEN_TARGET_COMPILER >> $CI_LOG
-. utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION >> $CI_LOG
-. utility-scripts/echo_versions.sh >> $CI_LOG
+. utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION 2>&1 >> $CI_LOG
+. utility-scripts/echo_versions.sh 2>&1 >> $CI_LOG
 echo Pulling new changes... >> $CI_LOG
-git pull >> $CI_LOG
+git pull 2>&1 >> $CI_LOG
 echo Installing dependencies... >> $CI_LOG
-npm install >> $CI_LOG
-dependencies/fetch_dependencies.sh >> $CI_LOG
+npm install 2>&1 >> $CI_LOG
+dependencies/fetch_dependencies.sh 2>&1 >> $CI_LOG
 echo Running tests... >> $CI_LOG
-npm run test -- -t 20000 >> $CI_LOG
+npm run test -- -t 20000 2>&1 >> $CI_LOG
 if [ $? -eq 0 ]
 then curl -sL $CI_PASSING_BADGE > $CI_BADGE ; echo TESTS PASSING! >> $CI_LOG
 else curl -sL $CI_FAILING_BADGE > $CI_BADGE ; echo TESTS FAILING! >> $CI_LOG
