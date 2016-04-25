@@ -256,15 +256,13 @@ Unit- & integration tests are automatically run against several combinations of 
 #### Integration matrix
 | Target Host   | Build Status | Built Configurations | Node.js Versions   |
 | :------------ | :----------: | :------------------- | :----------------- |
-| linux-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
-| linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
-| darwin-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.0, 4.4.0 |
-| darwin-gcc || x64 | 5.9.0, 4.4.0 |
-| win32-cl | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x86 Release, x64 Release | 4.4.0 |
-| freebsd-clang ||||
-| freebsd-gcc |||||
-
-*FreeBSD is tested from time to time during development of new features but as there is currently no continuous integration on a FreeBSD host it should be considered less stable than the other target hosts.*
+| linux-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.x, 4.4.x |
+| linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.x, 4.4.x |
+| darwin-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.x, 4.4.x |
+| darwin-gcc ||||
+| win32-cl | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x64 Release | 4.4.x |
+| freebsd-clang | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/node-clang/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/node-clang/ci-log.txt) | x64 | 5.10.x |
+| freebsd-gcc | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/node-gcc/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/node-gcc/ci-log.txt) | x64 | 5.10.x |
 
 <a name="building-from-source"></a>
 ## Building from source
