@@ -14,6 +14,7 @@
 #
 # npm install githubhook -g
 # CI_SCRIPT_WWW_PATH=...
+# export CI_SCRIPT_WWW_PATH
 # githubhook --secret=GITHUB_SECRET push:limbus-buildgen ./utility-scripts/ci_script.sh
 #
 
