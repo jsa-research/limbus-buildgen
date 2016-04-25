@@ -25,17 +25,17 @@ CI_FAILING_BADGE=http://img.shields.io/badge/build-failing-red.svg
 
 mkdir -p $CI_SCRIPT_WWW_PATH
 echo Starting CI Build at $CI_DATE > $CI_LOG
-echo BUILDGEN_NODE_VERSION:
-echo $BUILDGEN_NODE_VERSION
-echo BUILDGEN_TARGET_COMPILER:
-echo $BUILDGEN_TARGET_COMPILER
-. utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION
-. utility-scripts/echo_versions.sh
+echo BUILDGEN_NODE_VERSION: >> $CI_LOG
+echo $BUILDGEN_NODE_VERSION >> $CI_LOG
+echo BUILDGEN_TARGET_COMPILER: >> $CI_LOG
+echo $BUILDGEN_TARGET_COMPILER >> $CI_LOG
+. utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION >> $CI_LOG
+. utility-scripts/echo_versions.sh >> $CI_LOG
 echo Pulling new changes... >> $CI_LOG
 git pull >> $CI_LOG
 echo Installing dependencies... >> $CI_LOG
-npm install
-dependencies/fetch_dependencies.sh
+npm install >> $CI_LOG
+dependencies/fetch_dependencies.sh >> $CI_LOG
 echo Running tests... >> $CI_LOG
 npm run test -- -t 20000 && npm run coverage-travis-ci >> $CI_LOG
 if [ $? -eq 0 ]
