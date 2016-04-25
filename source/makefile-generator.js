@@ -77,6 +77,10 @@ var compilerByHost = function (host) {
     }
 };
 
+var operatingSystemByHost = function (host) {
+    return host.match(/^\w+/)[0];
+};
+
 var parseFileName = function (fileName) {
     var match = fileName.match(/^(.+)\.(\w+)$/);
     if (match) {
@@ -90,10 +94,10 @@ var parseFileName = function (fileName) {
     }
 };
 
-var generateCompileInstructionsForCompiler = function (compiler, outputName, config) {
+var generateCompileInstructionsForCompiler = function (compilerInfo, os, outputName, config) {
     var filenames = _.filter(_.map(config.files, parseFileName), _.not.isNull);
     var instructions = _.map(filenames, function (filename) {
-        return compiler.compilerCommand({
+        return compilerInfo.compilerCommand({
             type: config.type,
             file: filename.full,
             includePaths: config.includePaths,
@@ -101,15 +105,22 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
         });
     });
     var objectFiles = _.map(filenames, function (filename) {
-        return filename.name + compiler.objectFileSuffix;
+        return filename.name + compilerInfo.objectFileSuffix;
     });
 
-    instructions.push(compiler.linkerCommand({
+    var additionalLinkerFlags = '';
+    if (config.type === 'application') {
+        if (os === 'linux' || os === 'freebsd') {
+            additionalLinkerFlags = ' -Wl,-rpath=.';
+        }
+    }
+
+    instructions.push(compilerInfo.linkerCommand({
         objectFiles: objectFiles,
         outputName: outputName,
         outputPath: config.outputPath,
         libraryPaths: config.libraryPaths,
-        flags: config.linkerFlags,
+        flags: (config.linkerFlags || '') + additionalLinkerFlags,
         libraries: config.libraries,
         type: config.type
     }));
@@ -118,6 +129,7 @@ var generateCompileInstructionsForCompiler = function (compiler, outputName, con
 
 var generateCompileInstructions = function (config) {
     var compiler = compilerByHost(config.host);
+    var os = operatingSystemByHost(config.host);
     var compilerInfo = compilerInfoTable[compiler];
 
     if (config.type !== 'static-library' && (config.host.indexOf('linux') !== -1 || config.host.indexOf('freebsd') !== -1)) {
@@ -125,7 +137,7 @@ var generateCompileInstructions = function (config) {
         config.libraries.push('m');
     }
 
-    return generateCompileInstructionsForCompiler(compilerInfo, config.outputName, config);
+    return generateCompileInstructionsForCompiler(compilerInfo, os, config.outputName, config);
 };
 
 exports.generate = function (config) {

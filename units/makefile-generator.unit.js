@@ -133,6 +133,45 @@ describe('makefile-generator', function () {
 
             makefile.should.containEql('-lm');
         });
+
+        it('should link with -Wl,-rpath=. using LLVM Clang or GNU GCC', function () {
+            var makefile = makefile_generator.generate({
+                type: 'application',
+                host: 'freebsd-clang',
+                files: [ 'test.c' ],
+                outputName: 'test'
+            });
+
+            makefile.should.containEql('-Wl,-rpath=.');
+
+            makefile = makefile_generator.generate({
+                type: 'application',
+                host: 'freebsd-gcc',
+                files: [ 'test.c' ],
+                outputName: 'test'
+            });
+
+            makefile.should.containEql('-Wl,-rpath=.');
+        });
+
+        it('should only link with -Wl,-rpath=. when type is "application"', function () {
+            var makefile = makefile_generator.generate({
+                type: 'static-library',
+                host: 'freebsd-clang',
+                files: [ 'test.c' ],
+                outputName: 'test'
+            });
+            makefile.should.not.containEql('-Wl,-rpath=.');
+
+            makefile = makefile_generator.generate({
+                type: 'dynamic-library',
+                host: 'freebsd-gcc',
+                files: [ 'test.c' ],
+                outputName: 'test'
+            });
+
+            makefile.should.not.containEql('-Wl,-rpath=.');
+        });
     });
 
     describe('makefile where OS is linux', function () {
@@ -147,6 +186,45 @@ describe('makefile-generator', function () {
             });
 
             makefile.should.containEql('-lm');
+        });
+
+        it('should link with -Wl,-rpath=. using LLVM Clang or GNU GCC', function () {
+            var makefile = makefile_generator.generate({
+                type: 'application',
+                host: 'linux-clang',
+                files: [ 'test.c' ],
+                outputName: 'test'
+            });
+
+            makefile.should.containEql('-Wl,-rpath=.');
+
+            makefile = makefile_generator.generate({
+                type: 'application',
+                host: 'linux-gcc',
+                files: [ 'test.c' ],
+                outputName: 'test'
+            });
+
+            makefile.should.containEql('-Wl,-rpath=.');
+        });
+
+        it('should only link with -Wl,-rpath=. when type is "application"', function () {
+            var makefile = makefile_generator.generate({
+                type: 'static-library',
+                host: 'linux-clang',
+                files: [ 'test.c' ],
+                outputName: 'test'
+            });
+            makefile.should.not.containEql('-Wl,-rpath=.');
+
+            makefile = makefile_generator.generate({
+                type: 'dynamic-library',
+                host: 'linux-gcc',
+                files: [ 'test.c' ],
+                outputName: 'test'
+            });
+
+            makefile.should.not.containEql('-Wl,-rpath=.');
         });
     });
 });
