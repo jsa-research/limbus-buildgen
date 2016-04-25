@@ -41,7 +41,7 @@ run_ci()
     . utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION >> $CI_LOG 2>&1
     . utility-scripts/echo_versions.sh >> $CI_LOG 2>&1
     echo Testing commit: >> $CI_LOG
-    echo git log -n 1 >> $CI_LOG 2>&1
+    git log -n 1 >> $CI_LOG 2>&1
     echo Installing dependencies... >> $CI_LOG
     npm install >> $CI_LOG 2>&1
     dependencies/fetch_dependencies.sh >> $CI_LOG 2>&1
