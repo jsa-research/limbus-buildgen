@@ -60,5 +60,9 @@ ORIGINAL_CI_SCRIPT_WWW_PATH=$CI_SCRIPT_WWW_PATH
 
 # Use the current node version as nvm is not supported on FreeBSD
 BUILDGEN_NODE_VERSION=
+
 BUILDGEN_TARGET_COMPILER=clang
+run_ci
+
+BUILDGEN_TARGET_COMPILER=gcc
 run_ci
