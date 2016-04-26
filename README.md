@@ -3,9 +3,12 @@
 
 #### Introduction
 
-limbus-buildgen generates build files for small C/C++ code-bases that do not need a very complicated build process. Thus this library can be kept small which makes it easy to test and port to other platforms.
+limbus-buildgen is a C/C++/Objective-C meta-build system written in Javascript. It generates project files and makefiles from portable JSON configuration files.
 
-The project consists of a set of Common.js modules written in ES5.1 which can be imported into your project. A CLI front-end is also available to generate build files without additional code.
+###### Flashy features
+* Developers building your project only require their compiler
+* limbus-buildgen can be installed on pretty much any operating system
+* Comes with a Common.js Javascript API to support scripting
 
 #### Table of contents
 * [Installation](#installation)
@@ -20,7 +23,7 @@ The project consists of a set of Common.js modules written in ES5.1 which can be
 
 <a name="installation"></a>
 ## Installation
-limbus-buildgen is distributed with a range of different package managers to be available by default on as many systems as possible.
+limbus-buildgen is distributed with a range of different package managers to make installation simple on as many systems as possible.
 
 #### NPM
 ```
