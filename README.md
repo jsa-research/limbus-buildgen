@@ -56,28 +56,10 @@ Options:
 
 <a name="configuration"></a>
 ## Configuration
-The JSON configuration files support the following properties:
-
-#### Required
-
-|Property|Description|
-|:--:|:--|
-|[type](#configuration-type)|Specifies the type of project to build.|
-|[host](#configuration-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
-|[input](#configuration-input)|Specifies a list of source files.|
-|[outputName](#configuration-outputName)|Specifies the name of the final executable.|
-
-#### Optional
-|Property|Description|
-|:--:|:--|
-|[outputPath](#configuration-outputPath)|Specifies a path to prepend to the outputName. *It defaults to the build directory.*|
-|[includePaths](#configuration-includePaths)|Specifies where to find header files to include.|
-|[libraryPaths](#configuration-libraryPaths)|Specifies where to find libraries to link.|
-|[compilerFlags](#configuration-compilerFlags)|Specifies any extra compiler flags that will be passed to the compiler as is.|
-|[linkerFlags](#configuration-linkerFlags)|Specifies any extra linkers flags that will be passed to the linker as is.|
-|[libraries](#configuration-libraries)|Specifies any libraries to link with when building an application or dynamic library.|
 
 #### Example configuration file
+The following configuration file specifies a makefile that compiles an executable on OS X using LLVM Clang, links to libpng and outputs debug and coverage information.
+
 ###### configuration.json
 ```json
 {
@@ -109,6 +91,27 @@ limbus-buildgen configuration.json
 
 #### Configuration Properties
 
+The JSON configuration files support the following properties:
+
+###### Required
+
+|Property|Description|
+|:--:|:--|
+|[type](#configuration-type)|Specifies the type of project to build.|
+|[host](#configuration-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
+|[files](#configuration-files)|Specifies a list of source files.|
+|[outputName](#configuration-outputName)|Specifies the name of the final executable.|
+
+###### Optional
+|Property|Description|
+|:--:|:--|
+|[outputPath](#configuration-outputPath)|Specifies a path to prepend to the outputName. *It defaults to the build directory.*|
+|[includePaths](#configuration-includePaths)|Specifies where to find header files to include.|
+|[libraryPaths](#configuration-libraryPaths)|Specifies where to find libraries to link.|
+|[compilerFlags](#configuration-compilerFlags)|Specifies any extra compiler flags that will be passed to the compiler as is.|
+|[linkerFlags](#configuration-linkerFlags)|Specifies any extra linkers flags that will be passed to the linker as is.|
+|[libraries](#configuration-libraries)|Specifies any libraries to link with when building an application or dynamic library.|
+
 <a name="configuration-type"></a>
 ###### type
 There are three types of projects which can be generated:
@@ -137,15 +140,15 @@ The following host identifiers can be used to target the corresponding operating
 |freebsd-clang|FreeBSD|Clang/LLVM|
 |freebsd-gcc|FreeBSD|GNU GCC|
 
-<a name="configuration-input"></a>
-###### input
-The `input` property takes an array of strings. Each string contains a [path](#paths) to a input file relative to the build directory.
+<a name="configuration-files"></a>
+###### files
+The `files` property takes an array of strings. Each string contains a [path](#paths) to an input file relative to the build directory.
 
 <a name="configuration-outputName"></a>
 ###### outputName
-The property `outputName` takes a string with the name of the final executable or library. Depending on the compiler and type, the name given by `outputName` is prepended, appended or both to form a system specific file name.
+The property `outputName` takes a string with the name of the final executable or library. Depending on the compiler and type, the name given by `outputName` is prepended, appended or both to form a file name according to the host's naming standard.
 
-Given a configuration with `"outputName": "file"` the following table shows the resulting file name:
+Given a configuration file with `"outputName": "file"` the following table shows the resulting file name:
 
 |Compiler|Type|File name|
 |:--|:--|:--|
@@ -316,40 +319,48 @@ This will generate a file named `coverage.html` in the project root directory wh
 <a name="roadmap"></a>
 ## Roadmap
 
-#### Planned for a 0.5 version
-This release is intended to streamline the user experience and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
+#### Planned for 0.5.0-beta
+This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
 * Provide future proofed Javascript API
-* Complete documentation
-* Create release bundled with dependencies
-* Override all configuration properties using flags
-* Provide configuration overrides for when different arguments are passed
-* Modify makefile generator so that makefiles make use of make's "implicit variables"
-* Make sure GCC is tested against on OS X when running on CI
-* Make sure compilation for x86 and x64 work
-* Figure out debug/release builds
+* Modify makefile generator so that makefiles make use of make's "implicit variables" to allow changing them through environment variables
+* Standardize on a `host` property that can support build hosts, compilers, target hosts and architectures
+* Add configuration property to add/remove debug information during compilation
+* Change shared library suffix to .dylib on darwin to reflect the actual library type generated
+* Remove `/link` from CL linker commands and make user add it themselves to give more flexibility in which flags can be set
 
-##### Planned for a 0.6 release
+##### Towards 0.9.0-beta
+This release will complete the continuous integration setup to make sure all features are tested properly.
+
+* Make sure GCC is tested against on OS X when running on CI
+* Compile against x86 on CI builds
+* Make CI scripts build the executable against the correct compiler and architecture
+* Continuous integration for all supported targets
+* Convert integration tests to acceptance tests using Gherkin syntax
+* Look into installing node and npm versions through npm itself
+
+##### Towards 1.0.0
+This release will implement the rest of the features to reach feature completeness.
+
+* Add sub-configurations that override properties when activated through command line options
+* Override all configuration properties using flags
+* Autoconf & Automake support
+* A Visual Studio project generator
+* Enable compilation of both shared libraries and dynamically loaded modules on darwin. (See http://stackoverflow.com/a/2339910/3636255)
+* Create release bundled with dependencies
+* Release on Homebrew
+
+##### Planned for 1.1.0
 This release will implement cross compilation to mobile devices.
 
-* Autoconf support
-* Cross compilation to iOS
-* Cross compilation to Android
+* Implement cross compilation support for iOS with host `darwin-ndk-ios`
+* Implement cross compilation support for Android with hosts `linux-ndk-android`, `darwin-ndk-android` and `win32-ndk-android`
+* Add architectures as appropriate
 
-##### Planned for a 0.7 release
+##### Planned for 1.2.0
 This release will implement cross compilation to web browsers through Emscripten.
 
-* Emscripten compiler support
-
-##### Planned for a 0.8 release
-This release will implement the rest of the features to make it feature-complete.
-
-* A Visual Studio project generator
-
-##### Towards a 1.0 release
-This release will stabilize the project to make it ready for production.
-
-* Continuous integration for all supported targets
+* Implement cross compilation support for asm.js with hosts `linux-emcc-asmjs`, `darwin-emcc-asmjs` and `win32-emcc-asmjs`
 
 ##### Further into the future
 Features which aren't needed for feature-completeness but are nice to have.
