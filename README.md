@@ -66,26 +66,29 @@ The following configuration file specifies a makefile that compiles an executabl
 ###### configuration.json
 ```json
 {
-    "title": "Main executable",
-    "type": "application",
-    "host": "darwin-clang",
-    "files": [
-        "main.c"
-    ],
-    "outputName": "executable_name",
+    "title": "Project title",
+    "artifacts": [{
+        "title": "Main executable",
+        "type": "application",
+        "host": "darwin-clang",
+        "files": [
+            "main.c"
+        ],
+        "outputName": "executable_name",
 
-    "outputPath": "some/path",
-    "includePaths": [
-        "include/"
-    ],
-    "libraryPaths": [
-        "build/"
-    ],
-    "compilerFlags": "-g -O0 -coverage",
-    "linkerFlags": "-coverage",
-    "libraries": [
-        "png"
-    ]
+        "outputPath": "some/path",
+        "includePaths": [
+            "include/"
+        ],
+        "libraryPaths": [
+            "build/"
+        ],
+        "compilerFlags": "-g -O0 -coverage",
+        "linkerFlags": "-coverage",
+        "libraries": [
+            "png"
+        ]
+    }]
 }
 ```
 A makefile for the above example can be generated using:
@@ -228,48 +231,31 @@ var buildgen = require('limbus-buildgen');
 
 // The following example generates a makefile from a project
 // title and an artifact configuration.
-var files = buildgen.generate('Project title', [{
-    // The following properties are required:
-    // ----------------------------------
-    // Specifies a title identifying the artifact.
-    title: 'Main executable',
-    // Specifies the type of artifact to build, can be either
-    // 'application', 'dynamic-library' or 'static-library'.
-    type: 'application',
-    // Specifies the target host, i.e. the desired OS &
-    // compiler that the makefile should compile with.
-    host: 'darwin-clang',
-    // Specifies a list of source files.
-    files: [
-        'main.c'
-    ],
-    // Specifies the name of the final executable.
-    outputName: 'executable_name',
+var files = buildgen.generate({
+    title: 'Project title',
+    artifacts: [{
+        title: 'Main executable',
+        type: 'application',
+        host: 'darwin-clang',
+        files: [
+            'main.c'
+        ],
+        outputName: 'executable_name',
 
-    // The following properties are optional:
-    // ----------------------------------
-    // Specifies a path to prepend to the outputName.
-    outputPath: "some/path",
-    // Specifies where to find header files to include.
-    includePaths: [
-        'include/'
-    ],
-    // Specifies where to find libraries to link.
-    libraryPaths: [
-        'build/'
-    ],
-    // Specifies any extra compiler flags that will be passed
-    // to the compiler as is.
-    compilerFlags: '-g -O0 -coverage',
-    // Specifies any extra linker flags that will be passed to
-    // the linker as is.
-    linkerFlags: '-coverage',
-    // Specifies any libraries to link with when building an
-    // application or dynamic library.
-    libraries: [
-        'png'
-    ]
-}]);
+        outputPath: "some/path",
+        includePaths: [
+            'include/'
+        ],
+        libraryPaths: [
+            'build/'
+        ],
+        compilerFlags: '-g -O0 -coverage',
+        linkerFlags: '-coverage',
+        libraries: [
+            'png'
+        ]
+    }]
+});
 
 // Directories are created and generated files are written to
 // them according to the targeted build system.

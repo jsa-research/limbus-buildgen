@@ -36,7 +36,7 @@ describe('Linking', function () {
 
     it('should compile and link correctly given several source files and includes', function () {
         return util.generateCompileAndRun({
-            config: util.minimalArtifactWith({
+            config: util.minimalProjectWith({
                 files: [
                     'linked.c',
                     'source/mylibrary.c'
@@ -87,7 +87,7 @@ describe('Linking', function () {
         };
 
         var linkerFlagsShouldFailForType = function(type, flags) {
-            return util.buildSimple(util.minimalArtifactWith({
+            return util.buildSimple(util.minimalProjectWith({
                 type: type,
                 files: ['simple.c'],
                 linkerFlags: failFlags[type][util.hostCompiler]
@@ -98,7 +98,7 @@ describe('Linking', function () {
             });
         };
         var linkerFlagsShouldSucceedForType = function(type, flags) {
-            return util.buildSimple(util.minimalArtifactWith({
+            return util.buildSimple(util.minimalProjectWith({
                 type: type,
                 files: ['simple.c'],
                 linkerFlags: succeedFlags[type][util.hostCompiler]
@@ -122,7 +122,7 @@ describe('Linking', function () {
 
     it('should link with libm by default', function () {
         return util.generateCompileAndRun({
-            config: util.minimalArtifactWith({
+            config: util.minimalProjectWith({
                 files: [
                     'math.c'
                 ]
@@ -134,7 +134,7 @@ describe('Linking', function () {
 
     it('should compile to an executable with outputName', function () {
         return util.generateCompileAndRun({
-            config: util.minimalArtifactWith({
+            config: util.minimalProjectWith({
                 files: [
                     'simple.c'
                 ],
@@ -147,32 +147,35 @@ describe('Linking', function () {
 
     it('should compile a static library and then be able to link to it', function () {
         return util.generateCompileAndRun({
-            config: [
-                {
-                    title: 'app',
-                    type: 'static-library',
-                    host: util.host,
-                    files: [
-                        'source/mylibrary.c'
-                    ],
-                    outputName: 'my_lib_name'
-                },
-                {
-                    title: 'app',
-                    type: 'application',
-                    host: util.host,
-                    files: [
-                        'linked.c'
-                    ],
-                    libraries: [
-                        'my_lib_name'
-                    ],
-                    includePaths: [
-                        'include'
-                    ],
-                    outputName: 'linked_with_library'
-                }
-            ],
+            config: {
+                title: 'project',
+                artifacts: [
+                    {
+                        title: 'library',
+                        type: 'static-library',
+                        host: util.host,
+                        files: [
+                            'source/mylibrary.c'
+                        ],
+                        outputName: 'my_lib_name'
+                    },
+                    {
+                        title: 'app',
+                        type: 'application',
+                        host: util.host,
+                        files: [
+                            'linked.c'
+                        ],
+                        libraries: [
+                            'my_lib_name'
+                        ],
+                        includePaths: [
+                            'include'
+                        ],
+                        outputName: 'linked_with_library'
+                    }
+                ]
+            },
             command: 'linked_with_library',
             expectOutputToMatch: /42/
         });
@@ -180,44 +183,47 @@ describe('Linking', function () {
 
     it('should compile a dynamic library and then be able to link to it', function () {
         return util.generateCompileAndRun({
-            config: [
-                {
-                    title: 'app',
-                    type: 'static-library',
-                    host: util.host,
-                    files: [
-                        'source/mylibrary.c'
-                    ],
-                    outputName: 'my_lib_name'
-                },
-                {
-                    title: 'app',
-                    type: 'dynamic-library',
-                    host: util.host,
-                    files: [
-                        'source/mydynamiclibrary.c'
-                    ],
-                    libraries: [
-                        'my_lib_name'
-                    ],
-                    outputName: 'my_dyn_lib_name'
-                },
-                {
-                    title: 'app',
-                    type: 'application',
-                    host: util.host,
-                    files: [
-                        'linked_dynamic.c'
-                    ],
-                    libraries: [
-                        'my_dyn_lib_name'
-                    ],
-                    includePaths: [
-                        'include'
-                    ],
-                    outputName: 'linked_with_library'
-                }
-            ],
+            config: {
+                title: 'project',
+                artifacts: [
+                    {
+                        title: 'static library',
+                        type: 'static-library',
+                        host: util.host,
+                        files: [
+                            'source/mylibrary.c'
+                        ],
+                        outputName: 'my_lib_name'
+                    },
+                    {
+                        title: 'dynamic library',
+                        type: 'dynamic-library',
+                        host: util.host,
+                        files: [
+                            'source/mydynamiclibrary.c'
+                        ],
+                        libraries: [
+                            'my_lib_name'
+                        ],
+                        outputName: 'my_dyn_lib_name'
+                    },
+                    {
+                        title: 'app',
+                        type: 'application',
+                        host: util.host,
+                        files: [
+                            'linked_dynamic.c'
+                        ],
+                        libraries: [
+                            'my_dyn_lib_name'
+                        ],
+                        includePaths: [
+                            'include'
+                        ],
+                        outputName: 'linked_with_library'
+                    }
+                ]
+            },
             command: 'linked_with_library',
             expectOutputToMatch: /42/
         });
@@ -225,36 +231,39 @@ describe('Linking', function () {
 
     it('should search libraryPaths to find libraries to link', function () {
         return util.generateCompileAndRun({
-            config: [
-                {
-                    title: 'app',
-                    type: 'static-library',
-                    host: util.host,
-                    files: [
-                        'source/mylibrary.c'
-                    ],
-                    outputName: 'my_lib_name',
-                    outputPath: 'source'
-                },
-                {
-                    title: 'app',
-                    type: 'application',
-                    host: util.host,
-                    files: [
-                        'linked.c'
-                    ],
-                    libraries: [
-                        'my_lib_name'
-                    ],
-                    includePaths: [
-                        'include'
-                    ],
-                    libraryPaths: [
-                        'source'
-                    ],
-                    outputName: 'linked_with_library'
-                }
-            ],
+            config: {
+                title: 'project',
+                artifacts: [
+                    {
+                        title: 'library',
+                        type: 'static-library',
+                        host: util.host,
+                        files: [
+                            'source/mylibrary.c'
+                        ],
+                        outputName: 'my_lib_name',
+                        outputPath: 'source'
+                    },
+                    {
+                        title: 'app',
+                        type: 'application',
+                        host: util.host,
+                        files: [
+                            'linked.c'
+                        ],
+                        libraries: [
+                            'my_lib_name'
+                        ],
+                        includePaths: [
+                            'include'
+                        ],
+                        libraryPaths: [
+                            'source'
+                        ],
+                        outputName: 'linked_with_library'
+                    }
+                ]
+            },
             command: 'linked_with_library',
             expectOutputToMatch: /42/
         });

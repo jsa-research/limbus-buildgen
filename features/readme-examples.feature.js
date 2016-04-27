@@ -27,7 +27,7 @@ readme.replace(/```javascript([\s\S]+?)```/gi, function (match, example) {
 });
 readme.replace(/```json([\s\S]+?)```/gi, function (match, example) {
     jsonExamples.push(example);
-    jsonExampleExpressions.push("require('../source/limbus-buildgen').generate('project', [" + example + "]);");
+    jsonExampleExpressions.push("require('../source/limbus-buildgen').generate(" + example + ");");
     return match;
 });
 readme.replace(/```(\s+Usage\:[\s\S]+?)```/, function (match, info) {

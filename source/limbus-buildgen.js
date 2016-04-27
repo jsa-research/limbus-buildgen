@@ -1,11 +1,11 @@
 
 var makefileGenerator = require('./makefile-generator');
 
-module.exports.generate = function (projectName, configs) {
+module.exports.generate = function (configuration) {
     return {
         'Makefile': {
             isFile: true,
-            contents: makefileGenerator.generate(configs[0])
+            contents: makefileGenerator.generate(configuration.artifacts[0])
         }
     };
 };

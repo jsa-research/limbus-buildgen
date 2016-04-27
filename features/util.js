@@ -169,3 +169,17 @@ exports.minimalArtifactWith = function (properties) {
     }
     return artifact;
 };
+
+exports.minimalProject = function () {
+    return {
+        title: 'project',
+        artifacts: [exports.minimalArtifact()]
+    };
+};
+
+exports.minimalProjectWith = function (properties) {
+    return {
+        title: 'project',
+        artifacts: [exports.minimalArtifactWith(properties)]
+    };
+};

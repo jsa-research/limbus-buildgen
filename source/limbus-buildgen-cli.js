@@ -17,11 +17,11 @@ var parsedArguments = parseArguments(process.argv.slice(1));
 var config = JSON.parse(fs.readFileSync(parsedArguments.configPath));
 
 if (parsedArguments.host !== undefined) {
-    config.host = parsedArguments.host;
+    config.artifacts[0].host = parsedArguments.host;
 }
 
 try {
-    var files = buildgen.generate('', [config]);
+    var files = buildgen.generate(config);
 
     for (var path in files) {
         var file = files[path];
