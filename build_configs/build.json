@@ -1,12 +1,17 @@
 {
-    "files": [
-        "dependencies/duktape-1.4.0/src/duktape.c",
-        "source/duk.c",
-        "source/platform.c"
-    ],
-    "includePaths": [
-        "dependencies/duktape-1.4.0/src/"
-    ],
-    "outputName": "limbus-buildgen",
-    "type": "application"
+    "title": "limbus-buildgen",
+    "artifacts": [{
+        "title": "Command Line Interface",
+        "type": "application",
+        "files": [
+            "dependencies/duktape-1.4.0/src/duktape.c",
+            "source/duk.c",
+            "source/platform.c"
+        ],
+        "includePaths": [
+            "dependencies/duktape-1.4.0/src/"
+        ],
+        "outputName": "limbus-buildgen",
+        "outputPath": "generated"
+    }]
 }

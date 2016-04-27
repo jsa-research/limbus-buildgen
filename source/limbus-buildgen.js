@@ -10,7 +10,7 @@ module.exports.generate = function (configuration) {
         throw new Error(validationResult.error + ': ' + validationResult.property);
     }
 
-    ConfigPathNormalizer.normalize(configuration);
+    ConfigPathNormalizer.normalize(configuration.artifacts[0]);
 
     return {
         'Makefile': {

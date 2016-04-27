@@ -12,5 +12,5 @@
 all:
 	@dependencies/fetch_dependencies.sh
 	@echo Compiling...
-	@make -f Makefile.`uname -s | tr 'A-Z' 'a-z'`
+	@make -f generated/`uname -s | tr 'A-Z' 'a-z'`/Makefile
 	@echo Done.
