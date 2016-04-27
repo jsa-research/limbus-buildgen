@@ -37,6 +37,7 @@ describe('Linking', function () {
     it('should compile and link correctly given several source files and includes', function () {
         return util.generateCompileAndRun({
             config: {
+                title: 'app',
                 type: 'application',
                 host: util.host,
                 files: [
@@ -91,6 +92,7 @@ describe('Linking', function () {
 
         var linkerFlagsShouldFailForType = function(type, flags) {
             return util.buildSimple({
+                title: 'app',
                 type: type,
                 host: util.host,
                 files: ['simple.c'],
@@ -104,6 +106,7 @@ describe('Linking', function () {
         };
         var linkerFlagsShouldSucceedForType = function(type, flags) {
             return util.buildSimple({
+                title: 'app',
                 type: type,
                 host: util.host,
                 files: ['simple.c'],
@@ -130,6 +133,7 @@ describe('Linking', function () {
     it('should link with libm by default', function () {
         return util.generateCompileAndRun({
             config: {
+                title: 'app',
                 type: 'application',
                 host: util.host,
                 files: [
@@ -145,6 +149,7 @@ describe('Linking', function () {
     it('should compile to an executable with outputName', function () {
         return util.generateCompileAndRun({
             config: {
+                title: 'app',
                 type: 'application',
                 host: util.host,
                 files: [
@@ -161,6 +166,7 @@ describe('Linking', function () {
         return util.generateCompileAndRun({
             config: [
                 {
+                    title: 'app',
                     type: 'static-library',
                     host: util.host,
                     files: [
@@ -169,6 +175,7 @@ describe('Linking', function () {
                     outputName: 'my_lib_name'
                 },
                 {
+                    title: 'app',
                     type: 'application',
                     host: util.host,
                     files: [
@@ -192,6 +199,7 @@ describe('Linking', function () {
         return util.generateCompileAndRun({
             config: [
                 {
+                    title: 'app',
                     type: 'static-library',
                     host: util.host,
                     files: [
@@ -200,6 +208,7 @@ describe('Linking', function () {
                     outputName: 'my_lib_name'
                 },
                 {
+                    title: 'app',
                     type: 'dynamic-library',
                     host: util.host,
                     files: [
@@ -211,6 +220,7 @@ describe('Linking', function () {
                     outputName: 'my_dyn_lib_name'
                 },
                 {
+                    title: 'app',
                     type: 'application',
                     host: util.host,
                     files: [
@@ -234,6 +244,7 @@ describe('Linking', function () {
         return util.generateCompileAndRun({
             config: [
                 {
+                    title: 'app',
                     type: 'static-library',
                     host: util.host,
                     files: [
@@ -243,6 +254,7 @@ describe('Linking', function () {
                     outputPath: 'source'
                 },
                 {
+                    title: 'app',
                     type: 'application',
                     host: util.host,
                     files: [

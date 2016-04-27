@@ -47,6 +47,7 @@ describe('makefile-generator', function () {
 
     it('should create an executable in the current directory', function () {
         var makefile = makefile_generator.generate({
+            title: 'app',
             type: 'application',
             host: 'linux',
             files: [
@@ -58,6 +59,7 @@ describe('makefile-generator', function () {
         makefile.should.match(/\-o test/);
 
         makefile = makefile_generator.generate({
+            title: 'app',
             type: 'application',
             host: 'linux',
             files: [
@@ -71,6 +73,7 @@ describe('makefile-generator', function () {
 
     it('should accept files with dots in their paths', function () {
         var makefile = makefile_generator.generate({
+            title: 'app',
             type: 'application',
             host: 'linux',
             files: [
@@ -85,6 +88,7 @@ describe('makefile-generator', function () {
     describe('makefile configured with multiple files', function () {
         it('should compile all of the files', function () {
             var makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: [
@@ -107,6 +111,7 @@ describe('makefile-generator', function () {
                 var hosts = hostsByCompiler[compiler];
                 hosts.forEach(function (host) {
                     var makefile = makefile_generator.generate({
+                        title: 'app',
                         type: 'application',
                         host: host,
                         files: [
@@ -123,6 +128,7 @@ describe('makefile-generator', function () {
     describe('makefile where OS is freebsd', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'application',
                 host: 'freebsd-gcc',
                 files: [
@@ -136,6 +142,7 @@ describe('makefile-generator', function () {
 
         it('should link with -Wl,-rpath=. using LLVM Clang or GNU GCC', function () {
             var makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'application',
                 host: 'freebsd-clang',
                 files: [ 'test.c' ],
@@ -145,6 +152,7 @@ describe('makefile-generator', function () {
             makefile.should.containEql('-Wl,-rpath=.');
 
             makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'application',
                 host: 'freebsd-gcc',
                 files: [ 'test.c' ],
@@ -156,6 +164,7 @@ describe('makefile-generator', function () {
 
         it('should only link with -Wl,-rpath=. when type is "application"', function () {
             var makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'static-library',
                 host: 'freebsd-clang',
                 files: [ 'test.c' ],
@@ -164,6 +173,7 @@ describe('makefile-generator', function () {
             makefile.should.not.containEql('-Wl,-rpath=.');
 
             makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'dynamic-library',
                 host: 'freebsd-gcc',
                 files: [ 'test.c' ],
@@ -177,6 +187,7 @@ describe('makefile-generator', function () {
     describe('makefile where OS is linux', function () {
         it('should compile with libm by default', function () {
             var makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'application',
                 host: 'linux-clang',
                 files: [
@@ -190,6 +201,7 @@ describe('makefile-generator', function () {
 
         it('should link with -Wl,-rpath=. using LLVM Clang or GNU GCC', function () {
             var makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'application',
                 host: 'linux-clang',
                 files: [ 'test.c' ],
@@ -199,6 +211,7 @@ describe('makefile-generator', function () {
             makefile.should.containEql('-Wl,-rpath=.');
 
             makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'application',
                 host: 'linux-gcc',
                 files: [ 'test.c' ],
@@ -210,6 +223,7 @@ describe('makefile-generator', function () {
 
         it('should only link with -Wl,-rpath=. when type is "application"', function () {
             var makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'static-library',
                 host: 'linux-clang',
                 files: [ 'test.c' ],
@@ -218,6 +232,7 @@ describe('makefile-generator', function () {
             makefile.should.not.containEql('-Wl,-rpath=.');
 
             makefile = makefile_generator.generate({
+                title: 'app',
                 type: 'dynamic-library',
                 host: 'linux-gcc',
                 files: [ 'test.c' ],

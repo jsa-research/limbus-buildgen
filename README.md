@@ -66,12 +66,13 @@ The following configuration file specifies a makefile that compiles an executabl
 ###### configuration.json
 ```json
 {
+    "title": "Main executable",
     "type": "application",
     "host": "darwin-clang",
     "files": [
         "main.c"
     ],
-    "outputName": "my-application",
+    "outputName": "executable_name",
 
     "outputPath": "some/path",
     "includePaths": [
@@ -100,7 +101,8 @@ The JSON configuration files support the following properties:
 
 |Property|Description|
 |:--:|:--|
-|[type](#configuration-type)|Specifies the type of project to build.|
+|[title](#configuration-title)|Specifies a title identifying the built artifact.|
+|[type](#configuration-type)|Specifies the type of artifact to build.|
 |[host](#configuration-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
 |[files](#configuration-files)|Specifies a list of source files.|
 |[outputName](#configuration-outputName)|Specifies the name of the final executable.|
@@ -115,9 +117,13 @@ The JSON configuration files support the following properties:
 |[linkerFlags](#configuration-linkerFlags)|Specifies any extra linkers flags that will be passed to the linker as is.|
 |[libraries](#configuration-libraries)|Specifies any libraries to link with when building an application or dynamic library.|
 
+<a name="configuration-title"></a>
+###### title
+An arbitrary string identifying the artifact to build. It is only used for naming the build files and does not affect the final executable or library built.
+
 <a name="configuration-type"></a>
 ###### type
-There are three types of projects which can be generated:
+There are three types of artifacts which can be built:
 
 |Type|Description|
 |:--|:--|
@@ -221,11 +227,13 @@ var fs = require('fs');
 var buildgen = require('limbus-buildgen');
 
 // The following example generates a makefile from a project
-// name and a configuration object.
-var files = buildgen.generate('Project name', [{
+// title and an artifact configuration.
+var files = buildgen.generate('Project title', [{
     // The following properties are required:
     // ----------------------------------
-    // Specifies the type of project to build, can be either
+    // Specifies a title identifying the artifact.
+    title: 'Main executable',
+    // Specifies the type of artifact to build, can be either
     // 'application', 'dynamic-library' or 'static-library'.
     type: 'application',
     // Specifies the target host, i.e. the desired OS &
@@ -236,7 +244,7 @@ var files = buildgen.generate('Project name', [{
         'main.c'
     ],
     // Specifies the name of the final executable.
-    outputName: 'my-application',
+    outputName: 'executable_name',
 
     // The following properties are optional:
     // ----------------------------------

@@ -10,6 +10,7 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var requiredProperties = [
+    'title',
     'type',
     'host',
     'files',
@@ -46,6 +47,7 @@ var validHosts = [
 ];
 
 var stringProperties = [
+    'title',
     'outputName',
     'outputPath',
     'compilerFlags',

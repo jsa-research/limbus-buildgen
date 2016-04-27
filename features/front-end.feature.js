@@ -25,6 +25,7 @@ describe('Front-end', function () {
     it('should take a flag to specify the target host', function () {
         return util.generateCompileAndRun({
             config: {
+                title: 'app',
                 type: 'application',
                 files: [
                     'simple.c'
@@ -40,6 +41,7 @@ describe('Front-end', function () {
     it('should take a flag to specify the output build file name', function () {
         return util.generateCompileAndRun({
             config: {
+                title: 'app',
                 type: 'application',
                 host: util.host,
                 files: [
@@ -93,7 +95,7 @@ describe('Front-end', function () {
 
     it('should fail if the config file is not valid JSON', function () {
         return util.generateCompileAndRun({
-            config: "{ files: 'test.c' }",
+            config: "{ title: 'app', type: 'application', host: 'linux', files: ['test.c'], outputName: 'name' }",
             command: 'simple'
         }).should.be.rejected();
     });
@@ -101,6 +103,7 @@ describe('Front-end', function () {
     it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function () {
         return util.generateCompileAndRun({
             config: {
+                title: 'app',
                 type: 'application',
                 host: util.host,
                 files: [

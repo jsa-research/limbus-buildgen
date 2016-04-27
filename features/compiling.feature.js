@@ -28,6 +28,7 @@ describe('Compiling', function () {
 
     it('should pass compiler flags as is', function () {
         return util.buildSimple({
+            title: 'app',
             type: 'application',
             host: util.host,
             files: ['simple.c'],
@@ -38,6 +39,7 @@ describe('Compiling', function () {
 
     it('should accept input files with paths', function () {
         return util.buildSimple({
+            title: 'app',
             type: 'application',
             host: util.host,
             files: ['./some_directory/simple.c'],

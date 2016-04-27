@@ -26,6 +26,7 @@ describe('Paths', function () {
 
     it('should use the outputPath', function () {
         return util.buildSimple({
+            title: 'app',
             type: 'application',
             host: util.host,
             files: ['simple.c'],
@@ -36,6 +37,7 @@ describe('Paths', function () {
 
     it('should remove trailing path separators from outputPath', function () {
         return util.buildSimple({
+            title: 'app',
             type: 'application',
             host: util.host,
             files: ['simple.c'],
@@ -46,6 +48,7 @@ describe('Paths', function () {
 
     it('should treat an empty outputPath as none was given', function () {
         return util.buildSimple({
+            title: 'app',
             type: 'application',
             host: util.host,
             files: ['simple.c'],

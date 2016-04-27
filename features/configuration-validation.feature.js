@@ -24,6 +24,7 @@ describe('Configuration Validation', function () {
 
     it('should compile given a minimal config', function () {
         return util.buildSimple({
+            title: 'app',
             type: 'application',
             host: util.host,
             files: ['simple.c'],
@@ -44,6 +45,7 @@ describe('Configuration Validation', function () {
 
     it('should give error "unknown property" with property "x" given an unknown property x', function () {
         return configShouldFailWith({
+            title: 'app',
             type: 'application',
             host: 'linux',
             files: ['simple.c'],
@@ -54,6 +56,7 @@ describe('Configuration Validation', function () {
 
     it('should give error "given libraries with static-library" with property "libraries" if given libraries to link while type is "static-library"', function () {
         return configShouldFailWith({
+            title: 'app',
             type: 'static-library',
             host: 'linux',
             files: ['simple.c'],
@@ -65,6 +68,7 @@ describe('Configuration Validation', function () {
     describe('Missing required properties', function () {
         it('should give error "missing required property" with property "type" when missing type', function () {
             return configShouldFailWith({
+                title: 'app',
                 host: 'linux',
                 files: ['simple.c'],
                 outputName: 'app'
@@ -73,6 +77,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "missing required property" with property "host" when missing type', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 files: ['simple.c'],
                 outputName: 'app'
@@ -81,6 +86,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "missing required property" with property "files" when missing type', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 outputName: 'app'
@@ -89,6 +95,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "missing required property" with property "outputName" when missing type', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: ['simple.c']
@@ -97,6 +104,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "no input files" with property "files" when there are no input files', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: [],
@@ -108,6 +116,7 @@ describe('Configuration Validation', function () {
     describe('Invalid properties', function () {
         it('should give error "invalid property" with property "type" when type has an invalid value', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'invalid-type',
                 host: 'linux',
                 files: ['simple.c'],
@@ -117,6 +126,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "invalid property" with property "host" when host has an invalid value', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'invalid-host',
                 files: ['simple.c'],
@@ -126,6 +136,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "property is not a string" with property "outputName" when outputName is not a string', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: ['simple.c'],
@@ -135,6 +146,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "property is not a string" with property "outputPath" when outputPath is not a string', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: ['simple.c'],
@@ -145,6 +157,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "property is not a string" with property "compilerFlags" when compilerFlags is not a string', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: ['simple.c'],
@@ -155,6 +168,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "property is not a string" with property "linkerFlags" when linkerFlags is not a string', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: ['simple.c'],
@@ -165,6 +179,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "property is not a string array" with property "files" when files is not a string', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: [1],
@@ -174,6 +189,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "property is not a string array" with property "includePaths" when includePaths is not a string', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: ['simple.c'],
@@ -184,6 +200,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "property is not a string array" with property "libraryPaths" when libraryPaths is not a string', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: ['simple.c'],
@@ -194,6 +211,7 @@ describe('Configuration Validation', function () {
 
         it('should give error "property is not a string array" with property "libraries" when libraries is not a string', function () {
             return configShouldFailWith({
+                title: 'app',
                 type: 'application',
                 host: 'linux',
                 files: ['simple.c'],
@@ -207,6 +225,7 @@ describe('Configuration Validation', function () {
         it('should give error "no extension" with property "files" when a file in files has no extension', function () {
             return Promise.resolve().then(function () {
                 return configShouldFailWith({
+                    title: 'app',
                     type: 'application',
                     host: 'linux',
                     files: ['other-file'],
@@ -214,6 +233,7 @@ describe('Configuration Validation', function () {
                 }, /no extension/i, /files/);
             }).then(function () {
                 return configShouldFailWith({
+                    title: 'app',
                     type: 'application',
                     host: 'linux',
                     files: ['main.c', 'other-file'],
@@ -221,6 +241,7 @@ describe('Configuration Validation', function () {
                 }, /no extension/i, /files/);
             }).then(function () {
                 return configShouldFailWith({
+                    title: 'app',
                     type: 'application',
                     host: 'linux',
                     files: ['main.'],
@@ -232,6 +253,7 @@ describe('Configuration Validation', function () {
         it('should give error "cannot be path" with property "outputName" given a path in outputName', function () {
             var invalidOutputName = function (outputName) {
                 return configShouldFailWith({
+                    title: 'app',
                     type: 'application',
                     host: 'linux',
                     files: ['simple.c'],
