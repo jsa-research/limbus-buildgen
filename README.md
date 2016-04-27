@@ -61,7 +61,7 @@ Options:
 ## Configuration
 
 #### Example configuration file
-The following configuration file specifies a makefile that compiles an executable on OS X using LLVM Clang, links to libpng and outputs debug and coverage information.
+The following configuration file specifies a makefile that compiles an executable called `executable_name` on OS X using LLVM Clang, links to libpng and outputs debug and coverage information.
 
 ###### configuration.json
 ```json
