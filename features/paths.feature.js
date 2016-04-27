@@ -25,35 +25,23 @@ describe('Paths', function () {
     });
 
     it('should use the outputPath', function () {
-        return util.buildSimple({
-            title: 'app',
-            type: 'application',
-            host: util.host,
+        return util.buildSimple(util.minimalArtifactWith({
             files: ['simple.c'],
-            outputPath: 'abc',
-            outputName: 'app'
-        }, 'abc/app');
+            outputPath: 'abc'
+        }), 'abc/app');
     });
 
     it('should remove trailing path separators from outputPath', function () {
-        return util.buildSimple({
-            title: 'app',
-            type: 'application',
-            host: util.host,
+        return util.buildSimple(util.minimalArtifactWith({
             files: ['simple.c'],
-            outputPath: 'abc/',
-            outputName: 'app'
-        }, 'abc/app');
+            outputPath: 'abc/'
+        }), 'abc/app');
     });
 
     it('should treat an empty outputPath as none was given', function () {
-        return util.buildSimple({
-            title: 'app',
-            type: 'application',
-            host: util.host,
+        return util.buildSimple(util.minimalArtifactWith({
             files: ['simple.c'],
-            outputPath: '',
-            outputName: 'app'
-        }, 'app');
+            outputPath: ''
+        }), 'app');
     });
 });

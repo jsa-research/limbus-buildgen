@@ -24,15 +24,11 @@ describe('Front-end', function () {
 
     it('should take a flag to specify the target host', function () {
         return util.generateCompileAndRun({
-            config: {
-                title: 'app',
-                type: 'application',
-                files: [
-                    'simple.c'
-                ],
-                outputName: 'simple'
-            },
-            command: 'simple',
+            config: util.minimalArtifactWith({
+                host: undefined,
+                files: ['simple.c']
+            }),
+            command: 'app',
             expectOutputToMatch: '42',
             parameters: '--host ' + util.host
         });
@@ -40,17 +36,11 @@ describe('Front-end', function () {
 
     it('should take a flag to specify the output build file name', function () {
         return util.generateCompileAndRun({
-            config: {
-                title: 'app',
-                type: 'application',
-                host: util.host,
-                files: [
-                    'simple.c'
-                ],
-                outputName: 'simple'
-            },
+            config: util.minimalArtifactWith({
+                files: ['simple.c']
+            }),
             makefile: 'Makefile.platform',
-            command: 'simple',
+            command: 'app',
             expectOutputToMatch: '42',
             parameters: '--buildFile Makefile.platform'
         });
@@ -102,16 +92,10 @@ describe('Front-end', function () {
 
     it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function () {
         return util.generateCompileAndRun({
-            config: {
-                title: 'app',
-                type: 'application',
-                host: util.host,
-                files: [
-                    'simple.c'
-                ],
-                outputName: 'simple'
-            },
-            command: 'simple',
+            config: util.minimalArtifactWith({
+                files: ['simple.c']
+            }),
+            command: 'app',
             parameters: '--some-flag value'
         }).then(function () {
             return Promise.reject(new Error('Did not fail'));

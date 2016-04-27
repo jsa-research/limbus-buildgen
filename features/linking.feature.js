@@ -36,20 +36,16 @@ describe('Linking', function () {
 
     it('should compile and link correctly given several source files and includes', function () {
         return util.generateCompileAndRun({
-            config: {
-                title: 'app',
-                type: 'application',
-                host: util.host,
+            config: util.minimalArtifactWith({
                 files: [
                     'linked.c',
                     'source/mylibrary.c'
                 ],
                 includePaths: [
                     'include'
-                ],
-                outputName: 'linked'
-            },
-            command: 'linked',
+                ]
+            }),
+            command: 'app',
             expectOutputToMatch: /42/
         });
     });
@@ -91,28 +87,22 @@ describe('Linking', function () {
         };
 
         var linkerFlagsShouldFailForType = function(type, flags) {
-            return util.buildSimple({
-                title: 'app',
+            return util.buildSimple(util.minimalArtifactWith({
                 type: type,
-                host: util.host,
                 files: ['simple.c'],
-                outputName: 'app',
                 linkerFlags: failFlags[type][util.hostCompiler]
-            }).then(function () {
+            })).then(function () {
                 return Promise.reject(new Error(type + ' did not fail'));
             }, function () {
                 return Promise.resolve();
             });
         };
         var linkerFlagsShouldSucceedForType = function(type, flags) {
-            return util.buildSimple({
-                title: 'app',
+            return util.buildSimple(util.minimalArtifactWith({
                 type: type,
-                host: util.host,
                 files: ['simple.c'],
-                outputName: 'app',
                 linkerFlags: succeedFlags[type][util.hostCompiler]
-            });
+            }));
         };
 
         return Promise.resolve().then(function () {
@@ -132,31 +122,24 @@ describe('Linking', function () {
 
     it('should link with libm by default', function () {
         return util.generateCompileAndRun({
-            config: {
-                title: 'app',
-                type: 'application',
-                host: util.host,
+            config: util.minimalArtifactWith({
                 files: [
                     'math.c'
-                ],
-                outputName: 'math'
-            },
-            command: 'math',
+                ]
+            }),
+            command: 'app',
             expectOutputToMatch: /42/
         });
     });
 
     it('should compile to an executable with outputName', function () {
         return util.generateCompileAndRun({
-            config: {
-                title: 'app',
-                type: 'application',
-                host: util.host,
+            config: util.minimalArtifactWith({
                 files: [
                     'simple.c'
                 ],
                 outputName: 'my_executable'
-            },
+            }),
             command: 'my_executable',
             expectOutputToMatch: /42/
         });

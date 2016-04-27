@@ -151,3 +151,21 @@ exports.buildSimple = function (config, command) {
         parameters: ''
     });
 };
+
+exports.minimalArtifact = function () {
+    return {
+        title: 'app',
+        type: 'application',
+        host: exports.host,
+        files: ['main.c'],
+        outputName: 'app'
+    };
+};
+
+exports.minimalArtifactWith = function (properties) {
+    var artifact = exports.minimalArtifact();
+    for (var property in properties) {
+        artifact[property] = properties[property];
+    }
+    return artifact;
+};
