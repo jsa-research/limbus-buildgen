@@ -217,14 +217,19 @@ All paths in the configuration are given as POSIX paths. The generators take car
 ## Javascript API
 #### Generate Makefiles
 ```javascript
-var makefile_generator = require('../source/makefile-generator');
+var fs = require('fs');
+var buildgen = require('limbus-buildgen');
 
-// Returns a string with the generated makefile.
-var makefile = makefile_generator.generate({
-    // The following options are required:
-    // Specifies the type of project to build, can be either 'application', 'dynamic-library' or 'static-library'.
+// The following example generates a makefile from a project
+// name and a configuration object.
+var files = buildgen.generate('Project name', [{
+    // The following properties are required:
+    // ----------------------------------
+    // Specifies the type of project to build, can be either
+    // 'application', 'dynamic-library' or 'static-library'.
     type: 'application',
-    // Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.
+    // Specifies the target host, i.e. the desired OS &
+    // compiler that the makefile should compile with.
     host: 'darwin-clang',
     // Specifies a list of source files.
     files: [
@@ -233,7 +238,8 @@ var makefile = makefile_generator.generate({
     // Specifies the name of the final executable.
     outputName: 'my-application',
 
-    // The following options are optional:
+    // The following properties are optional:
+    // ----------------------------------
     // Specifies a path to prepend to the outputName.
     outputPath: "some/path",
     // Specifies where to find header files to include.
@@ -244,15 +250,30 @@ var makefile = makefile_generator.generate({
     libraryPaths: [
         'build/'
     ],
-    // Specifies any extra compiler flags that will be passed to the compiler as is.
+    // Specifies any extra compiler flags that will be passed
+    // to the compiler as is.
     compilerFlags: '-g -O0 -coverage',
-    // Specifies any extra linker flags that will be passed to the linker as is.
+    // Specifies any extra linker flags that will be passed to
+    // the linker as is.
     linkerFlags: '-coverage',
-    // Specifies any libraries to link with when building an application or dynamic library.
+    // Specifies any libraries to link with when building an
+    // application or dynamic library.
     libraries: [
         'png'
     ]
-});
+}]);
+
+// Directories are created and generated files are written to
+// them according to the targeted build system.
+for (var path in files) {
+    var file = files[path];
+
+    if (file.isDirectory) {
+        fs.mkdir(path);
+    } else if (file.isFile) {
+        fs.writeFileSync(path, file.contents);
+    }
+}
 ```
 
 <a name="continuous-integration"></a>

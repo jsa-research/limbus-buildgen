@@ -21,12 +21,13 @@ var usageInformation;
 
 var readme = fs.readFileSync('README.md').toString();
 readme.replace(/```javascript([\s\S]+?)```/gi, function (match, example) {
+    example = example.replace(/require\(\'limbus\-buildgen\'\)/g, "require('../source/limbus-buildgen')");
     javascriptExamples.push(example);
     return match;
 });
 readme.replace(/```json([\s\S]+?)```/gi, function (match, example) {
     jsonExamples.push(example);
-    jsonExampleExpressions.push("require('../source/makefile-generator').generate(" + example + ");");
+    jsonExampleExpressions.push("require('../source/limbus-buildgen').generate('project', [" + example + "]);");
     return match;
 });
 readme.replace(/```(\s+Usage\:[\s\S]+?)```/, function (match, info) {
@@ -38,7 +39,7 @@ var generateWithExample = function (example) {
     return Promise.resolve().then(function () {
         return util.writeFile('temp/example.js', Promise.resolve(example));
     }).then(function () {
-        return shell.exec('node ' + shell.path('temp/example.js'), {cwd: null});
+        return shell.exec('node ' + shell.path('example.js'), {cwd: './temp'});
     });
 };
 
