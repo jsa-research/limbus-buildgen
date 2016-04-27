@@ -52,8 +52,8 @@ Options:
 
   --help                          output usage information
   --host <host>                   override the configured target host
-  --buildFile <path>              specify the path and filename for the
-                                  generated build file (default: ./Makefile)
+  --outputPath <path>             specify the path where build files are written
+                                  to (default: .)
 
 ```
 

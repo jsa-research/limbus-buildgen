@@ -26,7 +26,7 @@ try {
     for (var path in files) {
         var file = files[path];
         if (file.isFile) {
-            fs.writeFileSync(parsedArguments.makefile || path, file.contents);
+            fs.writeFileSync((parsedArguments.outputPath || '.') + '/' + path, file.contents);
         }
     }
 } catch (e) {
@@ -40,8 +40,8 @@ function parseArguments (processArguments) {
         '--host': function (i) {
             result.host = getFlagValue(processArguments, i);
         },
-        '--buildFile': function (i) {
-            result.makefile = getFlagValue(processArguments, i);
+        '--outputPath': function (i) {
+            result.outputPath = getFlagValue(processArguments, i);
         },
         '--help': function () {
             console.log("\n" +
@@ -51,8 +51,8 @@ function parseArguments (processArguments) {
                         "\n" +
                         "  --help                          output usage information\n" +
                         "  --host <host>                   override the configured target host\n" +
-                        "  --buildFile <path>              specify the path and filename for the\n" +
-                        "                                  generated build file (default: ./Makefile)\n");
+                        "  --outputPath <path>             specify the path where build files are written\n" +
+                        "                                  to (default: .)");
             process.exit(0);
         }
     };

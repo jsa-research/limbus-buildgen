@@ -15,7 +15,9 @@ var shell = require('./shell.js');
 
 describe('Front-end', function () {
     beforeEach(function () {
-        return util.beforeEach();
+        return util.beforeEach().then(function () {
+            return shell.mkdir('platform', 'temp');
+        });
     });
 
     afterEach(function () {
@@ -34,15 +36,15 @@ describe('Front-end', function () {
         });
     });
 
-    it('should take a flag to specify the output build file name', function () {
+    it('should take a flag to specify the output build path', function () {
         return util.generateCompileAndRun({
             config: util.minimalProjectWithArtifactProperties({
                 files: ['simple.c']
             }),
-            makefile: 'Makefile.platform',
+            makefile: 'platform/Makefile',
             command: 'app',
             expectOutputToMatch: '42',
-            parameters: '--buildFile Makefile.platform'
+            parameters: '--outputPath platform'
         });
     });
 
@@ -75,10 +77,10 @@ describe('Front-end', function () {
             }, function (error) {
                 return error.stdout.should.containEql('Flag --host is missing a value');
             }),
-            shell.exec(util.frontEndExecutable + ' --buildFile').then(function () {
+            shell.exec(util.frontEndExecutable + ' --outputPath').then(function () {
                 return Promise.reject(new Error('Did not fail'));
             }, function (error) {
-                return error.stdout.should.containEql('Flag --buildFile is missing a value');
+                return error.stdout.should.containEql('Flag --outputPath is missing a value');
             })
         ]);
     });
