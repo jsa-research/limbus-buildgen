@@ -164,10 +164,7 @@ exports.minimalArtifact = function () {
 
 exports.minimalArtifactWith = function (properties) {
     var artifact = exports.minimalArtifact();
-    for (var property in properties) {
-        artifact[property] = properties[property];
-    }
-    return artifact;
+    return Object.assign(artifact, properties);
 };
 
 exports.minimalProject = function () {
@@ -178,8 +175,12 @@ exports.minimalProject = function () {
 };
 
 exports.minimalProjectWith = function (properties) {
-    return {
-        title: 'project',
+    var project = exports.minimalProject();
+    return Object.assign(project, properties);
+};
+
+exports.minimalProjectWithArtifactProperties = function (properties) {
+    return exports.minimalProjectWith({
         artifacts: [exports.minimalArtifactWith(properties)]
-    };
+    });
 };

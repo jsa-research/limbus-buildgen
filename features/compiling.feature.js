@@ -27,13 +27,13 @@ describe('Compiling', function () {
     });
 
     it('should pass compiler flags as is', function () {
-        return util.buildSimple(util.minimalProjectWith({
+        return util.buildSimple(util.minimalProjectWithArtifactProperties({
             compilerFlags: util.hostCompiler === 'cl' ? '/X' : '-S'
         })).should.be.rejected();
     });
 
     it('should accept input files with paths', function () {
-        return util.buildSimple(util.minimalProjectWith({
+        return util.buildSimple(util.minimalProjectWithArtifactProperties({
             files: ['./some_directory/simple.c']
         }));
     });

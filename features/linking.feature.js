@@ -36,7 +36,7 @@ describe('Linking', function () {
 
     it('should compile and link correctly given several source files and includes', function () {
         return util.generateCompileAndRun({
-            config: util.minimalProjectWith({
+            config: util.minimalProjectWithArtifactProperties({
                 files: [
                     'linked.c',
                     'source/mylibrary.c'
@@ -87,7 +87,7 @@ describe('Linking', function () {
         };
 
         var linkerFlagsShouldFailForType = function(type, flags) {
-            return util.buildSimple(util.minimalProjectWith({
+            return util.buildSimple(util.minimalProjectWithArtifactProperties({
                 type: type,
                 files: ['simple.c'],
                 linkerFlags: failFlags[type][util.hostCompiler]
@@ -98,7 +98,7 @@ describe('Linking', function () {
             });
         };
         var linkerFlagsShouldSucceedForType = function(type, flags) {
-            return util.buildSimple(util.minimalProjectWith({
+            return util.buildSimple(util.minimalProjectWithArtifactProperties({
                 type: type,
                 files: ['simple.c'],
                 linkerFlags: succeedFlags[type][util.hostCompiler]
@@ -122,7 +122,7 @@ describe('Linking', function () {
 
     it('should link with libm by default', function () {
         return util.generateCompileAndRun({
-            config: util.minimalProjectWith({
+            config: util.minimalProjectWithArtifactProperties({
                 files: [
                     'math.c'
                 ]
@@ -134,7 +134,7 @@ describe('Linking', function () {
 
     it('should compile to an executable with outputName', function () {
         return util.generateCompileAndRun({
-            config: util.minimalProjectWith({
+            config: util.minimalProjectWithArtifactProperties({
                 files: [
                     'simple.c'
                 ],

@@ -24,7 +24,7 @@ describe('Front-end', function () {
 
     it('should take a flag to specify the target host', function () {
         return util.generateCompileAndRun({
-            config: util.minimalProjectWith({
+            config: util.minimalProjectWithArtifactProperties({
                 host: undefined,
                 files: ['simple.c']
             }),
@@ -36,7 +36,7 @@ describe('Front-end', function () {
 
     it('should take a flag to specify the output build file name', function () {
         return util.generateCompileAndRun({
-            config: util.minimalProjectWith({
+            config: util.minimalProjectWithArtifactProperties({
                 files: ['simple.c']
             }),
             makefile: 'Makefile.platform',
@@ -92,7 +92,7 @@ describe('Front-end', function () {
 
     it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function () {
         return util.generateCompileAndRun({
-            config: util.minimalProjectWith({
+            config: util.minimalProjectWithArtifactProperties({
                 files: ['simple.c']
             }),
             command: 'app',
