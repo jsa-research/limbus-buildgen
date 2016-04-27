@@ -96,12 +96,27 @@ A makefile for the above example can be generated using:
 limbus-buildgen configuration.json
 ```
 
-#### Configuration Properties
-
-The JSON configuration files support the following properties:
+#### Project Properties
+The project configuration dictionary supports the following properties:
 
 ###### Required
+|Property|Description|
+|:--:|:--|
+|[title](#configuration-project-title)|Specifies a title identifying the project.|
+|[artifacts](#configuration-project-artifacts)|Specifies a list of artifacts to build.|
 
+<a name="configuration-project-title"></a>
+###### title
+An arbitrary string identifying the project. It is only used for naming the build files and does not affect the final executable or library built.
+
+<a name="configuration-project-artifacts"></a>
+###### artifacts
+A list of artifact configuration dictionaries. The artifacts will be built in the order they appear in the list.
+
+#### Artifact Properties
+The artifact configuration dictionaries support the following properties:
+
+###### Required
 |Property|Description|
 |:--:|:--|
 |[title](#configuration-title)|Specifies a title identifying the built artifact.|
