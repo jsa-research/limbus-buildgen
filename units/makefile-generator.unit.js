@@ -15,7 +15,9 @@ var minimal = require('../source/minimal-configuration');
 
 describe('makefile-generator', function () {
     it('should create an executable in the current directory', function () {
-        var makefile = makefile_generator.generate(minimal.project());
+        var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
+            host: 'linux'
+        }));
         makefile.should.match(/\-o app/);
     });
 
