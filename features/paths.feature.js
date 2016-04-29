@@ -12,6 +12,7 @@
 var should = require('should');
 var util = require('./util.js');
 var shell = require('./shell.js');
+var minimal = require('../source/minimal-configuration');
 
 describe('Paths', function () {
     beforeEach(function () {
@@ -25,32 +26,23 @@ describe('Paths', function () {
     });
 
     it('should use the outputPath', function () {
-        return util.buildSimple({
-            type: 'application',
-            host: util.host,
-            files: ['simple.c'],
-            outputPath: 'abc',
-            outputName: 'app'
-        }, 'abc/app');
+        return util.testConfiguration(minimal.projectWithArtifactWith({
+            files: ['main.c'],
+            outputPath: 'abc'
+        }));
     });
 
     it('should remove trailing path separators from outputPath', function () {
-        return util.buildSimple({
-            type: 'application',
-            host: util.host,
-            files: ['simple.c'],
-            outputPath: 'abc/',
-            outputName: 'app'
-        }, 'abc/app');
+        return util.testConfiguration(minimal.projectWithArtifactWith({
+            files: ['main.c'],
+            outputPath: 'abc/'
+        }));
     });
 
     it('should treat an empty outputPath as none was given', function () {
-        return util.buildSimple({
-            type: 'application',
-            host: util.host,
-            files: ['simple.c'],
-            outputPath: '',
-            outputName: 'app'
-        }, 'app');
+        return util.testConfiguration(minimal.projectWithArtifactWith({
+            files: ['main.c'],
+            outputPath: ''
+        }));
     });
 });

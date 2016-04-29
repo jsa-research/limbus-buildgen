@@ -18,6 +18,6 @@ echo Setting up Developer Environment...
 call utility-scripts/setenv.bat %*
 
 echo Compiling...
-nmake /f Makefile.win32-cl
+nmake /f generated/win32-cl/Makefile
 
 echo Done.

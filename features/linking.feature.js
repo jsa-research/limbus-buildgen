@@ -12,6 +12,7 @@
 var should = require('should');
 var util = require('./util.js');
 var shell = require('./shell.js');
+var minimal = require('../source/minimal-configuration');
 
 describe('Linking', function () {
     beforeEach(function () {
@@ -35,22 +36,15 @@ describe('Linking', function () {
     });
 
     it('should compile and link correctly given several source files and includes', function () {
-        return util.generateCompileAndRun({
-            config: {
-                type: 'application',
-                host: util.host,
-                files: [
-                    'linked.c',
-                    'source/mylibrary.c'
-                ],
-                includePaths: [
-                    'include'
-                ],
-                outputName: 'linked'
-            },
-            command: 'linked',
-            expectOutputToMatch: /42/
-        });
+        return util.testConfiguration(minimal.projectWithArtifactWith({
+            files: [
+                'linked.c',
+                'source/mylibrary.c'
+            ],
+            includePaths: [
+                'include'
+            ]
+        }));
     });
 
     it('should pass linker flags as is', function () {
@@ -90,26 +84,20 @@ describe('Linking', function () {
         };
 
         var linkerFlagsShouldFailForType = function(type, flags) {
-            return util.buildSimple({
+            return util.writeConfiguration(minimal.projectWithArtifactWith({
                 type: type,
-                host: util.host,
-                files: ['simple.c'],
-                outputName: 'app',
                 linkerFlags: failFlags[type][util.hostCompiler]
-            }).then(function () {
-                return Promise.reject(new Error(type + ' did not fail'));
-            }, function () {
-                return Promise.resolve();
-            });
+            }))
+            .then(util.generateWithParameters())
+            .then(util.build()).should.be.rejected();
         };
         var linkerFlagsShouldSucceedForType = function(type, flags) {
-            return util.buildSimple({
+            return util.writeConfiguration(minimal.projectWithArtifactWith({
                 type: type,
-                host: util.host,
-                files: ['simple.c'],
-                outputName: 'app',
                 linkerFlags: succeedFlags[type][util.hostCompiler]
-            });
+            }))
+            .then(util.generateWithParameters())
+            .then(util.build());
         };
 
         return Promise.resolve().then(function () {
@@ -128,39 +116,29 @@ describe('Linking', function () {
     });
 
     it('should link with libm by default', function () {
-        return util.generateCompileAndRun({
-            config: {
-                type: 'application',
-                host: util.host,
-                files: [
-                    'math.c'
-                ],
-                outputName: 'math'
-            },
-            command: 'math',
-            expectOutputToMatch: /42/
-        });
+        return util.testConfiguration(minimal.projectWithArtifactWith({
+            files: [
+                'math.c'
+            ]
+        }));
     });
 
     it('should compile to an executable with outputName', function () {
-        return util.generateCompileAndRun({
-            config: {
-                type: 'application',
-                host: util.host,
-                files: [
-                    'simple.c'
-                ],
-                outputName: 'my_executable'
-            },
-            command: 'my_executable',
-            expectOutputToMatch: /42/
-        });
+        return util.writeConfiguration(minimal.projectWithArtifactWith({
+            outputName: 'my_executable'
+        }))
+        .then(util.generateWithParameters())
+        .then(util.build())
+        .then(util.runBuiltExecutable(shell.path('./my_executable')))
+        .then(util.matchOutput());
     });
 
     it('should compile a static library and then be able to link to it', function () {
-        return util.generateCompileAndRun({
-            config: [
+        return util.testConfiguration({
+            title: 'project',
+            artifacts: [
                 {
+                    title: 'library',
                     type: 'static-library',
                     host: util.host,
                     files: [
@@ -169,6 +147,7 @@ describe('Linking', function () {
                     outputName: 'my_lib_name'
                 },
                 {
+                    title: 'app',
                     type: 'application',
                     host: util.host,
                     files: [
@@ -180,18 +159,18 @@ describe('Linking', function () {
                     includePaths: [
                         'include'
                     ],
-                    outputName: 'linked_with_library'
+                    outputName: 'app'
                 }
-            ],
-            command: 'linked_with_library',
-            expectOutputToMatch: /42/
+            ]
         });
     });
 
     it('should compile a dynamic library and then be able to link to it', function () {
-        return util.generateCompileAndRun({
-            config: [
+        return util.testConfiguration({
+            title: 'project',
+            artifacts: [
                 {
+                    title: 'static library',
                     type: 'static-library',
                     host: util.host,
                     files: [
@@ -200,6 +179,7 @@ describe('Linking', function () {
                     outputName: 'my_lib_name'
                 },
                 {
+                    title: 'dynamic library',
                     type: 'dynamic-library',
                     host: util.host,
                     files: [
@@ -211,6 +191,7 @@ describe('Linking', function () {
                     outputName: 'my_dyn_lib_name'
                 },
                 {
+                    title: 'app',
                     type: 'application',
                     host: util.host,
                     files: [
@@ -222,18 +203,18 @@ describe('Linking', function () {
                     includePaths: [
                         'include'
                     ],
-                    outputName: 'linked_with_library'
+                    outputName: 'app'
                 }
-            ],
-            command: 'linked_with_library',
-            expectOutputToMatch: /42/
+            ]
         });
     });
 
     it('should search libraryPaths to find libraries to link', function () {
-        return util.generateCompileAndRun({
-            config: [
+        return util.testConfiguration({
+            title: 'project',
+            artifacts: [
                 {
+                    title: 'library',
                     type: 'static-library',
                     host: util.host,
                     files: [
@@ -243,6 +224,7 @@ describe('Linking', function () {
                     outputPath: 'source'
                 },
                 {
+                    title: 'app',
                     type: 'application',
                     host: util.host,
                     files: [
@@ -257,11 +239,9 @@ describe('Linking', function () {
                     libraryPaths: [
                         'source'
                     ],
-                    outputName: 'linked_with_library'
+                    outputName: 'app'
                 }
-            ],
-            command: 'linked_with_library',
-            expectOutputToMatch: /42/
+            ]
         });
     });
 });

@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <duktape.h>
 #include "platform.h"
-#include "packed_javascript_source.h"
+#include "../generated/packed_javascript_source.h"
 
 char** arguments;
 int argument_count;

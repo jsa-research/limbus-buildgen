@@ -13,14 +13,14 @@
 /node_modules/
 /nvm/
 
-/limbus-buildgen
-/limbus-buildgen.exe
-/limbus-buildgen.dSYM
-/*coverage.info
+/generated/limbus-buildgen
+/generated/limbus-buildgen.exe
+/generated/limbus-buildgen.dSYM
+/generated/packed*.js
+/generated/*coverage.info
 *.obj
 *.o
 *.gcda
 *.gcno
 
 coverage.html
-packed*.js

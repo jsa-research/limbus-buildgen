@@ -11,89 +11,47 @@
 
 var should = require('should');
 var makefile_generator = require('../source/makefile-generator');
-
-var hostsByCompiler = {
-    clang: [
-        'linux-clang',
-        'darwin',
-        'darwin-clang',
-        'freebsd',
-        'freebsd-clang'
-    ],
-    gcc: [
-        'linux',
-        'linux-gcc',
-        'darwin-gcc',
-        'freebsd-gcc'
-    ],
-    cl: [
-        'win32',
-        'win32-cl'
-    ]
-};
+var minimal = require('../source/minimal-configuration');
 
 describe('makefile-generator', function () {
-    it('should have a list with the supported hosts', function () {
-        var hostCount = 0;
-        for (var compiler in hostsByCompiler) {
-            var hosts = hostsByCompiler[compiler];
-            hosts.forEach(function (host) {
-                makefile_generator.supportedHosts.should.containEql(host);
-                hostCount += 1;
-            });
-        }
-        makefile_generator.supportedHosts.length.should.equal(hostCount);
-    });
-
     it('should create an executable in the current directory', function () {
-        var makefile = makefile_generator.generate({
-            type: 'application',
-            host: 'linux',
-            files: [
-                'source/files/test.c'
-            ],
-            outputName: 'test'
-        });
-
-        makefile.should.match(/\-o test/);
-
-        makefile = makefile_generator.generate({
-            type: 'application',
-            host: 'linux',
-            files: [
-                'source/files/test.c'
-            ],
-            outputName: 'executable'
-        });
-
-        makefile.should.match(/\-o executable/);
+        var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
+            host: 'linux'
+        }));
+        makefile.should.match(/\-o app/);
     });
 
     it('should accept files with dots in their paths', function () {
-        var makefile = makefile_generator.generate({
-            type: 'application',
-            host: 'linux',
-            files: [
-                'file.with.dots.c'
-            ],
-            outputName: 'test'
-        });
-
+        var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
+            files: ['file.with.dots.c']
+        }));
         makefile.should.not.match(/[^\.]dots\.c/);
     });
 
-    describe('makefile configured with multiple files', function () {
+    it('should generate a makefile with all artifacts built', function () {
+        var makefile = makefile_generator.generate(minimal.projectWith({
+            artifacts: [
+                minimal.artifactWith({
+                    outputName: 'first'
+                }),
+                minimal.artifactWith({
+                    outputName: 'second'
+                })
+            ]
+        }));
+        makefile.should.match(/first/);
+        makefile.should.match(/second/);
+    });
+
+    describe('artifact with multiple files', function () {
         it('should compile all of the files', function () {
-            var makefile = makefile_generator.generate({
-                type: 'application',
-                host: 'linux',
+            var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
                 files: [
                     'file_a.c',
                     'file_b.c',
                     'file_c.c'
-                ],
-                outputName: 'test'
-            });
+                ]
+            }));
 
             makefile.should.match(/file_a\.c/);
             makefile.should.match(/file_b\.c/);
@@ -103,17 +61,32 @@ describe('makefile-generator', function () {
 
     describe('makefile configured with a host', function () {
         it('should compile with the correct compiler for the specified host', function () {
+            var hostsByCompiler = {
+                'gcc': [
+                    'darwin-gcc',
+                    'linux',
+                    'linux-gcc',
+                    'freebsd-gcc'
+                ],
+                'clang': [
+                    'darwin',
+                    'darwin-clang',
+                    'linux-clang',
+                    'freebsd',
+                    'freebsd-clang'
+                ],
+                'cl': [
+                    'win32',
+                    'win32-cl'
+                ]
+            };
+
             for (var compiler in hostsByCompiler) {
                 var hosts = hostsByCompiler[compiler];
                 hosts.forEach(function (host) {
-                    var makefile = makefile_generator.generate({
-                        type: 'application',
-                        host: host,
-                        files: [
-                            'test.c'
-                        ],
-                        outputName: 'test'
-                    });
+                    var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
+                        host: host
+                    }));
                     makefile.should.containEql(compiler);
                 });
             }
@@ -122,53 +95,38 @@ describe('makefile-generator', function () {
 
     describe('makefile where OS is freebsd', function () {
         it('should compile with libm by default', function () {
-            var makefile = makefile_generator.generate({
-                type: 'application',
-                host: 'freebsd-gcc',
-                files: [
-                    'test.c'
-                ],
-                outputName: 'test'
-            });
+            var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
+                host: 'freebsd-gcc'
+            }));
 
             makefile.should.containEql('-lm');
         });
 
         it('should link with -Wl,-rpath=. using LLVM Clang or GNU GCC', function () {
-            var makefile = makefile_generator.generate({
-                type: 'application',
-                host: 'freebsd-clang',
-                files: [ 'test.c' ],
-                outputName: 'test'
-            });
+            var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
+                host: 'freebsd-clang'
+            }));
 
             makefile.should.containEql('-Wl,-rpath=.');
 
-            makefile = makefile_generator.generate({
-                type: 'application',
-                host: 'freebsd-gcc',
-                files: [ 'test.c' ],
-                outputName: 'test'
-            });
+            makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
+                host: 'freebsd-gcc'
+            }));
 
             makefile.should.containEql('-Wl,-rpath=.');
         });
 
         it('should only link with -Wl,-rpath=. when type is "application"', function () {
-            var makefile = makefile_generator.generate({
+            var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
                 type: 'static-library',
-                host: 'freebsd-clang',
-                files: [ 'test.c' ],
-                outputName: 'test'
-            });
+                host: 'freebsd-clang'
+            }));
             makefile.should.not.containEql('-Wl,-rpath=.');
 
-            makefile = makefile_generator.generate({
+            makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
                 type: 'dynamic-library',
-                host: 'freebsd-gcc',
-                files: [ 'test.c' ],
-                outputName: 'test'
-            });
+                host: 'freebsd-gcc'
+            }));
 
             makefile.should.not.containEql('-Wl,-rpath=.');
         });
@@ -176,53 +134,41 @@ describe('makefile-generator', function () {
 
     describe('makefile where OS is linux', function () {
         it('should compile with libm by default', function () {
-            var makefile = makefile_generator.generate({
-                type: 'application',
+            var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
                 host: 'linux-clang',
-                files: [
-                    'test.c'
-                ],
-                outputName: 'test'
-            });
+                files: ['test.c']
+            }));
 
             makefile.should.containEql('-lm');
         });
 
         it('should link with -Wl,-rpath=. using LLVM Clang or GNU GCC', function () {
-            var makefile = makefile_generator.generate({
-                type: 'application',
+            var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
                 host: 'linux-clang',
-                files: [ 'test.c' ],
-                outputName: 'test'
-            });
+                files: [ 'test.c' ]
+            }));
 
             makefile.should.containEql('-Wl,-rpath=.');
 
-            makefile = makefile_generator.generate({
-                type: 'application',
+            makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
                 host: 'linux-gcc',
-                files: [ 'test.c' ],
-                outputName: 'test'
-            });
+                files: [ 'test.c' ]
+            }));
 
             makefile.should.containEql('-Wl,-rpath=.');
         });
 
         it('should only link with -Wl,-rpath=. when type is "application"', function () {
-            var makefile = makefile_generator.generate({
+            var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
                 type: 'static-library',
-                host: 'linux-clang',
-                files: [ 'test.c' ],
-                outputName: 'test'
-            });
+                host: 'linux-clang'
+            }));
             makefile.should.not.containEql('-Wl,-rpath=.');
 
-            makefile = makefile_generator.generate({
+            makefile = makefile_generator.generate(minimal.projectWithArtifactWith({
                 type: 'dynamic-library',
-                host: 'linux-gcc',
-                files: [ 'test.c' ],
-                outputName: 'test'
-            });
+                host: 'linux-gcc'
+            }));
 
             makefile.should.not.containEql('-Wl,-rpath=.');
         });

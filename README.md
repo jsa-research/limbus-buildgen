@@ -52,8 +52,8 @@ Options:
 
   --help                          output usage information
   --host <host>                   override the configured target host
-  --buildFile <path>              specify the path and filename for the
-                                  generated build file (default: ./Makefile)
+  --outputPath <path>             specify the path where build files are written
+                                  to (default: .)
 
 ```
 
@@ -61,30 +61,34 @@ Options:
 ## Configuration
 
 #### Example configuration file
-The following configuration file specifies a makefile that compiles an executable on OS X using LLVM Clang, links to libpng and outputs debug and coverage information.
+The following configuration file specifies a makefile that compiles an executable called `executable_name` on OS X using LLVM Clang, links to libpng and outputs debug and coverage information.
 
 ###### configuration.json
 ```json
 {
-    "type": "application",
-    "host": "darwin-clang",
-    "files": [
-        "main.c"
-    ],
-    "outputName": "my-application",
+    "title": "Project title",
+    "artifacts": [{
+        "title": "Main executable",
+        "type": "application",
+        "host": "darwin-clang",
+        "files": [
+            "main.c"
+        ],
+        "outputName": "executable_name",
 
-    "outputPath": "some/path",
-    "includePaths": [
-        "include/"
-    ],
-    "libraryPaths": [
-        "build/"
-    ],
-    "compilerFlags": "-g -O0 -coverage",
-    "linkerFlags": "-coverage",
-    "libraries": [
-        "png"
-    ]
+        "outputPath": "some/path",
+        "includePaths": [
+            "include/"
+        ],
+        "libraryPaths": [
+            "build/"
+        ],
+        "compilerFlags": "-g -O0 -coverage",
+        "linkerFlags": "-coverage",
+        "libraries": [
+            "png"
+        ]
+    }]
 }
 ```
 A makefile for the above example can be generated using:
@@ -92,15 +96,31 @@ A makefile for the above example can be generated using:
 limbus-buildgen configuration.json
 ```
 
-#### Configuration Properties
-
-The JSON configuration files support the following properties:
+#### Project Properties
+The project configuration dictionary supports the following properties:
 
 ###### Required
-
 |Property|Description|
 |:--:|:--|
-|[type](#configuration-type)|Specifies the type of project to build.|
+|[title](#configuration-project-title)|Specifies a title identifying the project.|
+|[artifacts](#configuration-project-artifacts)|Specifies a list of artifacts to build.|
+
+<a name="configuration-project-title"></a>
+###### title
+An arbitrary string identifying the project. It is only used for naming the build files and does not affect the final executable or library built.
+
+<a name="configuration-project-artifacts"></a>
+###### artifacts
+A list of artifact configuration dictionaries. The artifacts will be built in the order they appear in the list.
+
+#### Artifact Properties
+The artifact configuration dictionaries support the following properties:
+
+###### Required
+|Property|Description|
+|:--:|:--|
+|[title](#configuration-title)|Specifies a title identifying the built artifact.|
+|[type](#configuration-type)|Specifies the type of artifact to build.|
 |[host](#configuration-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
 |[files](#configuration-files)|Specifies a list of source files.|
 |[outputName](#configuration-outputName)|Specifies the name of the final executable.|
@@ -115,9 +135,13 @@ The JSON configuration files support the following properties:
 |[linkerFlags](#configuration-linkerFlags)|Specifies any extra linkers flags that will be passed to the linker as is.|
 |[libraries](#configuration-libraries)|Specifies any libraries to link with when building an application or dynamic library.|
 
+<a name="configuration-title"></a>
+###### title
+An arbitrary string identifying the artifact to build. It is only used for naming the build files and does not affect the final executable or library built.
+
 <a name="configuration-type"></a>
 ###### type
-There are three types of projects which can be generated:
+There are three types of artifacts which can be built:
 
 |Type|Description|
 |:--|:--|
@@ -217,42 +241,48 @@ All paths in the configuration are given as POSIX paths. The generators take car
 ## Javascript API
 #### Generate Makefiles
 ```javascript
-var makefile_generator = require('../source/makefile-generator');
+var fs = require('fs');
+var buildgen = require('limbus-buildgen');
 
-// Returns a string with the generated makefile.
-var makefile = makefile_generator.generate({
-    // The following options are required:
-    // Specifies the type of project to build, can be either 'application', 'dynamic-library' or 'static-library'.
-    type: 'application',
-    // Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.
-    host: 'darwin-clang',
-    // Specifies a list of source files.
-    files: [
-        'main.c'
-    ],
-    // Specifies the name of the final executable.
-    outputName: 'my-application',
+// The following example generates a makefile from a project
+// title and an artifact configuration.
+var files = buildgen.generate({
+    title: 'Project title',
+    artifacts: [{
+        title: 'Main executable',
+        type: 'application',
+        host: 'darwin-clang',
+        files: [
+            'main.c'
+        ],
+        outputName: 'executable_name',
 
-    // The following options are optional:
-    // Specifies a path to prepend to the outputName.
-    outputPath: "some/path",
-    // Specifies where to find header files to include.
-    includePaths: [
-        'include/'
-    ],
-    // Specifies where to find libraries to link.
-    libraryPaths: [
-        'build/'
-    ],
-    // Specifies any extra compiler flags that will be passed to the compiler as is.
-    compilerFlags: '-g -O0 -coverage',
-    // Specifies any extra linker flags that will be passed to the linker as is.
-    linkerFlags: '-coverage',
-    // Specifies any libraries to link with when building an application or dynamic library.
-    libraries: [
-        'png'
-    ]
+        outputPath: "some/path",
+        includePaths: [
+            'include/'
+        ],
+        libraryPaths: [
+            'build/'
+        ],
+        compilerFlags: '-g -O0 -coverage',
+        linkerFlags: '-coverage',
+        libraries: [
+            'png'
+        ]
+    }]
 });
+
+// Directories are created and generated files are written to
+// them according to the targeted build system.
+for (var path in files) {
+    var file = files[path];
+
+    if (file.isDirectory) {
+        fs.mkdir(path);
+    } else if (file.isFile) {
+        fs.writeFileSync(path, file.contents);
+    }
+}
 ```
 
 <a name="continuous-integration"></a>

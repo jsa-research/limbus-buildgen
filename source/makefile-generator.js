@@ -11,8 +11,6 @@
 
 var _ = require('./publicdash');
 var makefileBuilder = require('./makefile-builder');
-var ConfigValidator = require('./config-validator');
-var ConfigPathNormalizer = require('./config-path-normalizer');
 var gccLikeCompilerGenerator = require('./gcc-like-compiler-generator');
 var clCompilerGenerator = require('./cl-compiler-generator');
 
@@ -50,15 +48,6 @@ var compilerInfoTable = {
         objectFileSuffix: '.obj'
     }
 };
-
-exports.supportedHosts = [];
-(function () {
-    for (var compiler in compilerInfoTable) {
-        compilerInfoTable[compiler].hosts.forEach(function (host) {
-            exports.supportedHosts.push(host);
-        });
-    }
-})();
 
 var compilerByHost = function (host) {
     if (host !== undefined) {
@@ -140,16 +129,15 @@ var generateCompileInstructions = function (config) {
     return generateCompileInstructionsForCompiler(compilerInfo, os, config.outputName, config);
 };
 
-exports.generate = function (config) {
-    var validationResult = ConfigValidator.validate(config);
+exports.generate = function (configuration) {
+    var targets = [];
 
-    if (validationResult.valid === false) {
-        throw new Error(validationResult.error + ': ' + validationResult.property);
-    }
-
-    ConfigPathNormalizer.normalize(config);
-
-    return makefileBuilder.build({
-        all: generateCompileInstructions(config)
+    configuration.artifacts.forEach(function (artifact) {
+        targets.push({
+            name: artifact.outputName,
+            commands: generateCompileInstructions(artifact)
+        });
     });
+
+    return makefileBuilder.build(targets);
 };

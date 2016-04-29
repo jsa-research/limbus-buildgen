@@ -14,23 +14,51 @@ var MakefileBuilder = require('../source/makefile-builder');
 
 describe('makefile-builder', function () {
     describe('build', function () {
-        it('should return an empty makefile given an empty map', function () {
-            var makefile = MakefileBuilder.build({});
+        it('should return an empty makefile given an empty array', function () {
+            var makefile = MakefileBuilder.build([]);
             makefile.should.equal('');
         });
 
-        it('should return a makefile with an empty target named "all" if given "{ all: [] }"', function () {
-            var makefile = MakefileBuilder.build({ all: [] });
+        it('should generate an empty target', function () {
+            var makefile = MakefileBuilder.build([{name: 'all', commands: []}]);
             makefile.should.equal('all:' +
                                   '\n\t' +
                                   '\n');
         });
 
-        it('should return a makefile with a target named "all" with command "gcc -c test.c" if given "{ all: ["gcc -c test.c"] }"', function () {
-            var makefile = MakefileBuilder.build({ all: ["gcc -c test.c"] });
+        it('should generate a target with commands', function () {
+            var makefile = MakefileBuilder.build([{name: 'all', commands: ["gcc -c test.c"]}]);
             makefile.should.equal('all:' +
                                   '\n\tgcc -c test.c' +
                                   '\n');
+        });
+
+        it('should generate a target with dependencies', function () {
+            var makefile = MakefileBuilder.build([
+                {name: 'other_target', commands: ["gcc -c other.c"]},
+                {name: 'all', commands: ["gcc -o test test.c other.o"]},
+            ]);
+            makefile.should.equal(
+                'all: other_target' +
+                '\n\tgcc -o test test.c other.o\n' +
+                'other_target:' +
+                '\n\tgcc -c other.c' +
+                '\n'
+            );
+        });
+
+        it('should always name the last target "all"', function () {
+            var makefile = MakefileBuilder.build([
+                {name: 'other_target', commands: ["echo"]},
+                {name: 'last', commands: ["echo"]},
+            ]);
+            makefile.should.equal(
+                'all: other_target' +
+                '\n\techo\n' +
+                'other_target:' +
+                '\n\techo' +
+                '\n'
+            );
         });
     });
 });

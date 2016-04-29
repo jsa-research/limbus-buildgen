@@ -10,7 +10,7 @@
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 generate_for_platform() {
-    ./limbus-buildgen --buildFile Makefile.$1 --host $1 build_configs/build.json
+    ./generated/limbus-buildgen --outputPath generated/$1 --host $1 build_configs/build.json
 }
 
 generate_for_platform linux
@@ -26,4 +26,4 @@ generate_for_platform freebsd-clang
 generate_for_platform freebsd-gcc
 
 # This is used for sending coverage information from the C sources to coveralls.io
-./limbus-buildgen --buildFile Makefile.coverage build_configs/coverage.json
+./generated/limbus-buildgen --outputPath generated/coverage build_configs/coverage.json

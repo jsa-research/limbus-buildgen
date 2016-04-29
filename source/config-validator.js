@@ -9,7 +9,15 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+var requiredProjectProperties = [
+    'title',
+    'artifacts'
+];
+
+var optionalProjectProperties = [];
+
 var requiredProperties = [
+    'title',
     'type',
     'host',
     'files',
@@ -45,7 +53,12 @@ var validHosts = [
     'freebsd-gcc'
 ];
 
+var stringProjectProperties = [
+    'title'
+];
+
 var stringProperties = [
+    'title',
     'outputName',
     'outputPath',
     'compilerFlags',
@@ -63,15 +76,91 @@ var ConfigValidator = function () {};
 
 var _ = require('./publicdash');
 
-var validateRequiredProperties = function (config) {
-    return _.reduce(requiredProperties, function (result, property) {
-        if (result.valid && config[property] === undefined) {
-            result.valid = false;
-            result.error = 'missing required property';
-            result.property = property;
-        }
-        return result;
+var returnErrorOn = function (configuration, properties, error, predicate) {
+    return _.reduce(properties, function (result, property) {
+        return predicate(property) ? {
+            valid: false,
+            error: error,
+            property: property
+        } : result;
     }, {valid: true});
+};
+
+var validateRequiredProperties = function (config) {
+    return returnErrorOn(config, requiredProperties, 'missing required property', function (property) {
+        return config[property] === undefined;
+    });
+};
+
+var validateRequiredProjectProperties = function (config) {
+    return returnErrorOn(config, requiredProjectProperties, 'missing required project property', function (property) {
+        return config[property] === undefined;
+    });
+};
+
+var validateStringProperties = function (config) {
+    return returnErrorOn(config, stringProperties, 'property is not a string', function (property) {
+        return config[property] !== undefined && typeof config[property] !== 'string';
+    });
+};
+
+var validateStringProjectProperties = function (config) {
+    return returnErrorOn(config, stringProjectProperties, 'project property is not a string', function (property) {
+        return config[property] !== undefined && typeof config[property] !== 'string';
+    });
+};
+
+var arrayContainsNonString = function (array) {
+    var index;
+    for (index = 0; index < array.length; ++index) {
+        var value = array[index];
+        if (typeof value !== 'string') {
+            return true;
+        }
+    }
+    return false;
+};
+
+var validateStringArrayProperties = function (config) {
+    return returnErrorOn(config, stringArrayProperties, 'property is not a string array', function (property) {
+        return config[property] !== undefined &&
+            (!Array.isArray(config[property]) || arrayContainsNonString(config[property]));
+    });
+};
+
+var validateFilenames = function (config) {
+    return returnErrorOn(config, ['outputName'], 'cannot be path', function (property) {
+        return config[property].match(/[\/\\]/) !== null ||
+            config[property] === '.' ||
+            config[property] === '..';
+    });
+};
+
+var validateFileArrays = function (config) {
+    return returnErrorOn(config, ['files'], 'no input files', function (property) {
+        return config[property].length === 0;
+    });
+};
+
+var validateUnknownProperties = function (requiredProperties, optionalProperties, error) {
+    return function (config) {
+        for (var property in config) {
+            if (config.hasOwnProperty(property)) {
+                if (requiredProperties.indexOf(property) === -1 &&
+                    optionalProperties.indexOf(property) === -1) {
+                    return {
+                        valid: false,
+                        error: error,
+                        property: property
+                    };
+                }
+            }
+        }
+
+        return {
+            valid: true
+        };
+    };
 };
 
 var validateForInvalidValues = function (config) {
@@ -100,60 +189,6 @@ var validateForInvalidValues = function (config) {
     };
 };
 
-var validateStringProperties = function (config) {
-    return _.reduce(stringProperties, function (result, property) {
-        if (result.valid && config[property] !== undefined && typeof config[property] !== 'string') {
-            result.valid = false;
-            result.error = 'property is not a string';
-            result.property = property;
-        }
-        return result;
-    }, {valid: true});
-};
-
-var validateStringArrayProperties = function (config) {
-    var arrayContainsNonString = function (array) {
-        var index;
-        for (index = 0; index < array.length; ++index) {
-            var value = array[index];
-            if (typeof value !== 'string') {
-                return true;
-            }
-        }
-        return false;
-    };
-
-    return _.reduce(stringArrayProperties, function (result, property) {
-        if (result.valid &&
-            config[property] !== undefined &&
-            (!Array.isArray(config[property]) || arrayContainsNonString(config[property]))) {
-            result.valid = false;
-            result.error = 'property is not a string array';
-            result.property = property;
-        }
-        return result;
-    }, {valid: true});
-};
-
-var validateProperties = function (config) {
-    for (var property in config) {
-        if (config.hasOwnProperty(property)) {
-            if (requiredProperties.indexOf(property) === -1 &&
-                optionalProperties.indexOf(property) === -1) {
-                return {
-                    valid: false,
-                    error: 'unknown property',
-                    property: property
-                };
-            }
-        }
-    }
-
-    return {
-        valid: true
-    };
-};
-
 var validateFileExtensions = function (config) {
     return _.reduce(config.files, function (result, file) {
         if (result.valid && file.match(/\.\w/) === null) {
@@ -165,37 +200,6 @@ var validateFileExtensions = function (config) {
         }
         return result;
     }, {valid: true});
-};
-
-var validateFilenames = function (config) {
-    if (config.outputName.match(/[\/\\]/) !== null ||
-        config.outputName === '.' ||
-        config.outputName === '..') {
-
-        return {
-            valid: false,
-            error: 'cannot be path',
-            property: 'outputName'
-        };
-    }
-
-    return {
-        valid: true
-    };
-};
-
-var validateFileArrays = function (config) {
-    if (config.files.length === 0) {
-        return {
-            valid: false,
-            error: 'no input files',
-            property: 'files'
-        };
-    }
-
-    return {
-        valid: true
-    };
 };
 
 var validateMiscConstraints = function (config) {
@@ -214,24 +218,34 @@ var validateMiscConstraints = function (config) {
 
 ConfigValidator.validate = function (config) {
     var validators = [
+        validateUnknownProperties(requiredProperties, optionalProperties, 'unknown property'),
         validateRequiredProperties,
         validateForInvalidValues,
         validateStringProperties,
         validateStringArrayProperties,
-        validateProperties,
         validateFileExtensions,
         validateFilenames,
         validateFileArrays,
         validateMiscConstraints
     ];
 
-    return _.reduce(validators, function (result, validator) {
-        if (result.valid) {
-            return validator(config);
-        } else {
-            return result;
-        }
-    }, {valid: true});
+    var projectValidators = [
+        validateUnknownProperties(requiredProjectProperties, optionalProjectProperties, 'unknown project property'),
+        validateRequiredProjectProperties,
+        validateStringProjectProperties
+    ];
+
+    var validate = function (config, validators, startingResult) {
+        return _.reduce(validators, function (result, validator) {
+            return result.valid ? validator(config) : result;
+        }, startingResult);
+    };
+
+    var projectValidation = validate(config, projectValidators, {valid: true});
+
+    return _.reduce(config.artifacts, function (result, artifact) {
+        return result.valid ? validate(artifact, validators, result) : result;
+    }, projectValidation);
 };
 
 module.exports = ConfigValidator;

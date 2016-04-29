@@ -12,13 +12,14 @@
 var should = require('should');
 var util = require('./util.js');
 var shell = require('./shell.js');
+var minimal = require('../source/minimal-configuration');
 
 describe('Compiling', function () {
     beforeEach(function () {
         return util.beforeEach().then(function () {
             return shell.mkdir('temp/some_directory');
         }).then(function () {
-            return shell.cp('temp/simple.c', 'temp/some_directory/');
+            return shell.cp('temp/main.c', 'temp/some_directory/');
         });
     });
 
@@ -27,21 +28,14 @@ describe('Compiling', function () {
     });
 
     it('should pass compiler flags as is', function () {
-        return util.buildSimple({
-            type: 'application',
-            host: util.host,
-            files: ['simple.c'],
-            outputName: 'app',
+        return util.testConfiguration(minimal.projectWithArtifactWith({
             compilerFlags: util.hostCompiler === 'cl' ? '/X' : '-S'
-        }).should.be.rejected();
+        })).should.be.rejected();
     });
 
     it('should accept input files with paths', function () {
-        return util.buildSimple({
-            type: 'application',
-            host: util.host,
-            files: ['./some_directory/simple.c'],
-            outputName: 'app'
-        });
+        return util.testConfiguration(minimal.projectWithArtifactWith({
+            files: ['./some_directory/main.c']
+        }));
     });
 });
