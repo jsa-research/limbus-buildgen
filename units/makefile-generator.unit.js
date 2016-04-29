@@ -26,6 +26,21 @@ describe('makefile-generator', function () {
         makefile.should.not.match(/[^\.]dots\.c/);
     });
 
+    it('should generate a makefile with all artifacts built', function () {
+        var makefile = makefile_generator.generate(minimal.projectWith({
+            artifacts: [
+                minimal.artifactWith({
+                    outputName: 'first'
+                }),
+                minimal.artifactWith({
+                    outputName: 'second'
+                })
+            ]
+        }));
+        makefile.should.match(/first/);
+        makefile.should.match(/second/);
+    });
+
     describe('artifact with multiple files', function () {
         it('should compile all of the files', function () {
             var makefile = makefile_generator.generate(minimal.projectWithArtifactWith({

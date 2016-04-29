@@ -11,11 +11,30 @@
 
 var _ = require('./publicdash');
 
-exports.build = function (targets) {
-    return _.reduce(targets, function (makefile, commands, target) {
-                return makefile
-                     + target + ':'
-                     + '\n\t' + commands.join('\n\t')
-                     + '\n';
-            }, '');
+exports.build = function (configurations) {
+    var targets = [];
+
+    for (var configurationIndex = 0; configurationIndex < configurations.length; configurationIndex++) {
+        var configuration = configurations[configurationIndex];
+
+        var dependency;
+        if (configurationIndex > 0) {
+            dependency = configurations[configurationIndex - 1].name;
+        }
+
+        var name = configuration.name;
+        if (configurationIndex === configurations.length - 1) {
+            name = 'all';
+        }
+
+        targets.push(
+             name + ':' + (dependency ? ' ' + dependency : '')
+             + '\n\t' + configuration.commands.join('\n\t')
+             + '\n'
+        );
+    }
+
+    targets.reverse();
+
+    return targets.join('');
 };

@@ -1,14 +1,18 @@
 
+var minimalArtifact = function () {
+    return {
+        title: 'app',
+        type: 'application',
+        host: process.platform,
+        outputName: 'app',
+        files: ['main.c']
+    };
+};
+
 module.exports.project = function () {
     return {
         title: 'project',
-        artifacts: [{
-            title: 'app',
-            type: 'application',
-            host: process.platform,
-            outputName: 'app',
-            files: ['main.c']
-        }]
+        artifacts: [minimalArtifact()]
     };
 };
 
@@ -22,4 +26,10 @@ module.exports.projectWithArtifactWith = function (properties) {
     var project = module.exports.project();
     Object.assign(project.artifacts[0], properties);
     return project;
+}
+
+module.exports.artifactWith = function (properties) {
+    var artifact = minimalArtifact();
+    Object.assign(artifact, properties);
+    return artifact;
 }

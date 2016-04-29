@@ -129,8 +129,15 @@ var generateCompileInstructions = function (config) {
     return generateCompileInstructionsForCompiler(compilerInfo, os, config.outputName, config);
 };
 
-exports.generate = function (config) {
-    return makefileBuilder.build({
-        all: generateCompileInstructions(config.artifacts[0])
+exports.generate = function (configuration) {
+    var targets = [];
+
+    configuration.artifacts.forEach(function (artifact) {
+        targets.push({
+            name: artifact.outputName,
+            commands: generateCompileInstructions(artifact)
+        });
     });
+
+    return makefileBuilder.build(targets);
 };

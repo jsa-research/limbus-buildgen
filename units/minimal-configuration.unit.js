@@ -67,4 +67,20 @@ describe('minimal-configuration', function () {
             });
         });
     });
+
+    describe('artifactWith', function () {
+        it('should return a new minimal artifact configuration object with properties overriden by the passed in object', function () {
+            var configuration = minimalConfiguration.artifactWith({
+                title: 'other title'
+            });
+
+            configuration.should.deepEqual({
+                title: 'other title',
+                type: 'application',
+                host: process.platform,
+                files: ['main.c'],
+                outputName: 'app'
+            });
+        });
+    });
 });
