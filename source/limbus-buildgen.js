@@ -15,7 +15,7 @@ module.exports.generate = function (configuration) {
     return {
         'Makefile': {
             isFile: true,
-            contents: makefileGenerator.generate(configuration.artifacts[0])
+            contents: makefileGenerator.generate(configuration)
         }
     };
 };

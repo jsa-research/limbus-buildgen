@@ -131,6 +131,6 @@ var generateCompileInstructions = function (config) {
 
 exports.generate = function (config) {
     return makefileBuilder.build({
-        all: generateCompileInstructions(config)
+        all: generateCompileInstructions(config.artifacts[0])
     });
 };
