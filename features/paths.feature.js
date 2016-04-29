@@ -25,23 +25,23 @@ describe('Paths', function () {
     });
 
     it('should use the outputPath', function () {
-        return util.buildSimple(util.minimalProjectWithArtifactProperties({
-            files: ['simple.c'],
+        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+            files: ['main.c'],
             outputPath: 'abc'
-        }), 'abc/app');
+        }));
     });
 
     it('should remove trailing path separators from outputPath', function () {
-        return util.buildSimple(util.minimalProjectWithArtifactProperties({
-            files: ['simple.c'],
+        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+            files: ['main.c'],
             outputPath: 'abc/'
-        }), 'abc/app');
+        }));
     });
 
     it('should treat an empty outputPath as none was given', function () {
-        return util.buildSimple(util.minimalProjectWithArtifactProperties({
-            files: ['simple.c'],
+        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+            files: ['main.c'],
             outputPath: ''
-        }), 'app');
+        }));
     });
 });

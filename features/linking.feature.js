@@ -35,19 +35,15 @@ describe('Linking', function () {
     });
 
     it('should compile and link correctly given several source files and includes', function () {
-        return util.generateCompileAndRun({
-            config: util.minimalProjectWithArtifactProperties({
-                files: [
-                    'linked.c',
-                    'source/mylibrary.c'
-                ],
-                includePaths: [
-                    'include'
-                ]
-            }),
-            command: 'app',
-            expectOutputToMatch: /42/
-        });
+        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+            files: [
+                'linked.c',
+                'source/mylibrary.c'
+            ],
+            includePaths: [
+                'include'
+            ]
+        }));
     });
 
     it('should pass linker flags as is', function () {
@@ -87,22 +83,20 @@ describe('Linking', function () {
         };
 
         var linkerFlagsShouldFailForType = function(type, flags) {
-            return util.buildSimple(util.minimalProjectWithArtifactProperties({
+            return util.writeConfiguration(util.minimalProjectWithArtifactProperties({
                 type: type,
-                files: ['simple.c'],
                 linkerFlags: failFlags[type][util.hostCompiler]
-            })).then(function () {
-                return Promise.reject(new Error(type + ' did not fail'));
-            }, function () {
-                return Promise.resolve();
-            });
+            }))
+            .then(util.generateWithParameters())
+            .then(util.build()).should.be.rejected();
         };
         var linkerFlagsShouldSucceedForType = function(type, flags) {
-            return util.buildSimple(util.minimalProjectWithArtifactProperties({
+            return util.writeConfiguration(util.minimalProjectWithArtifactProperties({
                 type: type,
-                files: ['simple.c'],
                 linkerFlags: succeedFlags[type][util.hostCompiler]
-            }));
+            }))
+            .then(util.generateWithParameters())
+            .then(util.build());
         };
 
         return Promise.resolve().then(function () {
@@ -121,151 +115,132 @@ describe('Linking', function () {
     });
 
     it('should link with libm by default', function () {
-        return util.generateCompileAndRun({
-            config: util.minimalProjectWithArtifactProperties({
-                files: [
-                    'math.c'
-                ]
-            }),
-            command: 'app',
-            expectOutputToMatch: /42/
-        });
+        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+            files: [
+                'math.c'
+            ]
+        }));
     });
 
     it('should compile to an executable with outputName', function () {
-        return util.generateCompileAndRun({
-            config: util.minimalProjectWithArtifactProperties({
-                files: [
-                    'simple.c'
-                ],
-                outputName: 'my_executable'
-            }),
-            command: 'my_executable',
-            expectOutputToMatch: /42/
-        });
+        return util.writeConfiguration(util.minimalProjectWithArtifactProperties({
+            outputName: 'my_executable'
+        }))
+        .then(util.generateWithParameters())
+        .then(util.build())
+        .then(util.runBuiltExecutable(shell.path('./my_executable')))
+        .then(util.matchOutput());
     });
 
     it('should compile a static library and then be able to link to it', function () {
-        return util.generateCompileAndRun({
-            config: {
-                title: 'project',
-                artifacts: [
-                    {
-                        title: 'library',
-                        type: 'static-library',
-                        host: util.host,
-                        files: [
-                            'source/mylibrary.c'
-                        ],
-                        outputName: 'my_lib_name'
-                    },
-                    {
-                        title: 'app',
-                        type: 'application',
-                        host: util.host,
-                        files: [
-                            'linked.c'
-                        ],
-                        libraries: [
-                            'my_lib_name'
-                        ],
-                        includePaths: [
-                            'include'
-                        ],
-                        outputName: 'linked_with_library'
-                    }
-                ]
-            },
-            command: 'linked_with_library',
-            expectOutputToMatch: /42/
+        return util.testConfiguration({
+            title: 'project',
+            artifacts: [
+                {
+                    title: 'library',
+                    type: 'static-library',
+                    host: util.host,
+                    files: [
+                        'source/mylibrary.c'
+                    ],
+                    outputName: 'my_lib_name'
+                },
+                {
+                    title: 'app',
+                    type: 'application',
+                    host: util.host,
+                    files: [
+                        'linked.c'
+                    ],
+                    libraries: [
+                        'my_lib_name'
+                    ],
+                    includePaths: [
+                        'include'
+                    ],
+                    outputName: 'app'
+                }
+            ]
         });
     });
 
     it('should compile a dynamic library and then be able to link to it', function () {
-        return util.generateCompileAndRun({
-            config: {
-                title: 'project',
-                artifacts: [
-                    {
-                        title: 'static library',
-                        type: 'static-library',
-                        host: util.host,
-                        files: [
-                            'source/mylibrary.c'
-                        ],
-                        outputName: 'my_lib_name'
-                    },
-                    {
-                        title: 'dynamic library',
-                        type: 'dynamic-library',
-                        host: util.host,
-                        files: [
-                            'source/mydynamiclibrary.c'
-                        ],
-                        libraries: [
-                            'my_lib_name'
-                        ],
-                        outputName: 'my_dyn_lib_name'
-                    },
-                    {
-                        title: 'app',
-                        type: 'application',
-                        host: util.host,
-                        files: [
-                            'linked_dynamic.c'
-                        ],
-                        libraries: [
-                            'my_dyn_lib_name'
-                        ],
-                        includePaths: [
-                            'include'
-                        ],
-                        outputName: 'linked_with_library'
-                    }
-                ]
-            },
-            command: 'linked_with_library',
-            expectOutputToMatch: /42/
+        return util.testConfiguration({
+            title: 'project',
+            artifacts: [
+                {
+                    title: 'static library',
+                    type: 'static-library',
+                    host: util.host,
+                    files: [
+                        'source/mylibrary.c'
+                    ],
+                    outputName: 'my_lib_name'
+                },
+                {
+                    title: 'dynamic library',
+                    type: 'dynamic-library',
+                    host: util.host,
+                    files: [
+                        'source/mydynamiclibrary.c'
+                    ],
+                    libraries: [
+                        'my_lib_name'
+                    ],
+                    outputName: 'my_dyn_lib_name'
+                },
+                {
+                    title: 'app',
+                    type: 'application',
+                    host: util.host,
+                    files: [
+                        'linked_dynamic.c'
+                    ],
+                    libraries: [
+                        'my_dyn_lib_name'
+                    ],
+                    includePaths: [
+                        'include'
+                    ],
+                    outputName: 'app'
+                }
+            ]
         });
     });
 
     it('should search libraryPaths to find libraries to link', function () {
-        return util.generateCompileAndRun({
-            config: {
-                title: 'project',
-                artifacts: [
-                    {
-                        title: 'library',
-                        type: 'static-library',
-                        host: util.host,
-                        files: [
-                            'source/mylibrary.c'
-                        ],
-                        outputName: 'my_lib_name',
-                        outputPath: 'source'
-                    },
-                    {
-                        title: 'app',
-                        type: 'application',
-                        host: util.host,
-                        files: [
-                            'linked.c'
-                        ],
-                        libraries: [
-                            'my_lib_name'
-                        ],
-                        includePaths: [
-                            'include'
-                        ],
-                        libraryPaths: [
-                            'source'
-                        ],
-                        outputName: 'linked_with_library'
-                    }
-                ]
-            },
-            command: 'linked_with_library',
-            expectOutputToMatch: /42/
+        return util.testConfiguration({
+            title: 'project',
+            artifacts: [
+                {
+                    title: 'library',
+                    type: 'static-library',
+                    host: util.host,
+                    files: [
+                        'source/mylibrary.c'
+                    ],
+                    outputName: 'my_lib_name',
+                    outputPath: 'source'
+                },
+                {
+                    title: 'app',
+                    type: 'application',
+                    host: util.host,
+                    files: [
+                        'linked.c'
+                    ],
+                    libraries: [
+                        'my_lib_name'
+                    ],
+                    includePaths: [
+                        'include'
+                    ],
+                    libraryPaths: [
+                        'source'
+                    ],
+                    outputName: 'app'
+                }
+            ]
         });
     });
 });

@@ -23,13 +23,13 @@ describe('Configuration Validation', function () {
     });
 
     it('should compile given a minimal artifact configuration', function () {
-        return util.buildSimple(util.minimalProjectWithArtifactProperties({
-            files: ['simple.c']
+        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+            files: ['main.c']
         }));
     });
 
     var configShouldFailWith = function (config, expectedError, property) {
-        return util.buildSimple(config).then(function () {
+        return util.testConfiguration(config).then(function () {
             return Promise.reject(new Error('Did not fail'));
         }, function (error) {
             return Promise.all([

@@ -18,7 +18,7 @@ describe('Compiling', function () {
         return util.beforeEach().then(function () {
             return shell.mkdir('temp/some_directory');
         }).then(function () {
-            return shell.cp('temp/simple.c', 'temp/some_directory/');
+            return shell.cp('temp/main.c', 'temp/some_directory/');
         });
     });
 
@@ -27,14 +27,14 @@ describe('Compiling', function () {
     });
 
     it('should pass compiler flags as is', function () {
-        return util.buildSimple(util.minimalProjectWithArtifactProperties({
+        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
             compilerFlags: util.hostCompiler === 'cl' ? '/X' : '-S'
         })).should.be.rejected();
     });
 
     it('should accept input files with paths', function () {
-        return util.buildSimple(util.minimalProjectWithArtifactProperties({
-            files: ['./some_directory/simple.c']
+        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+            files: ['./some_directory/main.c']
         }));
     });
 });

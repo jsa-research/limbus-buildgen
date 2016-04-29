@@ -25,31 +25,25 @@ describe('Front-end', function () {
     });
 
     it('should take a flag to specify the target host', function () {
-        return util.generateCompileAndRun({
-            config: util.minimalProjectWithArtifactProperties({
-                host: undefined,
-                files: ['simple.c']
-            }),
-            command: 'app',
-            expectOutputToMatch: '42',
-            parameters: '--host ' + util.host
-        });
+        return util.writeConfiguration(util.minimalProjectWithArtifactProperties({
+            host: undefined
+        }))
+        .then(util.generateWithParameters('--host ' + util.host))
+        .then(util.build())
+        .then(util.runBuiltExecutable())
+        .then(util.matchOutput());
     });
 
     it('should take a flag to specify the output build path', function () {
-        return util.generateCompileAndRun({
-            config: util.minimalProjectWithArtifactProperties({
-                files: ['simple.c']
-            }),
-            makefile: 'platform/Makefile',
-            command: 'app',
-            expectOutputToMatch: '42',
-            parameters: '--outputPath platform'
-        });
+        return util.writeConfiguration(util.minimalProject())
+        .then(util.generateWithParameters('--outputPath platform'))
+        .then(util.build('platform/Makefile'))
+        .then(util.runBuiltExecutable())
+        .then(util.matchOutput());
     });
 
     it('should fail with "Too many arguments" if too many non-flag arguments are passed', function () {
-        return shell.exec(util.frontEndExecutable + ' file.json file2.json').then(function () {
+        return shell.exec(util.frontEndExecutable + ' file.json file2.json', {cwd: 'temp'}).then(function () {
             return Promise.reject(new Error('Did not fail'));
         }, function (error) {
             return error.stdout.should.containEql('Too many arguments');
@@ -57,7 +51,7 @@ describe('Front-end', function () {
     });
 
     it('should fail with "No configuration file" if no config file is provided', function () {
-        return shell.exec(util.frontEndExecutable).then(function () {
+        return shell.exec(util.frontEndExecutable, {cwd: 'temp'}).then(function () {
             return Promise.reject(new Error('Did not fail'));
         }, function (error) {
             return error.stdout.should.containEql('No configuration file');
@@ -65,19 +59,19 @@ describe('Front-end', function () {
     });
 
     it('should output usage information if given the --help flag', function () {
-        return shell.exec(util.frontEndExecutable + ' --help').then(function (result) {
+        return shell.exec(util.frontEndExecutable + ' --help', {cwd: 'temp'}).then(function (result) {
             return result.stdout.should.containEql('Usage:');
         });
     });
 
     it('should fail with "Flag <flag> is missing a value" if a flag requiring a value is missing one', function () {
         return Promise.all([
-            shell.exec(util.frontEndExecutable + ' --host').then(function () {
+            shell.exec(util.frontEndExecutable + ' --host', {cwd: 'temp'}).then(function () {
                 return Promise.reject(new Error('Did not fail'));
             }, function (error) {
                 return error.stdout.should.containEql('Flag --host is missing a value');
             }),
-            shell.exec(util.frontEndExecutable + ' --outputPath').then(function () {
+            shell.exec(util.frontEndExecutable + ' --outputPath', {cwd: 'temp'}).then(function () {
                 return Promise.reject(new Error('Did not fail'));
             }, function (error) {
                 return error.stdout.should.containEql('Flag --outputPath is missing a value');
@@ -86,23 +80,18 @@ describe('Front-end', function () {
     });
 
     it('should fail if the config file is not valid JSON', function () {
-        return util.generateCompileAndRun({
-            config: "{ title: 'app', type: 'application', host: 'linux', files: ['test.c'], outputName: 'name' }",
-            command: 'simple'
-        }).should.be.rejected();
+        return util.testConfiguration(
+            "{ title: 'app', type: 'application', host: 'linux', files: ['test.c'], outputName: 'name' }"
+        ).should.be.rejected();
     });
 
     it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function () {
-        return util.generateCompileAndRun({
-            config: util.minimalProjectWithArtifactProperties({
-                files: ['simple.c']
-            }),
-            command: 'app',
-            parameters: '--some-flag value'
-        }).then(function () {
+        return util.writeConfiguration(util.minimalProject())
+        .then(util.generateWithParameters('--some-flag value'))
+        .then(function () {
             return Promise.reject(new Error('Did not fail'));
         }, function (error) {
             return error.message.should.containEql("Unknown flag '--some-flag'");
-        });
+        })
     });
 });
