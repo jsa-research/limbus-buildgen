@@ -49,15 +49,6 @@ var compilerInfoTable = {
     }
 };
 
-exports.supportedHosts = [];
-(function () {
-    for (var compiler in compilerInfoTable) {
-        compilerInfoTable[compiler].hosts.forEach(function (host) {
-            exports.supportedHosts.push(host);
-        });
-    }
-})();
-
 var compilerByHost = function (host) {
     if (host !== undefined) {
         var compilerFound;

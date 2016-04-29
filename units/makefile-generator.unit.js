@@ -12,39 +12,7 @@
 var should = require('should');
 var makefile_generator = require('../source/makefile-generator');
 
-var hostsByCompiler = {
-    clang: [
-        'linux-clang',
-        'darwin',
-        'darwin-clang',
-        'freebsd',
-        'freebsd-clang'
-    ],
-    gcc: [
-        'linux',
-        'linux-gcc',
-        'darwin-gcc',
-        'freebsd-gcc'
-    ],
-    cl: [
-        'win32',
-        'win32-cl'
-    ]
-};
-
 describe('makefile-generator', function () {
-    it('should have a list with the supported hosts', function () {
-        var hostCount = 0;
-        for (var compiler in hostsByCompiler) {
-            var hosts = hostsByCompiler[compiler];
-            hosts.forEach(function (host) {
-                makefile_generator.supportedHosts.should.containEql(host);
-                hostCount += 1;
-            });
-        }
-        makefile_generator.supportedHosts.length.should.equal(hostCount);
-    });
-
     it('should create an executable in the current directory', function () {
         var makefile = makefile_generator.generate({
             title: 'app',
@@ -107,6 +75,26 @@ describe('makefile-generator', function () {
 
     describe('makefile configured with a host', function () {
         it('should compile with the correct compiler for the specified host', function () {
+            var hostsByCompiler = {
+                'gcc': [
+                    'darwin-gcc',
+                    'linux',
+                    'linux-gcc',
+                    'freebsd-gcc'
+                ],
+                'clang': [
+                    'darwin',
+                    'darwin-clang',
+                    'linux-clang',
+                    'freebsd',
+                    'freebsd-clang'
+                ],
+                'cl': [
+                    'win32',
+                    'win32-cl'
+                ]
+            };
+
             for (var compiler in hostsByCompiler) {
                 var hosts = hostsByCompiler[compiler];
                 hosts.forEach(function (host) {
