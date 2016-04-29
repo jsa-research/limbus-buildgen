@@ -153,36 +153,3 @@ exports.testConfiguration = function (configuration) {
     .then(exports.runBuiltExecutable())
     .then(exports.matchOutput());
 };
-
-exports.minimalArtifact = function () {
-    return {
-        title: 'app',
-        type: 'application',
-        host: exports.host,
-        files: ['main.c'],
-        outputName: 'app'
-    };
-};
-
-exports.minimalArtifactWith = function (properties) {
-    var artifact = exports.minimalArtifact();
-    return Object.assign(artifact, properties);
-};
-
-exports.minimalProject = function () {
-    return {
-        title: 'project',
-        artifacts: [exports.minimalArtifact()]
-    };
-};
-
-exports.minimalProjectWith = function (properties) {
-    var project = exports.minimalProject();
-    return Object.assign(project, properties);
-};
-
-exports.minimalProjectWithArtifactProperties = function (properties) {
-    return exports.minimalProjectWith({
-        artifacts: [exports.minimalArtifactWith(properties)]
-    });
-};

@@ -12,6 +12,7 @@
 var should = require('should');
 var util = require('./util.js');
 var shell = require('./shell.js');
+var minimal = require('../source/minimal-configuration');
 
 describe('Linking', function () {
     beforeEach(function () {
@@ -35,7 +36,7 @@ describe('Linking', function () {
     });
 
     it('should compile and link correctly given several source files and includes', function () {
-        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+        return util.testConfiguration(minimal.projectWithArtifactWith({
             files: [
                 'linked.c',
                 'source/mylibrary.c'
@@ -83,7 +84,7 @@ describe('Linking', function () {
         };
 
         var linkerFlagsShouldFailForType = function(type, flags) {
-            return util.writeConfiguration(util.minimalProjectWithArtifactProperties({
+            return util.writeConfiguration(minimal.projectWithArtifactWith({
                 type: type,
                 linkerFlags: failFlags[type][util.hostCompiler]
             }))
@@ -91,7 +92,7 @@ describe('Linking', function () {
             .then(util.build()).should.be.rejected();
         };
         var linkerFlagsShouldSucceedForType = function(type, flags) {
-            return util.writeConfiguration(util.minimalProjectWithArtifactProperties({
+            return util.writeConfiguration(minimal.projectWithArtifactWith({
                 type: type,
                 linkerFlags: succeedFlags[type][util.hostCompiler]
             }))
@@ -115,7 +116,7 @@ describe('Linking', function () {
     });
 
     it('should link with libm by default', function () {
-        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+        return util.testConfiguration(minimal.projectWithArtifactWith({
             files: [
                 'math.c'
             ]
@@ -123,7 +124,7 @@ describe('Linking', function () {
     });
 
     it('should compile to an executable with outputName', function () {
-        return util.writeConfiguration(util.minimalProjectWithArtifactProperties({
+        return util.writeConfiguration(minimal.projectWithArtifactWith({
             outputName: 'my_executable'
         }))
         .then(util.generateWithParameters())

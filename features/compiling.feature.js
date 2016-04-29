@@ -12,6 +12,7 @@
 var should = require('should');
 var util = require('./util.js');
 var shell = require('./shell.js');
+var minimal = require('../source/minimal-configuration');
 
 describe('Compiling', function () {
     beforeEach(function () {
@@ -27,13 +28,13 @@ describe('Compiling', function () {
     });
 
     it('should pass compiler flags as is', function () {
-        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+        return util.testConfiguration(minimal.projectWithArtifactWith({
             compilerFlags: util.hostCompiler === 'cl' ? '/X' : '-S'
         })).should.be.rejected();
     });
 
     it('should accept input files with paths', function () {
-        return util.testConfiguration(util.minimalProjectWithArtifactProperties({
+        return util.testConfiguration(minimal.projectWithArtifactWith({
             files: ['./some_directory/main.c']
         }));
     });

@@ -12,6 +12,7 @@
 var should = require('should');
 var util = require('./util.js');
 var shell = require('./shell.js');
+var minimal = require('../source/minimal-configuration');
 
 describe('Front-end', function () {
     beforeEach(function () {
@@ -25,7 +26,7 @@ describe('Front-end', function () {
     });
 
     it('should take a flag to specify the target host', function () {
-        return util.writeConfiguration(util.minimalProjectWithArtifactProperties({
+        return util.writeConfiguration(minimal.projectWithArtifactWith({
             host: undefined
         }))
         .then(util.generateWithParameters('--host ' + util.host))
@@ -35,7 +36,7 @@ describe('Front-end', function () {
     });
 
     it('should take a flag to specify the output build path', function () {
-        return util.writeConfiguration(util.minimalProject())
+        return util.writeConfiguration(minimal.project())
         .then(util.generateWithParameters('--outputPath platform'))
         .then(util.build('platform/Makefile'))
         .then(util.runBuiltExecutable())
@@ -86,7 +87,7 @@ describe('Front-end', function () {
     });
 
     it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function () {
-        return util.writeConfiguration(util.minimalProject())
+        return util.writeConfiguration(minimal.project())
         .then(util.generateWithParameters('--some-flag value'))
         .then(function () {
             return Promise.reject(new Error('Did not fail'));
