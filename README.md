@@ -382,6 +382,7 @@ This release will implement the rest of the features to reach feature completene
 * Enable compilation of both shared libraries and dynamically loaded modules on darwin. (See http://stackoverflow.com/a/2339910/3636255)
 * Create release bundled with dependencies
 * Release on Homebrew
+* Release on Chocolatey
 
 ##### Planned for 1.1.0
 This release will implement cross compilation to mobile devices.
