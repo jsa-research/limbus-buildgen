@@ -49,6 +49,15 @@ describe('config-host-decorator', function () {
         configuration.artifacts[1].linkerFlags.should.containEql('-lm');
     });
 
+    it('should keep any existing linkerFlags', function () {
+        var configuration = minimal.projectWithArtifactWith({
+            host: 'linux',
+            linkerFlags: '-linkflag'
+        });
+        ConfigHostDecorator.decorate(configuration);
+        configuration.artifacts[0].linkerFlags.should.containEql('-linkflag');
+    });
+
     describe('configuration where host OS is win32', function () {
         it('should not decorate', function () {
             shouldNotDecorateAnything({

@@ -9,7 +9,10 @@ module.exports.decorate = function (configuration) {
                 artifact.host !== 'darwin' &&
                 artifact.host !== 'darwin-gcc' &&
                 artifact.host !== 'darwin-clang') {
-                artifact.linkerFlags = '-lm -Wl,-rpath=.';
+                if (artifact.linkerFlags === undefined) {
+                    artifact.linkerFlags = '';
+                }
+                artifact.linkerFlags += '-lm -Wl,-rpath=.';
             }
         }
     }
