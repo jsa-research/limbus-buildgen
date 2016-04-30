@@ -24,10 +24,6 @@ exports.compilerCommand = function (compiler, options) {
     return compiler + ' -c ' + options.file + ' -o ' + options.file + '.o' + extraFlags;
 };
 
-var concatenateObjectFiles = function (objectFiles) {
-    return objectFiles.join(' ');
-};
-
 exports.linkerCommand = function (compiler, options) {
     var extraFlags = '';
     if (options.flags !== undefined) {
@@ -43,7 +39,7 @@ exports.linkerCommand = function (compiler, options) {
     }
 
     var outputPath = options.outputPath || '';
-    var objectFiles = concatenateObjectFiles(options.objectFiles);
+    var objectFiles = options.files.join('.o ') + '.o';
 
     if (options.type === 'static-library') {
         return 'ar rcs' + extraFlags + ' ' + outputPath + 'lib' + options.outputName + '.a ' + objectFiles;

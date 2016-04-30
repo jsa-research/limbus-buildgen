@@ -21,7 +21,7 @@ describe('cl-compiler-generator', function () {
             compilerCommand.should.match(/file\.with\.dots\.c/);
         });
 
-        it('should compile a file into an object file with the same name', function () {
+        it('should compile a file into an object file with the filename and a .obj postfix', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
                 type: 'application',
                 file: 'test.c'
@@ -29,7 +29,7 @@ describe('cl-compiler-generator', function () {
 
             compilerCommand.should.match(/^cl \/c /);
             compilerCommand.should.containEql('test.c');
-            compilerCommand.should.containEql('/Fotest.obj');
+            compilerCommand.should.containEql('/Fotest.c.obj');
         });
 
         it('should add any specified include paths in includePaths', function () {
@@ -56,8 +56,8 @@ describe('cl-compiler-generator', function () {
             });
 
             compilerCommand.should.match(/some\\include\\path/);
-            compilerCommand.should.match(/in\\some\\path\\test.c/);
-            compilerCommand.should.match(/in\\some\\path\\test.obj/);
+            compilerCommand.should.match(/in\\some\\path\\test\.c/);
+            compilerCommand.should.match(/in\\some\\path\\test\.c\.obj/);
         });
 
         it('should compile as a dynamic library if "type" === "dynamic-library"', function () {
@@ -94,30 +94,40 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'app',
-                objectFiles: ['main.c.o']
+                files: ['main.c']
             });
             linkerCommand.should.match(/\/Feapp/);
+        });
+
+        it('should generate object file names from input files', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'application',
+                outputName: 'app',
+                files: ['file.c']
+            });
+
+            linkerCommand.should.containEql('file.c.obj');
         });
 
         it('should link several object files into one executable', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'app',
-                objectFiles: [
-                    'filea.obj',
-                    'fileb.obj'
+                files: [
+                    'filea.c',
+                    'fileb.c'
                 ]
             });
 
-            linkerCommand.should.containEql('filea.obj');
-            linkerCommand.should.containEql('fileb.obj');
+            linkerCommand.should.containEql('filea.c');
+            linkerCommand.should.containEql('fileb.c');
         });
 
         it('should add any specified library paths in libraryPaths', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'executable',
-                objectFiles: [ 'file.obj' ],
+                files: [ 'file.c' ],
                 libraryPaths: [
                     'path',
                     'other_path'
@@ -131,7 +141,7 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'executable',
-                objectFiles: [ 'file.obj' ],
+                files: [ 'file.c' ],
                 libraries: [
                     'mylibrary',
                     'anotherlibrary'
@@ -146,19 +156,19 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'executable',
-                objectFiles: [
-                    'object/file/in/a/path.obj'
+                files: [
+                    'object/file/in/a/path.c'
                 ]
             });
 
-            linkerCommand.should.match(/object\\file\\in\\a\\path.obj/);
+            linkerCommand.should.match(/object\\file\\in\\a\\path\.c/);
         });
 
         it('should link as a static library if "type" === "static-library"', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'static-library',
                 outputName: 'name',
-                objectFiles: [ 'file.obj' ]
+                files: [ 'file.c' ]
             });
 
             linkerCommand.should.match(/^lib \/OUT:name\.lib/);
@@ -168,17 +178,17 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'dynamic-library',
                 outputName: 'name',
-                objectFiles: [ 'file.obj' ]
+                files: [ 'file.c' ]
             });
 
-            linkerCommand.should.match(/^cl \/LD \/Fename\.dll file\.obj/);
+            linkerCommand.should.match(/^cl \/LD \/Fename\.dll file\.c/);
         });
 
         it('should include extra linker flags', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
-                objectFiles: [ 'file.obj' ],
+                files: [ 'file.c' ],
                 flags: '/flag'
             });
 
@@ -191,7 +201,7 @@ describe('cl-compiler-generator', function () {
                     type: 'application',
                     outputName: 'name',
                     outputPath: 'some/directory/',
-                    objectFiles: [ 'file.obj' ]
+                    files: [ 'file.c' ]
                 });
 
                 linkerCommand.should.containEql('some\\directory\\name');

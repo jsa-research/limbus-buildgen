@@ -29,8 +29,7 @@ exports.compilerCommand = function (options) {
     }
 
     var processedFile = processPath(options.file);
-    var match = processedFile.match(/^(.+)\.\w+$/);
-    return 'cl /c /Fo' + match[1] + '.obj' + extraFlags + ' ' + processedFile;
+    return 'cl /c /Fo' + processedFile + '.obj' + extraFlags + ' ' + processedFile;
 };
 
 exports.linkerCommand = function (options) {
@@ -63,5 +62,5 @@ exports.linkerCommand = function (options) {
 
     var outputPath = options.outputPath || '';
 
-    return command + processPath(outputPath) + options.outputName + outputNameSuffix + ' ' + _.map(options.objectFiles, processPath).join(' ') + libraries + ' /link' + extraFlags;
+    return command + processPath(outputPath) + options.outputName + outputNameSuffix + ' ' + _.map(options.files, processPath).join('.obj ') + '.obj' + libraries + ' /link' + extraFlags;
 };

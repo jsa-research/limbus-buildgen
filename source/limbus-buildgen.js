@@ -36,7 +36,6 @@ var generateTargets = function (configuration) {
     var targets = [];
     configuration.artifacts.forEach(function (artifact) {
         var commands = [];
-        var objectFiles = [];
 
         var generate = CompilerGeneratorSelector.select(artifact.host, compilers);
 
@@ -49,13 +48,11 @@ var generateTargets = function (configuration) {
                     flags: artifact.compilerFlags
                 })
             );
-
-            objectFiles.push(file + '.o');
         });
 
         commands.push(
             generate.linkerCommand({
-                objectFiles: objectFiles,
+                files: artifact.files,
                 outputName: artifact.outputName,
                 outputPath: artifact.outputPath,
                 libraryPaths: artifact.libraryPaths,
