@@ -15,23 +15,22 @@ var GccCompilerGenerator = require('../source/gcc-like-compiler-generator');
 
 describe('gcc-like-compiler-generator', function () {
     describe('Compiling', function () {
+        it('should accept files with dots in their paths', function () {
+            var compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
+                file: 'file.with.dots.c'
+            });
+            compilerCommand.should.match(/file\.with\.dots\.c/);
+        });
+
         it('should compile a file into an object file with the same name', function () {
             var compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
                 type: 'application',
                 file: 'test.c'
             });
 
-            compilerCommand.should.match(new RegExp('^gcc-like \\-c '));
+            compilerCommand.should.match(new RegExp('^gcc\\-like \\-c '));
             compilerCommand.should.containEql('test.c');
             compilerCommand.should.containEql('-o test.c.o');
-
-            compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
-                type: 'application',
-                file: 'other.c'
-            });
-
-            compilerCommand.should.containEql('other.c');
-            compilerCommand.should.containEql('-o other.c.o');
         });
 
         it('should add any specified include paths in includePaths', function () {
@@ -78,7 +77,16 @@ describe('gcc-like-compiler-generator', function () {
     });
 
     describe('Linking', function () {
-        it('should link several object files into one executable with outputName', function () {
+        it('should create an executable in the current directory', function () {
+            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+                type: 'application',
+                outputName: 'app',
+                objectFiles: ['main.c.o']
+            });
+            linkerCommand.should.match(/\-o app/);
+        });
+
+        it('should link several object files into one executable', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
                 type: 'application',
                 outputName: 'name',
@@ -88,10 +96,23 @@ describe('gcc-like-compiler-generator', function () {
                 ]
             });
 
-            linkerCommand.should.match(new RegExp('^gcc-like '));
             linkerCommand.should.containEql('test.c.o');
             linkerCommand.should.containEql('second.c.o');
-            linkerCommand.should.containEql('-o name');
+        });
+
+        it('should add any specified library paths in libraryPaths', function () {
+            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+                type: 'application',
+                outputName: 'name',
+                objectFiles: [ 'test.c.o' ],
+                libraryPaths: [
+                    'path',
+                    'other_path'
+                ]
+            });
+
+            linkerCommand.should.containEql('-Lpath');
+            linkerCommand.should.containEql('-Lother_path');
         });
 
         it('should link with any specified libraries in libraries', function () {
@@ -153,21 +174,6 @@ describe('gcc-like-compiler-generator', function () {
 
                 linkerCommand.should.containEql('some/directory/name');
             });
-        });
-
-        it('should add any specified library paths in libraryPaths', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
-                type: 'application',
-                outputName: 'name',
-                objectFiles: [ 'test.c.o' ],
-                libraryPaths: [
-                    'path',
-                    'other_path'
-                ]
-            });
-
-            linkerCommand.should.containEql('-Lpath');
-            linkerCommand.should.containEql('-Lother_path');
         });
     });
 });

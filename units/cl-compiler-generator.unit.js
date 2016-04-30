@@ -14,6 +14,13 @@ var ClCompilerGenerator = require('../source/cl-compiler-generator');
 
 describe('cl-compiler-generator', function () {
     describe('Compiling', function () {
+        it('should accept files with dots in their paths', function () {
+            var compilerCommand = ClCompilerGenerator.compilerCommand({
+                file: 'file.with.dots.c'
+            });
+            compilerCommand.should.match(/file\.with\.dots\.c/);
+        });
+
         it('should compile a file into an object file with the same name', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
                 type: 'application',
@@ -23,14 +30,6 @@ describe('cl-compiler-generator', function () {
             compilerCommand.should.match(/^cl \/c /);
             compilerCommand.should.containEql('test.c');
             compilerCommand.should.containEql('/Fotest.obj');
-
-            var compilerCommand = ClCompilerGenerator.compilerCommand({
-                type: 'application',
-                file: 'anotherFile.c'
-            });
-
-            compilerCommand.should.containEql('anotherFile.c');
-            compilerCommand.should.containEql('/FoanotherFile.obj');
         });
 
         it('should add any specified include paths in includePaths', function () {
@@ -91,20 +90,27 @@ describe('cl-compiler-generator', function () {
     });
 
     describe('Linking', function () {
-        it('should link several object files into one executable with outputName', function () {
+        it('should create an executable in the current directory', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
-                outputName: 'executable',
+                outputName: 'app',
+                objectFiles: ['main.c.o']
+            });
+            linkerCommand.should.match(/\/Feapp/);
+        });
+
+        it('should link several object files into one executable', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'application',
+                outputName: 'app',
                 objectFiles: [
                     'filea.obj',
                     'fileb.obj'
                 ]
             });
 
-            linkerCommand.should.match(/^cl /);
             linkerCommand.should.containEql('filea.obj');
             linkerCommand.should.containEql('fileb.obj');
-            linkerCommand.should.containEql('/Feexecutable');
         });
 
         it('should add any specified library paths in libraryPaths', function () {
