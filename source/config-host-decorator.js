@@ -12,7 +12,7 @@ module.exports.decorate = function (configuration) {
                 if (artifact.linkerFlags === undefined) {
                     artifact.linkerFlags = '';
                 }
-                artifact.linkerFlags += '-lm -Wl,-rpath=.';
+                artifact.linkerFlags += ' -lm -Wl,-rpath=.';
             }
         }
     }
