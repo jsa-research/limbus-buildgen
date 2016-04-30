@@ -355,12 +355,12 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for 0.5.0-beta
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
-* Provide future proofed Javascript API
 * Modify makefile generator so that makefiles make use of make's "implicit variables" to allow changing them through environment variables
 * Standardize on a `host` property that can support build hosts, compilers, target hosts and architectures
 * Add configuration property to add/remove debug information during compilation
 * Change shared library suffix to .dylib on darwin to reflect the actual library type generated
 * Remove `/link` from CL linker commands and make user add it themselves to give more flexibility in which flags can be set
+* Add `/NOLOGO` to CL commands to remove some verbosity
 
 ##### Towards 0.9.0-beta
 This release will complete the continuous integration setup to make sure all features are tested properly.
@@ -382,6 +382,7 @@ This release will implement the rest of the features to reach feature completene
 * Enable compilation of both shared libraries and dynamically loaded modules on darwin. (See http://stackoverflow.com/a/2339910/3636255)
 * Create release bundled with dependencies
 * Release on Homebrew
+* Release on Chocolatey
 
 ##### Planned for 1.1.0
 This release will implement cross compilation to mobile devices.

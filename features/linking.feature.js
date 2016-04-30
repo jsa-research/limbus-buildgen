@@ -47,74 +47,6 @@ describe('Linking', function () {
         }));
     });
 
-    it('should pass linker flags as is', function () {
-        var failFlags = {
-            'application': {
-                'cl': '/link /NODEFAULTLIB',
-                'clang': '-nostdlib',
-                'gcc': '-nostdlib'
-            },
-            'static-library': {
-                'cl': '/SUBSYSTEM:BOOT_APPLICATIO',
-                'clang': 'q',
-                'gcc': 'q'
-            },
-            'dynamic-library': {
-                'cl': '/NODEFAULTLIB',
-                'clang': '-o',
-                'gcc': '-o'
-            }
-        };
-        var succeedFlags = {
-            'application': {
-                'cl': '/link /VERSION:1.0',
-                'clang': '-s',
-                'gcc': '-s'
-            },
-            'static-library': {
-                'cl': '/WX:NO',
-                'clang': 'v',
-                'gcc': 'v'
-            },
-            'dynamic-library': {
-                'cl': '/VERSION:1.0',
-                'clang': '-s',
-                'gcc': '-s'
-            }
-        };
-
-        var linkerFlagsShouldFailForType = function(type, flags) {
-            return util.writeConfiguration(minimal.projectWithArtifactWith({
-                type: type,
-                linkerFlags: failFlags[type][util.hostCompiler]
-            }))
-            .then(util.generateWithParameters())
-            .then(util.build()).should.be.rejected();
-        };
-        var linkerFlagsShouldSucceedForType = function(type, flags) {
-            return util.writeConfiguration(minimal.projectWithArtifactWith({
-                type: type,
-                linkerFlags: succeedFlags[type][util.hostCompiler]
-            }))
-            .then(util.generateWithParameters())
-            .then(util.build());
-        };
-
-        return Promise.resolve().then(function () {
-            return linkerFlagsShouldSucceedForType('application');
-        }).then(function () {
-            return linkerFlagsShouldSucceedForType('static-library');
-        }).then(function () {
-            return linkerFlagsShouldSucceedForType('dynamic-library');
-        }).then(function () {
-            return linkerFlagsShouldFailForType('application');
-        }).then(function () {
-            return linkerFlagsShouldFailForType('static-library');
-        }).then(function () {
-            return linkerFlagsShouldFailForType('dynamic-library');
-        });
-    });
-
     it('should link with libm by default', function () {
         return util.testConfiguration(minimal.projectWithArtifactWith({
             files: [
@@ -134,114 +66,84 @@ describe('Linking', function () {
     });
 
     it('should compile a static library and then be able to link to it', function () {
-        return util.testConfiguration({
-            title: 'project',
+        return util.testConfiguration(minimal.projectWith({
             artifacts: [
-                {
-                    title: 'library',
+                minimal.artifactWith({
                     type: 'static-library',
-                    host: util.host,
-                    files: [
-                        'source/mylibrary.c'
-                    ],
+                    files: ['source/mylibrary.c'],
                     outputName: 'my_lib_name'
-                },
-                {
-                    title: 'app',
-                    type: 'application',
-                    host: util.host,
-                    files: [
-                        'linked.c'
-                    ],
-                    libraries: [
-                        'my_lib_name'
-                    ],
-                    includePaths: [
-                        'include'
-                    ],
-                    outputName: 'app'
-                }
+                }),
+                minimal.artifactWith({
+                    files: ['linked.c'],
+                    libraries: ['my_lib_name'],
+                    includePaths: ['include']
+                })
             ]
-        });
+        }));
+    });
+
+    it('should pass linker flags as is', function () {
+        var linkLibraryForCompiler = {
+            gcc: '-Wl,-L. -llibrary',
+            clang: '-Wl,-L. -llibrary',
+            cl: 'library.lib'
+        };
+
+        return util.testConfiguration(minimal.projectWith({
+            artifacts: [
+                minimal.artifactWith({
+                    type: 'static-library',
+                    files: ['source/mylibrary.c'],
+                    outputName: 'library'
+                }),
+                minimal.artifactWith({
+                    files: ['linked.c'],
+                    linkerFlags: linkLibraryForCompiler[util.hostCompiler],
+                    includePaths: ['include']
+                })
+            ]
+        }));
     });
 
     it('should compile a dynamic library and then be able to link to it', function () {
-        return util.testConfiguration({
-            title: 'project',
+        return util.testConfiguration(minimal.projectWith({
             artifacts: [
-                {
-                    title: 'static library',
+                minimal.artifactWith({
                     type: 'static-library',
-                    host: util.host,
-                    files: [
-                        'source/mylibrary.c'
-                    ],
+                    files: ['source/mylibrary.c'],
                     outputName: 'my_lib_name'
-                },
-                {
-                    title: 'dynamic library',
+                }),
+                minimal.artifactWith({
                     type: 'dynamic-library',
-                    host: util.host,
-                    files: [
-                        'source/mydynamiclibrary.c'
-                    ],
-                    libraries: [
-                        'my_lib_name'
-                    ],
+                    files: ['source/mydynamiclibrary.c'],
+                    libraries: ['my_lib_name'],
                     outputName: 'my_dyn_lib_name'
-                },
-                {
-                    title: 'app',
-                    type: 'application',
-                    host: util.host,
-                    files: [
-                        'linked_dynamic.c'
-                    ],
-                    libraries: [
-                        'my_dyn_lib_name'
-                    ],
-                    includePaths: [
-                        'include'
-                    ],
-                    outputName: 'app'
-                }
+                }),
+                minimal.artifactWith({
+                    files: ['linked_dynamic.c'],
+                    libraries: ['my_dyn_lib_name'],
+                    includePaths: ['include']
+                })
             ]
-        });
+        }));
     });
 
     it('should search libraryPaths to find libraries to link', function () {
-        return util.testConfiguration({
-            title: 'project',
+        return util.testConfiguration(minimal.projectWith({
             artifacts: [
-                {
-                    title: 'library',
+                minimal.artifactWith({
                     type: 'static-library',
-                    host: util.host,
-                    files: [
-                        'source/mylibrary.c'
-                    ],
+                    files: ['source/mylibrary.c'],
                     outputName: 'my_lib_name',
                     outputPath: 'source'
-                },
-                {
-                    title: 'app',
-                    type: 'application',
-                    host: util.host,
-                    files: [
-                        'linked.c'
-                    ],
-                    libraries: [
-                        'my_lib_name'
-                    ],
-                    includePaths: [
-                        'include'
-                    ],
-                    libraryPaths: [
-                        'source'
-                    ],
-                    outputName: 'app'
-                }
+                }),
+                minimal.artifactWith({
+                    files: ['linked.c'],
+                    libraries: ['my_lib_name'],
+                    includePaths: ['include'],
+                    libraryPaths: ['source']
+                })
             ]
-        });
+        }));
     });
 });
