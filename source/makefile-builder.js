@@ -11,8 +11,19 @@
 
 var _ = require('./publicdash');
 
-exports.build = function (configurations) {
+exports.build = function (variables, configurations) {
     var targets = [];
+    var variableString = '';
+
+    if (!Array.isArray(variables)) {
+        for (var variableName in variables) {
+            if (variables.hasOwnProperty(variableName)) {
+                variableString += variableName + '=' + variables[variableName] + '\n';
+            }
+        }
+    } else {
+        configurations = variables;
+    }
 
     for (var configurationIndex = 0; configurationIndex < configurations.length; configurationIndex++) {
         var configuration = configurations[configurationIndex];
@@ -36,5 +47,5 @@ exports.build = function (configurations) {
 
     targets.reverse();
 
-    return targets.join('');
+    return variableString + targets.join('');
 };

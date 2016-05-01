@@ -9,26 +9,30 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-exports.compilerCommand = function (compiler, options) {
+exports.variables = function (options) {
+    return {
+        CC: options.compiler,
+        AR: 'ar'
+    };
+};
+
+exports.compilerCommand = function (options) {
     var extraFlags = '';
     if (options.includePaths !== undefined) {
         var separator = ' -I';
         extraFlags += separator + options.includePaths.join(separator);
     }
-    if (options.flags !== undefined) {
-        extraFlags += ' ' + options.flags;
-    }
     if (options.type === 'dynamic-library') {
         extraFlags += ' -fpic';
     }
-    return compiler + ' -c ' + options.file + ' -o ' + options.file + '.o' + extraFlags;
+    if (options.flags !== undefined) {
+        extraFlags += ' ' + options.flags;
+    }
+    return '$(CC) -c ' + options.file + ' -o ' + options.file + '.o' + extraFlags;
 };
 
-exports.linkerCommand = function (compiler, options) {
+exports.linkerCommand = function (options) {
     var extraFlags = '';
-    if (options.flags !== undefined) {
-        extraFlags += options.flags;
-    }
     if (options.libraries !== undefined) {
         var separator = ' -L./ -l';
         extraFlags += separator + options.libraries.join(separator);
@@ -37,17 +41,20 @@ exports.linkerCommand = function (compiler, options) {
         var separator = ' -L';
         extraFlags += separator + options.libraryPaths.join(separator);
     }
+    if (options.flags !== undefined) {
+        extraFlags += ' ' + options.flags;
+    }
 
     var outputPath = options.outputPath || '';
     var objectFiles = options.files.join('.o ') + '.o';
 
     if (options.type === 'static-library') {
-        return 'ar rcs' + extraFlags + ' ' + outputPath + 'lib' + options.outputName + '.a ' + objectFiles;
+        return '$(AR) rcs' + extraFlags + ' ' + outputPath + 'lib' + options.outputName + '.a ' + objectFiles;
 
     } else if (options.type === 'dynamic-library') {
-        return compiler + ' -shared -o ' + outputPath + 'lib' + options.outputName + '.so ' + objectFiles + ' ' + extraFlags;
+        return '$(CC) -shared -o ' + outputPath + 'lib' + options.outputName + '.so ' + objectFiles + ' ' + extraFlags;
 
     } else {
-        return compiler + ' -o ' + outputPath + options.outputName + ' ' + objectFiles + ' ' + extraFlags;
+        return '$(CC) -o ' + outputPath + options.outputName + ' ' + objectFiles + ' ' + extraFlags;
     }
 };

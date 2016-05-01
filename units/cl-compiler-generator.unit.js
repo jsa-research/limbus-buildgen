@@ -13,6 +13,18 @@ var should = require('should');
 var ClCompilerGenerator = require('../source/cl-compiler-generator');
 
 describe('cl-compiler-generator', function () {
+    describe('Variables', function () {
+        it('should return a dictionary with CC set to "cl"', function () {
+            var variables = ClCompilerGenerator.variables({});
+            variables.CC.should.equal('cl');
+        });
+
+        it('should return a dictionary with AR set to "lib"', function () {
+            var variables = ClCompilerGenerator.variables({});
+            variables.AR.should.equal('lib');
+        });
+    });
+
     describe('Compiling', function () {
         it('should accept files with dots in their paths', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
@@ -21,14 +33,21 @@ describe('cl-compiler-generator', function () {
             compilerCommand.should.match(/file\.with\.dots\.c/);
         });
 
+        it('should compile a file using $(CC)', function () {
+            var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'application',
+                file: 'test.c'
+            });
+
+            compilerCommand.should.match(/^\$\(CC\) \/c /);
+        });
+
         it('should compile a file into an object file with the filename and a .obj postfix', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
                 type: 'application',
                 file: 'test.c'
             });
 
-            compilerCommand.should.match(/^cl \/c /);
-            compilerCommand.should.containEql('test.c');
             compilerCommand.should.containEql('/Fotest.c.obj');
         });
 
@@ -56,7 +75,6 @@ describe('cl-compiler-generator', function () {
             });
 
             compilerCommand.should.match(/some\\include\\path/);
-            compilerCommand.should.match(/in\\some\\path\\test\.c/);
             compilerCommand.should.match(/in\\some\\path\\test\.c\.obj/);
         });
 
@@ -73,10 +91,10 @@ describe('cl-compiler-generator', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
                 type: 'application',
                 file: 'file.c',
-                flags: '/flag'
+                flags: '-flags'
             });
 
-            compilerCommand.should.containEql('/flag');
+            compilerCommand.should.containEql(' -flags');
         });
 
         it('should take a path as file', function () {
@@ -90,6 +108,15 @@ describe('cl-compiler-generator', function () {
     });
 
     describe('Linking', function () {
+        it('should link an application using $(CC)', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'application',
+                outputName: 'app',
+                files: ['main.c']
+            });
+            linkerCommand.should.match(/^\$\(CC\) /);
+        });
+
         it('should create an executable in the current directory', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
@@ -134,7 +161,7 @@ describe('cl-compiler-generator', function () {
                 ]
             });
 
-            linkerCommand.should.match(/\/link \/LIBPATH:path \/LIBPATH:other_path$/);
+            linkerCommand.should.match(/\/link \/LIBPATH:path \/LIBPATH:other_path/);
         });
 
         it('should link with any specified libraries in libraries', function () {
@@ -164,24 +191,24 @@ describe('cl-compiler-generator', function () {
             linkerCommand.should.match(/object\\file\\in\\a\\path\.c/);
         });
 
-        it('should link as a static library if "type" === "static-library"', function () {
+        it('should link as a static library if "type" === "static-library" using $(AR)', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'static-library',
                 outputName: 'name',
                 files: [ 'file.c' ]
             });
 
-            linkerCommand.should.match(/^lib \/OUT:name\.lib/);
+            linkerCommand.should.match(/^\$\(AR\) \/OUT:name\.lib/);
         });
 
-        it('should link as a dynamic library if "type" === "dynamic-library"', function () {
+        it('should link as a dynamic library if "type" === "dynamic-library" using $(CC)', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'dynamic-library',
                 outputName: 'name',
                 files: [ 'file.c' ]
             });
 
-            linkerCommand.should.match(/^cl \/LD \/Fename\.dll file\.c/);
+            linkerCommand.should.match(/^\$\(CC\) \/LD \/Fename\.dll file\.c/);
         });
 
         it('should include extra linker flags', function () {
@@ -189,23 +216,21 @@ describe('cl-compiler-generator', function () {
                 type: 'application',
                 outputName: 'name',
                 files: [ 'file.c' ],
-                flags: '/flag'
+                flags: '-flags'
             });
 
-            linkerCommand.should.match(/\/link \/flag$/);
+            linkerCommand.should.match(/\/link \-flags$/);
         });
 
-        describe('outputPath', function () {
-            it('should be prepended to outputName if given', function () {
-                var linkerCommand = ClCompilerGenerator.linkerCommand({
-                    type: 'application',
-                    outputName: 'name',
-                    outputPath: 'some/directory/',
-                    files: [ 'file.c' ]
-                });
-
-                linkerCommand.should.containEql('some\\directory\\name');
+        it('should prepend outputPath to outputName if given', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'application',
+                outputName: 'name',
+                outputPath: 'some/directory/',
+                files: [ 'file.c' ]
             });
+
+            linkerCommand.should.containEql('some\\directory\\name');
         });
     });
 });

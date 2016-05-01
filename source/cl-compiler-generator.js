@@ -15,48 +15,54 @@ var processPath = function (path) {
     return path.replace(/\//g, '\\');
 };
 
+exports.variables = function (options) {
+    return {
+        CC: 'cl',
+        AR: 'lib'
+    };
+};
+
 exports.compilerCommand = function (options) {
     var extraFlags = '';
     if (options.includePaths) {
         extraFlags += ' /I' + _.map(options.includePaths, processPath).join(' /I');
     }
-    if (options.flags) {
-        extraFlags += ' ' + options.flags;
-    }
-
     if (options.type === 'dynamic-library') {
         extraFlags += ' /D_USRDLL /D_WINDLL';
     }
+    if (options.flags !== undefined) {
+        extraFlags += ' ' + options.flags;
+    }
 
     var processedFile = processPath(options.file);
-    return 'cl /c /Fo' + processedFile + '.obj' + extraFlags + ' ' + processedFile;
+    return '$(CC) /c /Fo' + processedFile + '.obj' + extraFlags + ' ' + processedFile;
 };
 
 exports.linkerCommand = function (options) {
     var libraries = '';
-    if (options.libraries) {
+    if (options.libraries !== undefined) {
         libraries += ' ' + options.libraries.join('.lib ') + '.lib';
     }
 
     var extraFlags = '';
-    if (options.flags) {
-        extraFlags += ' ' + options.flags;
-    }
-    if (options.libraryPaths) {
+    if (options.libraryPaths !== undefined) {
         var separator = ' /LIBPATH:';
         extraFlags += separator + options.libraryPaths.join(separator);
+    }
+    if (options.flags !== undefined) {
+        extraFlags += ' ' + options.flags;
     }
 
     var command,
         outputNameSuffix;
     if (options.type === 'static-library') {
-        command = 'lib /OUT:';
+        command = '$(AR) /OUT:';
         outputNameSuffix = '.lib';
     } else if (options.type === 'dynamic-library') {
-        command = 'cl /LD /Fe';
+        command = '$(CC) /LD /Fe';
         outputNameSuffix = '.dll';
     } else {
-        command = 'cl /Fe';
+        command = '$(CC) /Fe';
         outputNameSuffix = '';
     }
 

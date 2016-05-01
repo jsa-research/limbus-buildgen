@@ -108,16 +108,35 @@ exports.generateWithParameters = function (parameters) {
     }
 };
 
-exports.build = function (makefile) {
+exports.build = function (makefile, variables) {
     return function (buildDetails) {
-        var built;
-        if (process.platform === 'win32') {
-            built = shell.exec('..\\utility-scripts\\setenv.bat && nmake /f ' + (makefile || buildDetails.makefile), {cwd: 'temp'});
-        } else {
-            built = shell.exec('make -f ' + (makefile || buildDetails.makefile), {cwd: 'temp'});
+        var variableDefinitions = '';
+        for (var variableName in variables) {
+            if (variables.hasOwnProperty(variableName)) {
+                if (exports.hostCompiler === 'cl') {
+                    variableDefinitions += 'set ' + variableName + '=' + variables[variableName] + '&& ';
+                } else {
+                    variableDefinitions += variableName + '=\'' + variables[variableName] + '\' ';
+                }
+            }
         }
 
-        return built.then(function () {
+        var command = '';
+        if (exports.hostCompiler === 'cl') {
+            command += variableDefinitions;
+            command += '..\\utility-scripts\\setenv.bat && ';
+            command += 'nmake';
+            if (variableDefinitions.length > 0) {
+                command += ' /E'
+            }
+            command += ' /f ' + (makefile || buildDetails.makefile);
+        } else {
+            command += 'make ';
+            command += variableDefinitions;
+            command += '-f ' + (makefile || buildDetails.makefile);
+        }
+
+        return shell.exec(command, {cwd: 'temp'}).then(function () {
             return Promise.resolve(buildDetails.executable);
         });
     };
