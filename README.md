@@ -355,12 +355,10 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for 0.5.0-beta
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
-* Modify makefile generator so that makefiles make use of make's "implicit variables" to allow changing them through environment variables
 * Standardize on a `host` property that can support build hosts, compilers, target hosts and architectures
 * Add configuration property to add/remove debug information during compilation
 * Change shared library suffix to .dylib on darwin to reflect the actual library type generated
 * Remove `/link` from CL linker commands and make user add it themselves to give more flexibility in which flags can be set
-* Add `/NOLOGO` to CL commands to remove some verbosity
 * Make sure C++/Objective-C files compile correctly
 
 ##### Towards 0.9.0-beta

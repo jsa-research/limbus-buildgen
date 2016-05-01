@@ -39,7 +39,17 @@ describe('cl-compiler-generator', function () {
                 file: 'test.c'
             });
 
-            compilerCommand.should.match(/^\$\(CC\) \/c /);
+            compilerCommand.should.match(/^\$\(CC\) /);
+            compilerCommand.should.containEql('/c ');
+        });
+
+        it('should compile files with /nologo', function () {
+            var compilerCommand = ClCompilerGenerator.compilerCommand({
+                type: 'application',
+                file: 'test.c'
+            });
+
+            compilerCommand.should.containEql('/nologo');
         });
 
         it('should compile a file into an object file with the filename and a .obj postfix', function () {
@@ -108,13 +118,65 @@ describe('cl-compiler-generator', function () {
     });
 
     describe('Linking', function () {
-        it('should link an application using $(CC)', function () {
+        it('should link an application if "type" === "application" using $(CC)', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'app',
                 files: ['main.c']
             });
             linkerCommand.should.match(/^\$\(CC\) /);
+        });
+
+        it('should link a static library if "type" === "dynamic-library" using $(AR)', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'static-library',
+                outputName: 'name',
+                files: [ 'file.c' ]
+            });
+
+            linkerCommand.should.match(/^\$\(AR\) /);
+            linkerCommand.should.containEql('/OUT:name.lib');
+        });
+
+        it('should link a dynamic library if "type" === "dynamic-library" using $(CC)', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'dynamic-library',
+                outputName: 'name',
+                files: [ 'file.c' ]
+            });
+
+            linkerCommand.should.match(/^\$\(CC\) /);
+            linkerCommand.should.containEql('/LD /Fename.dll file.c');
+        });
+
+        it('should use /nologo when linking an application', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'application',
+                outputName: 'app',
+                files: ['main.c']
+            });
+
+            linkerCommand.should.containEql('/nologo');
+        });
+
+        it('should use /nologo when linking a static library', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'static-library',
+                outputName: 'app',
+                files: ['main.c']
+            });
+
+            linkerCommand.should.containEql('/nologo');
+        });
+
+        it('should use /nologo when linking a dynamic library', function () {
+            var linkerCommand = ClCompilerGenerator.linkerCommand({
+                type: 'dynamic-library',
+                outputName: 'app',
+                files: ['main.c']
+            });
+
+            linkerCommand.should.containEql('/nologo');
         });
 
         it('should create an executable in the current directory', function () {
@@ -189,26 +251,6 @@ describe('cl-compiler-generator', function () {
             });
 
             linkerCommand.should.match(/object\\file\\in\\a\\path\.c/);
-        });
-
-        it('should link as a static library if "type" === "static-library" using $(AR)', function () {
-            var linkerCommand = ClCompilerGenerator.linkerCommand({
-                type: 'static-library',
-                outputName: 'name',
-                files: [ 'file.c' ]
-            });
-
-            linkerCommand.should.match(/^\$\(AR\) \/OUT:name\.lib/);
-        });
-
-        it('should link as a dynamic library if "type" === "dynamic-library" using $(CC)', function () {
-            var linkerCommand = ClCompilerGenerator.linkerCommand({
-                type: 'dynamic-library',
-                outputName: 'name',
-                files: [ 'file.c' ]
-            });
-
-            linkerCommand.should.match(/^\$\(CC\) \/LD \/Fename\.dll file\.c/);
         });
 
         it('should include extra linker flags', function () {
