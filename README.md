@@ -359,7 +359,6 @@ This release is intended to streamline the user experience, stabilize the Javasc
 * Add configuration property to add/remove debug information during compilation
 * Change shared library suffix to .dylib on darwin to reflect the actual library type generated
 * Remove `/link` from CL linker commands and make user add it themselves to give more flexibility in which flags can be set
-* Add `/NOLOGO` to CL commands to remove some verbosity
 * Make sure C++/Objective-C files compile correctly
 
 ##### Towards 0.9.0-beta
