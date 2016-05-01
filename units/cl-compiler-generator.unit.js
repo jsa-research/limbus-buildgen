@@ -19,9 +19,9 @@ describe('cl-compiler-generator', function () {
             variables.CC.should.equal('cl');
         });
 
-        it('should return a dictionary with LIB set to "lib"', function () {
+        it('should return a dictionary with AR set to "lib"', function () {
             var variables = ClCompilerGenerator.variables({});
-            variables.LIB.should.equal('lib');
+            variables.AR.should.equal('lib');
         });
     });
 
@@ -191,14 +191,14 @@ describe('cl-compiler-generator', function () {
             linkerCommand.should.match(/object\\file\\in\\a\\path\.c/);
         });
 
-        it('should link as a static library if "type" === "static-library" using $(LIB)', function () {
+        it('should link as a static library if "type" === "static-library" using $(AR)', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'static-library',
                 outputName: 'name',
                 files: [ 'file.c' ]
             });
 
-            linkerCommand.should.match(/^\$\(LIB\) \/OUT:name\.lib/);
+            linkerCommand.should.match(/^\$\(AR\) \/OUT:name\.lib/);
         });
 
         it('should link as a dynamic library if "type" === "dynamic-library" using $(CC)', function () {

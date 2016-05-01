@@ -18,7 +18,7 @@ var processPath = function (path) {
 exports.variables = function (options) {
     return {
         CC: 'cl',
-        LIB: 'lib'
+        AR: 'lib'
     };
 };
 
@@ -56,7 +56,7 @@ exports.linkerCommand = function (options) {
     var command,
         outputNameSuffix;
     if (options.type === 'static-library') {
-        command = '$(LIB) /OUT:';
+        command = '$(AR) /OUT:';
         outputNameSuffix = '.lib';
     } else if (options.type === 'dynamic-library') {
         command = '$(CC) /LD /Fe';
