@@ -121,9 +121,8 @@ exports.build = function (makefile, variables) {
             }
         }
 
-        var built;
+        var command = '';
         if (exports.hostCompiler === 'cl') {
-            var command = '';
             command += variableDefinitions;
             command += '..\\utility-scripts\\setenv.bat && ';
             command += 'nmake';
@@ -131,18 +130,13 @@ exports.build = function (makefile, variables) {
                 command += ' /E'
             }
             command += ' /f ' + (makefile || buildDetails.makefile);
-
-            built = shell.exec(command, {cwd: 'temp'});
         } else {
-            var command = '';
             command += 'make ';
             command += variableDefinitions;
             command += '-f ' + (makefile || buildDetails.makefile);
-
-            built = shell.exec(command, {cwd: 'temp'});
         }
 
-        return built.then(function () {
+        return shell.exec(command, {cwd: 'temp'}).then(function () {
             return Promise.resolve(buildDetails.executable);
         });
     };
