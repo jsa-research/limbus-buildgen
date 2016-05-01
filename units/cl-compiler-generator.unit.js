@@ -43,13 +43,13 @@ describe('cl-compiler-generator', function () {
             compilerCommand.should.containEql('/c ');
         });
 
-        it('should compile files with /NOLOGO', function () {
+        it('should compile files with /nologo', function () {
             var compilerCommand = ClCompilerGenerator.compilerCommand({
                 type: 'application',
                 file: 'test.c'
             });
 
-            compilerCommand.should.containEql('/NOLOGO');
+            compilerCommand.should.containEql('/nologo');
         });
 
         it('should compile a file into an object file with the filename and a .obj postfix', function () {
@@ -149,34 +149,34 @@ describe('cl-compiler-generator', function () {
             linkerCommand.should.containEql('/LD /Fename.dll file.c');
         });
 
-        it('should use /NOLOGO when linking an application', function () {
+        it('should use /nologo when linking an application', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'app',
                 files: ['main.c']
             });
 
-            linkerCommand.should.containEql('/NOLOGO');
+            linkerCommand.should.containEql('/nologo');
         });
 
-        it('should use /NOLOGO when linking a static library', function () {
+        it('should use /nologo when linking a static library', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'static-library',
                 outputName: 'app',
                 files: ['main.c']
             });
 
-            linkerCommand.should.containEql('/NOLOGO');
+            linkerCommand.should.containEql('/nologo');
         });
 
-        it('should use /NOLOGO when linking a dynamic library', function () {
+        it('should use /nologo when linking a dynamic library', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'dynamic-library',
                 outputName: 'app',
                 files: ['main.c']
             });
 
-            linkerCommand.should.containEql('/NOLOGO');
+            linkerCommand.should.containEql('/nologo');
         });
 
         it('should create an executable in the current directory', function () {

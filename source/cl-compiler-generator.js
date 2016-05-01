@@ -35,7 +35,7 @@ exports.compilerCommand = function (options) {
     }
 
     var processedFile = processPath(options.file);
-    return '$(CC) /NOLOGO /c /Fo' + processedFile + '.obj' + extraFlags + ' ' + processedFile;
+    return '$(CC) /nologo /c /Fo' + processedFile + '.obj' + extraFlags + ' ' + processedFile;
 };
 
 exports.linkerCommand = function (options) {
@@ -56,13 +56,13 @@ exports.linkerCommand = function (options) {
     var command,
         outputNameSuffix;
     if (options.type === 'static-library') {
-        command = '$(AR) /NOLOGO /OUT:';
+        command = '$(AR) /nologo /OUT:';
         outputNameSuffix = '.lib';
     } else if (options.type === 'dynamic-library') {
-        command = '$(CC) /NOLOGO /LD /Fe';
+        command = '$(CC) /nologo /LD /Fe';
         outputNameSuffix = '.dll';
     } else {
-        command = '$(CC) /NOLOGO /Fe';
+        command = '$(CC) /nologo /Fe';
         outputNameSuffix = '';
     }
 
