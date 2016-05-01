@@ -11,33 +11,35 @@ var CompilerGeneratorSelector = require('./compiler-generator-selector');
 
 var compilers = {
     clang: {
-        compilerCommand: function (options) {
-            return GccLikeCompilerGenerator.compilerCommand('clang', options);
+        name: 'clang',
+        variables: function (options) {
+            options.compiler = 'clang';
+            return GccLikeCompilerGenerator.variables(options);
         },
-        linkerCommand: function (options) {
-            return GccLikeCompilerGenerator.linkerCommand('clang', options);
-        }
+        compilerCommand: GccLikeCompilerGenerator.compilerCommand,
+        linkerCommand: GccLikeCompilerGenerator.linkerCommand
     },
     gcc: {
-        compilerCommand: function (options) {
-            return GccLikeCompilerGenerator.compilerCommand('gcc', options);
+        name: 'gcc',
+        variables: function (options) {
+            options.compiler = 'gcc';
+            return GccLikeCompilerGenerator.variables(options);
         },
-        linkerCommand: function (options) {
-            return GccLikeCompilerGenerator.linkerCommand('gcc', options);
-        }
+        compilerCommand: GccLikeCompilerGenerator.compilerCommand,
+        linkerCommand: GccLikeCompilerGenerator.linkerCommand
     },
     cl: {
+        name: 'cl',
+        variables: ClCompilerGenerator.variables,
         compilerCommand: ClCompilerGenerator.compilerCommand,
         linkerCommand: ClCompilerGenerator.linkerCommand
     }
 };
 
-var generateTargets = function (configuration) {
+var generateTargets = function (generate, configuration) {
     var targets = [];
     configuration.artifacts.forEach(function (artifact) {
         var commands = [];
-
-        var generate = CompilerGeneratorSelector.select(artifact.host, compilers);
 
         artifact.files.forEach(function (file) {
             commands.push(
@@ -56,9 +58,9 @@ var generateTargets = function (configuration) {
                 outputName: artifact.outputName,
                 outputPath: artifact.outputPath,
                 libraryPaths: artifact.libraryPaths,
-                flags: artifact.linkerFlags,
                 libraries: artifact.libraries,
-                type: artifact.type
+                type: artifact.type,
+                flags: artifact.linkerFlags
             })
         );
 
@@ -81,12 +83,18 @@ module.exports.generate = function (configuration) {
     ConfigHostDecorator.decorate(configuration);
     ConfigPathNormalizer.normalize(configuration.artifacts[0]);
 
-    var targets = generateTargets(configuration);
+    var host = configuration.artifacts[0].host;
+    var generate = CompilerGeneratorSelector.select(host, compilers);
+
+    var variables = generate.variables({
+        compiler: generate.name
+    });
+    var targets = generateTargets(generate, configuration);
 
     return {
         'Makefile': {
             isFile: true,
-            contents: MakefileBuilder.build(targets)
+            contents: MakefileBuilder.build(variables, targets)
         }
     };
 };

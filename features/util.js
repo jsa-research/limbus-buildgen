@@ -108,13 +108,38 @@ exports.generateWithParameters = function (parameters) {
     }
 };
 
-exports.build = function (makefile) {
+exports.build = function (makefile, variables) {
     return function (buildDetails) {
+        var variableDefinitions = '';
+        for (var variableName in variables) {
+            if (variables.hasOwnProperty(variableName)) {
+                if (exports.hostCompiler === 'cl') {
+                    variableDefinitions += 'set ' + variableName + '=' + variables[variableName] + '&& ';
+                } else {
+                    variableDefinitions += variableName + '=\'' + variables[variableName] + '\' ';
+                }
+            }
+        }
+
         var built;
-        if (process.platform === 'win32') {
-            built = shell.exec('..\\utility-scripts\\setenv.bat && nmake /f ' + (makefile || buildDetails.makefile), {cwd: 'temp'});
+        if (exports.hostCompiler === 'cl') {
+            var command = '';
+            command += variableDefinitions;
+            command += '..\\utility-scripts\\setenv.bat && ';
+            command += 'nmake';
+            if (variableDefinitions.length > 0) {
+                command += ' /E'
+            }
+            command += ' /f ' + (makefile || buildDetails.makefile);
+
+            built = shell.exec(command, {cwd: 'temp'});
         } else {
-            built = shell.exec('make -f ' + (makefile || buildDetails.makefile), {cwd: 'temp'});
+            var command = '';
+            command += 'make ';
+            command += variableDefinitions;
+            command += '-f ' + (makefile || buildDetails.makefile);
+
+            built = shell.exec(command, {cwd: 'temp'});
         }
 
         return built.then(function () {

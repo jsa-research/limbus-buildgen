@@ -21,16 +21,14 @@ describe('makefile-builder', function () {
 
         it('should generate an empty target', function () {
             var makefile = MakefileBuilder.build([{name: 'all', commands: []}]);
-            makefile.should.equal('all:' +
-                                  '\n\t' +
-                                  '\n');
+            makefile.should.equal('all:\n' +
+                                  '\t\n');
         });
 
         it('should generate a target with commands', function () {
             var makefile = MakefileBuilder.build([{name: 'all', commands: ["gcc -c test.c"]}]);
-            makefile.should.equal('all:' +
-                                  '\n\tgcc -c test.c' +
-                                  '\n');
+            makefile.should.equal('all:\n' +
+                                  '\tgcc -c test.c\n');
         });
 
         it('should generate a target with dependencies', function () {
@@ -39,11 +37,10 @@ describe('makefile-builder', function () {
                 {name: 'all', commands: ["gcc -o test test.c other.o"]},
             ]);
             makefile.should.equal(
-                'all: other_target' +
-                '\n\tgcc -o test test.c other.o\n' +
-                'other_target:' +
-                '\n\tgcc -c other.c' +
-                '\n'
+                'all: other_target\n' +
+                '\tgcc -o test test.c other.o\n' +
+                'other_target:\n' +
+                '\tgcc -c other.c\n'
             );
         });
 
@@ -53,11 +50,38 @@ describe('makefile-builder', function () {
                 {name: 'last', commands: ["echo"]},
             ]);
             makefile.should.equal(
-                'all: other_target' +
-                '\n\techo\n' +
-                'other_target:' +
-                '\n\techo' +
-                '\n'
+                'all: other_target\n' +
+                '\techo\n' +
+                'other_target:\n' +
+                '\techo\n'
+            );
+        });
+
+        it('should take an object with variables to define', function () {
+            var makefile = MakefileBuilder.build({
+                VAR: 'value'
+            },[
+                {name: 'all', commands: ["VAR"]},
+            ]);
+            makefile.should.equal(
+                'VAR=value\n' +
+                'all:\n' +
+                '\tVAR\n'
+            );
+        });
+
+        it('should add variables after each other', function () {
+            var makefile = MakefileBuilder.build({
+                VAR: 'value',
+                SECONDVAR: 'value2'
+            },[
+                {name: 'all', commands: ["VAR"]},
+            ]);
+            makefile.should.equal(
+                'VAR=value\n' +
+                'SECONDVAR=value2\n' +
+                'all:\n' +
+                '\tVAR\n'
             );
         });
     });

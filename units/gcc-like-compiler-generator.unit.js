@@ -14,27 +14,48 @@ var should = require('should');
 var GccCompilerGenerator = require('../source/gcc-like-compiler-generator');
 
 describe('gcc-like-compiler-generator', function () {
+    describe('Variables', function () {
+        it('should return a dictionary with CC set to compiler', function () {
+            var variables = GccCompilerGenerator.variables({
+                compiler: 'gcc-like'
+            });
+            variables.CC.should.equal('gcc-like');
+        });
+
+        it('should return a dictionary with AR set to "ar"', function () {
+            var variables = GccCompilerGenerator.variables({});
+            variables.AR.should.equal('ar');
+        });
+    });
+
     describe('Compiling', function () {
         it('should accept files with dots in their paths', function () {
-            var compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
+            var compilerCommand = GccCompilerGenerator.compilerCommand({
                 file: 'file.with.dots.c'
             });
             compilerCommand.should.match(/file\.with\.dots\.c/);
         });
 
-        it('should compile a file into an object file with the filename and a .o postfix', function () {
-            var compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
+        it('should compile using compiler given by $(CC)', function () {
+            var compilerCommand = GccCompilerGenerator.compilerCommand({
                 type: 'application',
                 file: 'test.c'
             });
 
-            compilerCommand.should.match(new RegExp('^gcc\\-like \\-c '));
-            compilerCommand.should.containEql('test.c');
+            compilerCommand.should.match(/^\$\(CC\) /);
+        });
+
+        it('should compile a file into an object file with the filename and a .o postfix', function () {
+            var compilerCommand = GccCompilerGenerator.compilerCommand({
+                type: 'application',
+                file: 'test.c'
+            });
+
             compilerCommand.should.containEql('-o test.c.o');
         });
 
         it('should add any specified include paths in includePaths', function () {
-            var compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
+            var compilerCommand = GccCompilerGenerator.compilerCommand({
                 type: 'application',
                 file: 'test.c',
                 includePaths: [
@@ -48,7 +69,7 @@ describe('gcc-like-compiler-generator', function () {
         });
 
         it('should compile as a dynamic library if "type" === "dynamic-library"', function () {
-            var compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
+            var compilerCommand = GccCompilerGenerator.compilerCommand({
                 type: 'dynamic-library',
                 file: 'test.c'
             });
@@ -57,17 +78,17 @@ describe('gcc-like-compiler-generator', function () {
         });
 
         it('should include extra compiler flags', function () {
-            var compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
+            var compilerCommand = GccCompilerGenerator.compilerCommand({
                 type: 'application',
                 file: 'file.c',
-                flags: '--flag'
+                flags: '-flags'
             });
 
-            compilerCommand.should.containEql('--flag');
+            compilerCommand.should.containEql(' -flags');
         });
 
         it('should take a path as file', function () {
-            var compilerCommand = GccCompilerGenerator.compilerCommand('gcc-like', {
+            var compilerCommand = GccCompilerGenerator.compilerCommand({
                 type: 'application',
                 file: './some/path/to/file.c'
             });
@@ -77,8 +98,18 @@ describe('gcc-like-compiler-generator', function () {
     });
 
     describe('Linking', function () {
+        it('should link an application using $(CC)', function () {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
+                type: 'application',
+                outputName: 'name',
+                files: [ 'test.c' ]
+            });
+
+            linkerCommand.should.match(/^\$\(CC\) /);
+        });
+
         it('should create an executable in the current directory', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'app',
                 files: ['main.c']
@@ -87,7 +118,7 @@ describe('gcc-like-compiler-generator', function () {
         });
 
         it('should generate object file names from input files', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
                 files: [
@@ -101,7 +132,7 @@ describe('gcc-like-compiler-generator', function () {
         });
 
         it('should link several object files into one executable', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
                 files: [
@@ -115,7 +146,7 @@ describe('gcc-like-compiler-generator', function () {
         });
 
         it('should add any specified library paths in libraryPaths', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
                 files: [ 'test.c' ],
@@ -130,7 +161,7 @@ describe('gcc-like-compiler-generator', function () {
         });
 
         it('should link with any specified libraries in libraries', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
                 files: [ 'test.c' ],
@@ -144,50 +175,48 @@ describe('gcc-like-compiler-generator', function () {
             linkerCommand.should.containEql('-L./ -lanotherlibrary');
         });
 
-        it('should link as a static library if "type" === "static-library"', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+        it('should link as a static library if "type" === "static-library" using $(AR)', function () {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'static-library',
                 outputName: 'name',
                 files: [ 'test.c' ]
             });
 
-            linkerCommand.should.containEql('ar rcs libname.a');
+            linkerCommand.should.containEql('$(AR) rcs libname.a');
         });
 
-        it('should link as a dynamic library if "type" === "dynamic-library"', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+        it('should link as a dynamic library if "type" === "dynamic-library" using $(CC)', function () {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'dynamic-library',
                 outputName: 'name',
                 files: [ 'test.c' ]
             });
 
+            linkerCommand.should.match(/^\$\(CC\) /);
             linkerCommand.should.containEql('-shared');
             linkerCommand.should.containEql('-o libname.so');
         });
 
-
         it('should include extra linker flags', function () {
-            var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
                 files: [ 'test.c' ],
-                flags: '--flag'
+                flags: '-flags'
             });
 
-            linkerCommand.should.containEql('--flag');
+            linkerCommand.should.containEql(' -flags');
         });
 
-        describe('outputPath', function () {
-            it('should be prepended to outputName if given', function () {
-                var linkerCommand = GccCompilerGenerator.linkerCommand('gcc-like', {
-                    type: 'application',
-                    outputName: 'name',
-                    outputPath: 'some/directory/',
-                    files: [ 'test.c' ]
-                });
-
-                linkerCommand.should.containEql('some/directory/name');
+        it('should prepend outputPath to outputName if given', function () {
+            var linkerCommand = GccCompilerGenerator.linkerCommand({
+                type: 'application',
+                outputName: 'name',
+                outputPath: 'some/directory/',
+                files: [ 'test.c' ]
             });
+
+            linkerCommand.should.containEql('some/directory/name');
         });
     });
 });
