@@ -29,8 +29,18 @@ describe('Architectures', function () {
         .then(util.build());
 
         if (process.platform === 'win32') {
-            builtExecutable.then(function (executable) {
-                return Promise.reject('Not implemented...');
+            return builtExecutable.then(function (executable) {
+                return shell.exec('dumpbin /headers ' + executable, {cwd: 'temp'});
+            }).then(function (output) {
+                if (output.stdout.indexOf('PE32+') !== -1) {
+                    util.hostArchitecture.should.equal('x64');
+
+                } else if (output.stdout.indexOf('PE32') !== -1) {
+                    util.hostArchitecture.should.equal('x86');
+
+                } else {
+                    return Promise.reject('Unknown platform:\n' + output.stdout);
+                }
             });
         } else {
             return builtExecutable.then(function (executable) {
