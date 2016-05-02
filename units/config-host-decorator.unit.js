@@ -33,6 +33,24 @@ var shouldNotDecorateAnything = function (properties) {
     configuration.should.deepEqual(minimal.projectWithArtifactWith(properties));
 };
 
+var shouldLinkWithFlagGivenHost = function (flag, host) {
+    it('should link with ' + flag + ' given ' + host, function () {
+        shouldDecorateLinkerFlags(flag, {
+            host: host
+        });
+    });
+};
+
+var shouldCompileWithFlagGivenHost = function (flag, host) {
+    it('should compile with ' + flag + ' given ' + host, function () {
+        var configuration = minimal.projectWithArtifactWith({
+            host: host
+        });
+        ConfigHostDecorator.decorate(configuration);
+        configuration.artifacts[0].compilerFlags.should.containEql(flag);
+    });
+};
+
 describe('config-host-decorator', function () {
     it('should decorate all artifacts', function () {
         var configuration = minimal.projectWith({
@@ -68,26 +86,6 @@ describe('config-host-decorator', function () {
             });
             shouldNotDecorateAnything({
                 host: 'win32-make-cl-win32-x64'
-            });
-        });
-    });
-
-    describe('configuration where host OS is darwin', function () {
-        it('should not decorate', function () {
-            shouldNotDecorateAnything({
-                host: 'darwin'
-            });
-            shouldNotDecorateAnything({
-                host: 'darwin-make-clang-darwin-x86'
-            });
-            shouldNotDecorateAnything({
-                host: 'darwin-make-clang-darwin-x64'
-            });
-            shouldNotDecorateAnything({
-                host: 'darwin-make-gcc-darwin-x86'
-            });
-            shouldNotDecorateAnything({
-                host: 'darwin-make-gcc-darwin-x64'
             });
         });
     });
@@ -272,6 +270,56 @@ describe('config-host-decorator', function () {
             shouldNotDecorateLinkerFlags(flag, {
                 host: 'linux-make-gcc-linux-x64',
                 type: 'dynamic-library'
+            });
+        });
+    });
+
+    describe('Architecture flags', function () {
+        var flag = '-m32';
+        shouldLinkWithFlagGivenHost(flag, 'linux');
+        shouldLinkWithFlagGivenHost(flag, 'linux-make-clang-linux-x86');
+        shouldLinkWithFlagGivenHost(flag, 'linux-make-gcc-linux-x86');
+        shouldLinkWithFlagGivenHost(flag, 'freebsd');
+        shouldLinkWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x86');
+        shouldLinkWithFlagGivenHost(flag, 'freebsd-make-gcc-freebsd-x86');
+        shouldLinkWithFlagGivenHost(flag, 'darwin');
+        shouldLinkWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x86');
+        shouldLinkWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x86');
+
+        shouldCompileWithFlagGivenHost(flag, 'linux');
+        shouldCompileWithFlagGivenHost(flag, 'linux-make-clang-linux-x86');
+        shouldCompileWithFlagGivenHost(flag, 'linux-make-gcc-linux-x86');
+        shouldCompileWithFlagGivenHost(flag, 'freebsd');
+        shouldCompileWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x86');
+        shouldCompileWithFlagGivenHost(flag, 'freebsd-make-gcc-freebsd-x86');
+        shouldCompileWithFlagGivenHost(flag, 'darwin');
+        shouldCompileWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x86');
+        shouldCompileWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x86');
+
+        flag = '-m64';
+        shouldLinkWithFlagGivenHost(flag, 'linux-make-clang-linux-x64');
+        shouldLinkWithFlagGivenHost(flag, 'linux-make-gcc-linux-x64');
+        shouldLinkWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x64');
+        shouldLinkWithFlagGivenHost(flag, 'freebsd-make-gcc-freebsd-x64');
+        shouldLinkWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x64');
+        shouldLinkWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x64');
+
+        shouldCompileWithFlagGivenHost(flag, 'linux-make-clang-linux-x64');
+        shouldCompileWithFlagGivenHost(flag, 'linux-make-gcc-linux-x64');
+        shouldCompileWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x64');
+        shouldCompileWithFlagGivenHost(flag, 'freebsd-make-gcc-freebsd-x64');
+        shouldCompileWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x64');
+        shouldCompileWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x64');
+
+        it('should not pass architecture flags to ar', function () {
+            shouldNotDecorateLinkerFlags('-m32', {
+                type: 'static-library',
+                host: 'linux-make-gcc-linux-x32'
+            });
+
+            shouldNotDecorateLinkerFlags('-m64', {
+                type: 'static-library',
+                host: 'linux-make-gcc-linux-x64'
             });
         });
     });
