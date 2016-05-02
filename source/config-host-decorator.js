@@ -5,13 +5,18 @@ module.exports.decorate = function (configuration) {
 
         if (artifact.type === 'application') {
             if (artifact.host !== 'win32' &&
-                artifact.host !== 'win32-cl' &&
+                artifact.host !== 'win32-make-cl-win32-x86' &&
+                artifact.host !== 'win32-make-cl-win32-x64' &&
                 artifact.host !== 'darwin' &&
-                artifact.host !== 'darwin-gcc' &&
-                artifact.host !== 'darwin-clang') {
+                artifact.host !== 'darwin-make-clang-darwin-x86' &&
+                artifact.host !== 'darwin-make-clang-darwin-x64' &&
+                artifact.host !== 'darwin-make-gcc-darwin-x86' &&
+                artifact.host !== 'darwin-make-gcc-darwin-x64') {
+
                 if (artifact.linkerFlags === undefined) {
                     artifact.linkerFlags = '';
                 }
+
                 artifact.linkerFlags += ' -lm -Wl,-rpath=.';
             }
         }

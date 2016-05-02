@@ -64,7 +64,10 @@ describe('config-host-decorator', function () {
                 host: 'win32'
             });
             shouldNotDecorateAnything({
-                host: 'win32-cl'
+                host: 'win32-make-cl-win32-x86'
+            });
+            shouldNotDecorateAnything({
+                host: 'win32-make-cl-win32-x64'
             });
         });
     });
@@ -75,98 +78,200 @@ describe('config-host-decorator', function () {
                 host: 'darwin'
             });
             shouldNotDecorateAnything({
-                host: 'darwin-gcc'
+                host: 'darwin-make-clang-darwin-x86'
             });
             shouldNotDecorateAnything({
-                host: 'darwin-clang'
+                host: 'darwin-make-clang-darwin-x64'
+            });
+            shouldNotDecorateAnything({
+                host: 'darwin-make-gcc-darwin-x86'
+            });
+            shouldNotDecorateAnything({
+                host: 'darwin-make-gcc-darwin-x64'
             });
         });
     });
 
     describe('configuration where host OS is freebsd', function () {
         it('should link with libm by default', function () {
-            shouldDecorateLinkerFlags('-lm', {
-                host: 'freebsd-clang'
+            var flag = '-lm';
+
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd'
             });
 
-            shouldDecorateLinkerFlags('-lm', {
-                host: 'freebsd-gcc'
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-clang-freebsd-x86'
+            });
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-clang-freebsd-x64'
+            });
+
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-gcc-freebsd-x86'
+            });
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-gcc-freebsd-x64'
             });
         });
 
         it('should link with -Wl,-rpath=. using LLVM Clang or GNU GCC', function () {
-            shouldDecorateLinkerFlags('-Wl,-rpath=.', {
-                host: 'freebsd-clang'
+            var flag = '-Wl,-rpath=.';
+
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd'
             });
 
-            shouldDecorateLinkerFlags('-Wl,-rpath=.', {
-                host: 'freebsd-gcc'
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-clang-freebsd-x86'
+            });
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-clang-freebsd-x64'
+            });
+
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-gcc-freebsd-x86'
+            });
+            shouldDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-gcc-freebsd-x64'
             });
         });
 
         it('should only link with -Wl,-rpath=. when type is "application"', function () {
-            shouldNotDecorateLinkerFlags('-Wl,-rpath=.', {
-                type: 'static-library',
-                host: 'freebsd-clang'
+            var flag = '-Wl,-rpath=.';
+
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd',
+                type: 'static-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-clang-freebsd-x86',
+                type: 'static-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-clang-freebsd-x64',
+                type: 'static-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-gcc-freebsd-x86',
+                type: 'static-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-gcc-freebsd-x64',
+                type: 'static-library'
             });
 
-            shouldNotDecorateLinkerFlags('-Wl,-rpath=.', {
-                type: 'static-library',
-                host: 'freebsd-gcc'
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd',
+                type: 'dynamic-library'
             });
-
-            shouldNotDecorateLinkerFlags('-Wl,-rpath=.', {
-                type: 'dynamic-library',
-                host: 'freebsd-clang'
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-clang-freebsd-x86',
+                type: 'dynamic-library'
             });
-
-            shouldNotDecorateLinkerFlags('-Wl,-rpath=.', {
-                type: 'dynamic-library',
-                host: 'freebsd-gcc'
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-clang-freebsd-x64',
+                type: 'dynamic-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-gcc-freebsd-x86',
+                type: 'dynamic-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'freebsd-make-gcc-freebsd-x64',
+                type: 'dynamic-library'
             });
         });
     });
 
     describe('configuration where host OS is linux', function () {
         it('should link with libm by default', function () {
-            shouldDecorateLinkerFlags('-lm', {
-                host: 'linux-clang'
+            var flag = '-lm';
+
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux'
             });
 
-            shouldDecorateLinkerFlags('-lm', {
-                host: 'linux-gcc'
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux-make-clang-linux-x86'
+            });
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux-make-clang-linux-x64'
+            });
+
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux-make-gcc-linux-x86'
+            });
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux-make-gcc-linux-x64'
             });
         });
 
         it('should link with -Wl,-rpath=. using LLVM Clang or GNU GCC', function () {
-            shouldDecorateLinkerFlags('-Wl,-rpath=.', {
-                host: 'linux-clang'
+            var flag = '-Wl,-rpath=.';
+
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux'
             });
 
-            shouldDecorateLinkerFlags('-Wl,-rpath=.', {
-                host: 'linux-gcc'
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux-make-clang-linux-x86'
+            });
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux-make-clang-linux-x64'
+            });
+
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux-make-gcc-linux-x86'
+            });
+            shouldDecorateLinkerFlags(flag, {
+                host: 'linux-make-gcc-linux-x64'
             });
         });
 
         it('should only link with -Wl,-rpath=. when type is "application"', function () {
-            shouldNotDecorateLinkerFlags('-Wl,-rpath=.', {
-                type: 'static-library',
-                host: 'linux-clang'
+            var flag = '-Wl,-rpath=.';
+
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux',
+                type: 'static-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux-make-clang-linux-x86',
+                type: 'static-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux-make-clang-linux-x64',
+                type: 'static-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux-make-gcc-linux-x86',
+                type: 'static-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux-make-gcc-linux-x64',
+                type: 'static-library'
             });
 
-            shouldNotDecorateLinkerFlags('-Wl,-rpath=.', {
-                type: 'static-library',
-                host: 'linux-gcc'
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux',
+                type: 'dynamic-library'
             });
-
-            shouldNotDecorateLinkerFlags('-Wl,-rpath=.', {
-                type: 'dynamic-library',
-                host: 'linux-clang'
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux-make-clang-linux-x86',
+                type: 'dynamic-library'
             });
-
-            shouldNotDecorateLinkerFlags('-Wl,-rpath=.', {
-                type: 'dynamic-library',
-                host: 'linux-gcc'
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux-make-clang-linux-x64',
+                type: 'dynamic-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux-make-gcc-linux-x86',
+                type: 'dynamic-library'
+            });
+            shouldNotDecorateLinkerFlags(flag, {
+                host: 'linux-make-gcc-linux-x64',
+                type: 'dynamic-library'
             });
         });
     });

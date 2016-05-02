@@ -41,16 +41,23 @@ var validTypes = [
 
 var validHosts = [
     'linux',
-    'linux-clang',
-    'linux-gcc',
+    'linux-make-clang-linux-x86',
+    'linux-make-clang-linux-x64',
+    'linux-make-gcc-linux-x86',
+    'linux-make-gcc-linux-x64',
     'darwin',
-    'darwin-clang',
-    'darwin-gcc',
+    'darwin-make-clang-darwin-x86',
+    'darwin-make-clang-darwin-x64',
+    'darwin-make-gcc-darwin-x86',
+    'darwin-make-gcc-darwin-x64',
     'win32',
-    'win32-cl',
+    'win32-make-cl-win32-x86',
+    'win32-make-cl-win32-x64',
     'freebsd',
-    'freebsd-clang',
-    'freebsd-gcc'
+    'freebsd-make-clang-freebsd-x86',
+    'freebsd-make-clang-freebsd-x64',
+    'freebsd-make-gcc-freebsd-x86',
+    'freebsd-make-gcc-freebsd-x64',
 ];
 
 var stringProjectProperties = [
