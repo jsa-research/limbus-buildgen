@@ -70,7 +70,7 @@ The following configuration file specifies a makefile that compiles an executabl
     "artifacts": [{
         "title": "Main executable",
         "type": "application",
-        "host": "darwin-clang",
+        "host": "darwin-make-clang-darwin-x64",
         "files": [
             "main.c"
         ],
@@ -151,21 +151,30 @@ There are three types of artifacts which can be built:
 
 <a name="configuration-host"></a>
 ###### host
-The following host identifiers can be used to target the corresponding operating system & compiler:
+The `host` property is used to specify how the artifacts will be built and for which platforms.
 
-|Identifier|Target OS|Compiler|
-|:--|:--|:--|
-|linux|Linux|GNU GCC|
-|linux-clang|Linux|Clang/LLVM|
-|linux-gcc|Linux|GNU GCC|
-|darwin|Mac OS X|Clang/LLVM|
-|darwin-clang|Mac OS X|Clang/LLVM|
-|darwin-gcc|Mac OS X|GNU GCC|
-|win32|Windows|CL|
-|win32-cl|Windows|CL|
-|freebsd|FreeBSD|Clang/LLVM|
-|freebsd-clang|FreeBSD|Clang/LLVM|
-|freebsd-gcc|FreeBSD|GNU GCC|
+|Identifier|Build OS|Build System|Compiler|Target OS|Target Architecture|
+|:--|:--|:--|:--|:--|:--|
+|linux|Linux|make|GNU GCC|Linux|IA-32|
+|linux-make-clang-linux-x86|Linux|make|LLVM Clang|Linux|IA-32|
+|linux-make-clang-linux-x64|Linux|make|LLVM Clang|Linux|AMD64|
+|linux-make-gcc-linux-x86|Linux|make|GNU GCC|Linux|IA-32|
+|linux-make-gcc-linux-x64|Linux|make|GNU GCC|Linux|AMD64|
+|darwin|Mac OS X|make|LLVM Clang|Mac OS X|IA-32|
+|darwin-make-clang-darwin-x86|Mac OS X|make|LLVM Clang|Mac OS X|IA-32|
+|darwin-make-clang-darwin-x64|Mac OS X|make|LLVM Clang|Mac OS X|AMD64|
+|darwin-make-gcc-darwin-x86|Mac OS X|make|GNU GCC|Mac OS X|IA-32|
+|darwin-make-gcc-darwin-x64|Mac OS X|make|GNU GCC|Mac OS X|AMD64|
+|win32|Windows|nmake|Microsoft CL|Windows|IA-32|
+|win32-make-cl-win32-x86|Windows|nmake|Microsoft CL|Windows|IA-32|
+|win32-make-cl-win32-x64|Windows|nmake|Microsoft CL|Windows|AMD64|
+|freebsd|FreeBSD|make|LLVM Clang|FreeBSD|IA-32|
+|freebsd-make-clang-freebsd-x86|FreeBSD|make|LLVM Clang|FreeBSD|IA-32|
+|freebsd-make-clang-freebsd-x64|FreeBSD|make|LLVM Clang|FreeBSD|AMD64|
+|freebsd-make-gcc-freebsd-x86|FreeBSD|make|GNU GCC|FreeBSD|IA-32|
+|freebsd-make-gcc-freebsd-x64|FreeBSD|make|GNU GCC|FreeBSD|AMD64|
+
+So for example, if you wanted to generate a makefile that builds on Mac OS X using the LLVM Clang compiler and also target Mac OS X on the IA-32 architecture you could use `darwin-make-clang-darwin-x86`. Or you could use `darwin` as these are the default settings.
 
 <a name="configuration-files"></a>
 ###### files
@@ -182,12 +191,12 @@ Given a configuration file with `"outputName": "file"` the following table shows
 |GNU GCC|application|file|
 |GNU GCC|static-library|libfile.a|
 |GNU GCC|dynamic-library|libfile.so|
-|Clang|application|file|
-|Clang|static-library|libfile.a|
-|Clang|dynamic-library|libfile.so|
-|CL|application|file.exe|
-|CL|static-library|file.lib|
-|CL|dynamic-library|file.dll|
+|LLVM Clang|application|file|
+|LLVM Clang|static-library|libfile.a|
+|LLVM Clang|dynamic-library|libfile.so|
+|Microsoft CL|application|file.exe|
+|Microsoft CL|static-library|file.lib|
+|Microsoft CL|dynamic-library|file.dll|
 
 The output name cannot be a [path](#paths).
 
@@ -218,12 +227,12 @@ The following table describes what commands are used and how flags are inserted 
 |GNU GCC|application|gcc -o executable file.o [flags]|
 |GNU GCC|static-library|ar rcs[flags] liblibrary.a file.o|
 |GNU GCC|dynamic-library|gcc -shared -o liblibrary.so file.o [flags]|
-|Clang|application|clang -o executable file.o [flags]|
-|Clang|static-library|ar rcs[flags] liblibrary.a file.o|
-|Clang|dynamic-library|clang -shared -o liblibrary.so file.o [flags]|
-|CL|application|cl /Feexecutable.exe file.obj /link [flags]|
-|CL|static-library|lib /OUT:library file.obj [flags]|
-|CL|dynamic-library|cl /LD /Felibrary file.obj /link [flags]|
+|LLVM Clang|application|clang -o executable file.o [flags]|
+|LLVM Clang|static-library|ar rcs[flags] liblibrary.a file.o|
+|LLVM Clang|dynamic-library|clang -shared -o liblibrary.so file.o [flags]|
+|Microsoft CL|application|cl /Feexecutable.exe file.obj /link [flags]|
+|Microsoft CL|static-library|lib /OUT:library file.obj [flags]|
+|Microsoft CL|dynamic-library|cl /LD /Felibrary file.obj /link [flags]|
 
 <a name="configuration-libraries"></a>
 ###### libraries
@@ -251,7 +260,7 @@ var files = buildgen.generate({
     artifacts: [{
         title: 'Main executable',
         type: 'application',
-        host: 'darwin-clang',
+        host: 'darwin-make-clang-darwin-x64',
         files: [
             'main.c'
         ],
@@ -290,15 +299,22 @@ for (var path in files) {
 Unit- & integration tests are automatically run against several combinations of target hosts, build configurations and Node.js versions at every push.
 
 #### Integration matrix
-| Target Host   | Build Status | Built Configurations | Node.js Versions   |
-| :------------ | :----------: | :------------------- | :----------------- |
-| linux-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.x, 4.4.x |
-| linux-gcc | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.x, 4.4.x |
-| darwin-clang | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | x64 | 5.9.x, 4.4.x |
-| darwin-gcc ||||
-| win32-cl | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | x64 Release | 4.4.x |
-| freebsd-clang | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/node-clang/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/node-clang/ci-log.txt) | x64 | 5.10.x |
-| freebsd-gcc | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/node-gcc/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/node-gcc/ci-log.txt) | x64 | 5.10.x |
+| Target Host   | Build Status |  Node.js Versions   |
+| :------------ | :----------: |  :----------------- |
+| linux-make-clang-linux-x86 |||
+| linux-make-clang-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| linux-make-gcc-linux-x86 |||
+| linux-make-gcc-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| darwin-make-clang-darwin-x86 |||
+| darwin-make-clang-darwin-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| darwin-make-gcc-darwin-x86 |||
+| darwin-make-gcc-darwin-x64 |||
+| win32-make-cl-win32-x86 |||
+| win32-make-cl-win32-x64 | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | 4.4.x |
+| freebsd-make-clang-freebsd-x86 |||
+| freebsd-make-clang-freebsd-x64 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/node-clang/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/node-clang/ci-log.txt) | 5.10.x |
+| freebsd-make-gcc-freebsd-x86 |||
+| freebsd-make-gcc-freebsd-x64 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/node-gcc/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/node-gcc/ci-log.txt) | 5.10.x |
 
 <a name="building-from-source"></a>
 ## Building from source
@@ -356,6 +372,9 @@ This will generate a file named `coverage.html` in the project root directory wh
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
 * Standardize on a `host` property that can support build hosts, compilers, target hosts and architectures
+* Implement proper architecture support
+* Elevate host property to a project one
+* Rename `host` property to `toolchain`
 * Add configuration property to add/remove debug information during compilation
 * Change shared library suffix to .dylib on darwin to reflect the actual library type generated
 * Remove `/link` from CL linker commands and make user add it themselves to give more flexibility in which flags can be set
@@ -374,6 +393,7 @@ This release will complete the continuous integration setup to make sure all fea
 ##### Towards 1.0.0
 This release will implement the rest of the features to reach feature completeness.
 
+* Add post- and pre-build shell commands to artifacts
 * Add sub-configurations that override properties when activated through command line options
 * Override all configuration properties using flags
 * Autoconf & Automake support
@@ -386,14 +406,14 @@ This release will implement the rest of the features to reach feature completene
 ##### Planned for 1.1.0
 This release will implement cross compilation to mobile devices.
 
-* Implement cross compilation support for iOS with host `darwin-ndk-ios`
-* Implement cross compilation support for Android with hosts `linux-ndk-android`, `darwin-ndk-android` and `win32-ndk-android`
+* Implement cross compilation support for iOS with host `darwin-xcode-clang-ios-all`
+* Implement cross compilation support for Android with hosts `linux-ndkbuild-ndk-android-all`, `darwin-ndkbuild-ndk-android-all` and `win32-ndkbuild-ndk-android-all`
 * Add architectures as appropriate
 
 ##### Planned for 1.2.0
 This release will implement cross compilation to web browsers through Emscripten.
 
-* Implement cross compilation support for asm.js with hosts `linux-emcc-asmjs`, `darwin-emcc-asmjs` and `win32-emcc-asmjs`
+* Implement cross compilation support for asm.js with hosts `linux-make-emcc-asmjs`, `darwin-make-emcc-asmjs` and `win32-make-emcc-asmjs`
 
 ##### Further into the future
 Features which aren't needed for feature-completeness but are nice to have.

@@ -165,16 +165,23 @@ describe('config-validator', function () {
                 };
 
                 validateHost('linux');
-                validateHost('linux-clang');
-                validateHost('linux-gcc');
+                validateHost('linux-make-clang-linux-x86');
+                validateHost('linux-make-clang-linux-x64');
+                validateHost('linux-make-gcc-linux-x86');
+                validateHost('linux-make-gcc-linux-x64');
                 validateHost('darwin');
-                validateHost('darwin-clang');
-                validateHost('darwin-gcc');
+                validateHost('darwin-make-clang-darwin-x86');
+                validateHost('darwin-make-clang-darwin-x64');
+                validateHost('darwin-make-gcc-darwin-x86');
+                validateHost('darwin-make-gcc-darwin-x64');
                 validateHost('win32');
-                validateHost('win32-cl');
+                validateHost('win32-make-cl-win32-x86');
+                validateHost('win32-make-cl-win32-x64');
                 validateHost('freebsd');
-                validateHost('freebsd-clang');
-                validateHost('freebsd-gcc');
+                validateHost('freebsd-make-clang-freebsd-x86');
+                validateHost('freebsd-make-clang-freebsd-x64');
+                validateHost('freebsd-make-gcc-freebsd-x86');
+                validateHost('freebsd-make-gcc-freebsd-x64');
             });
         });
 

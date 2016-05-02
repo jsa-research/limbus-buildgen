@@ -13,6 +13,7 @@ var shell = require('./shell');
 var fs = require('fs');
 
 exports.hostCompiler = (process.env.BUILDGEN_TARGET_COMPILER ? process.env.BUILDGEN_TARGET_COMPILER : undefined);
+exports.hostArchitecture = (process.env.BUILDGEN_TARGET_ARCHITECTURE ? process.env.BUILDGEN_TARGET_ARCHITECTURE : undefined);
 
 // Defines default values for hostCompiler based on platform.
 if (exports.hostCompiler === undefined) {
@@ -25,7 +26,17 @@ if (exports.hostCompiler === undefined) {
     }
 }
 
-exports.host = process.platform + '-' + exports.hostCompiler;
+// Defines default values for hostArchitecture based on platform architecture.
+if (exports.hostArchitecture === undefined) {
+    if (process.arch === 'ia32') {
+        exports.hostArchitecture = 'x86';
+    } else {
+        exports.hostArchitecture = process.arch;
+    }
+}
+
+// Creates a host value that specifies the target compiler/architecture falling back to platform defaults if not specified.
+exports.host = process.platform + '-make-' + exports.hostCompiler + '-' + process.platform + '-' + exports.hostArchitecture;
 
 var writeFile = function (path, dataPromise) {
     return new Promise(function(resolve, reject) {

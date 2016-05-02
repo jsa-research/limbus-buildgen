@@ -22,62 +22,56 @@ var compilers = {
     'cl': cl
 };
 
+var testSelectionFor = function (compiler, hosts) {
+    hosts.forEach(function (host) {
+        it('should be selected given ' + host, function () {
+            CompilerGeneratorSelector.select(host, compilers).should.be.exactly(compiler);
+        });
+    });
+};
+
 describe('compiler-generator-selector', function () {
     describe('linkerCommand', function () {
         describe('GNU GCC', function () {
             var compiler = gcc;
+            var hosts = [
+                'linux',
+                'linux-make-gcc-linux-x86',
+                'linux-make-gcc-linux-x64',
+                'freebsd-make-gcc-freebsd-x86',
+                'freebsd-make-gcc-freebsd-x64',
+                'darwin-make-gcc-darwin-x86',
+                'darwin-make-gcc-darwin-x64'
+            ];
 
-            it('should be selected given linux', function () {
-                CompilerGeneratorSelector.select('linux', compilers).should.be.exactly(compiler);
-            });
-
-            it('should be selected given linux-gcc', function () {
-                CompilerGeneratorSelector.select('linux-gcc', compilers).should.be.exactly(compiler);
-            });
-
-            it('should be selected given freebsd-gcc', function () {
-                CompilerGeneratorSelector.select('freebsd-gcc', compilers).should.be.exactly(compiler);
-            });
-
-            it('should be selected given darwin-gcc', function () {
-                CompilerGeneratorSelector.select('darwin-gcc', compilers).should.be.exactly(compiler);
-            });
+            testSelectionFor(compiler, hosts);
         });
 
         describe('LLVM Clang', function () {
             var compiler = clang;
+            var hosts = [
+                'freebsd',
+                'darwin',
+                'linux-make-clang-linux-x86',
+                'linux-make-clang-linux-x64',
+                'freebsd-make-clang-freebsd-x86',
+                'freebsd-make-clang-freebsd-x64',
+                'darwin-make-clang-darwin-x86',
+                'darwin-make-clang-darwin-x64'
+            ];
 
-            it('should be selected given freebsd', function () {
-                CompilerGeneratorSelector.select('freebsd', compilers).should.be.exactly(compiler);
-            });
-
-            it('should be selected given darwin', function () {
-                CompilerGeneratorSelector.select('darwin', compilers).should.be.exactly(compiler);
-            });
-
-            it('should be selected given linux-clang', function () {
-                CompilerGeneratorSelector.select('linux-clang', compilers).should.be.exactly(compiler);
-            });
-
-            it('should be selected given freebsd-clang', function () {
-                CompilerGeneratorSelector.select('freebsd-clang', compilers).should.be.exactly(compiler);
-            });
-
-            it('should be selected given darwin-clang', function () {
-                CompilerGeneratorSelector.select('darwin-clang', compilers).should.be.exactly(compiler);
-            });
+            testSelectionFor(compiler, hosts);
         });
 
-        describe('Visual Studio CL', function () {
+        describe('Microsoft CL', function () {
             var compiler = cl;
+            var hosts = [
+                'win32',
+                'win32-make-cl-win32-x86',
+                'win32-make-cl-win32-x64'
+            ];
 
-            it('should be selected given win32', function () {
-                CompilerGeneratorSelector.select('win32', compilers).should.be.exactly(compiler);
-            });
-
-            it('should be selected given win32-cl', function () {
-                CompilerGeneratorSelector.select('win32-cl', compilers).should.be.exactly(compiler);
-            });
+            testSelectionFor(compiler, hosts);
         });
     });
 });
