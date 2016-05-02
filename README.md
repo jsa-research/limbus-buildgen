@@ -371,7 +371,6 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for 0.5.0-beta
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
-* Standardize on a `host` property that can support build hosts, compilers, target hosts and architectures
 * Implement proper architecture support
 * Elevate host property to a project one
 * Rename `host` property to `toolchain`
