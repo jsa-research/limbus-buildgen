@@ -38,7 +38,6 @@ describe('compiler-generator-selector', function () {
                 'linux',
                 'linux-make-gcc-linux-x86',
                 'linux-make-gcc-linux-x64',
-                'freebsd-make-gcc-freebsd-x86',
                 'freebsd-make-gcc-freebsd-x64',
                 'darwin-make-gcc-darwin-x86',
                 'darwin-make-gcc-darwin-x64'

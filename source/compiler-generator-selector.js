@@ -20,7 +20,6 @@ module.exports.select = function (host, compilerDictionary) {
     if (host === 'linux' ||
         host === 'linux-make-gcc-linux-x86' ||
         host === 'linux-make-gcc-linux-x64' ||
-        host === 'freebsd-make-gcc-freebsd-x86' ||
         host === 'freebsd-make-gcc-freebsd-x64' ||
         host === 'darwin-make-gcc-darwin-x86' ||
         host === 'darwin-make-gcc-darwin-x64') {

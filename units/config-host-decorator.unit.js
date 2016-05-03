@@ -106,9 +106,6 @@ describe('config-host-decorator', function () {
             });
 
             shouldDecorateLinkerFlags(flag, {
-                host: 'freebsd-make-gcc-freebsd-x86'
-            });
-            shouldDecorateLinkerFlags(flag, {
                 host: 'freebsd-make-gcc-freebsd-x64'
             });
         });
@@ -127,9 +124,6 @@ describe('config-host-decorator', function () {
                 host: 'freebsd-make-clang-freebsd-x64'
             });
 
-            shouldDecorateLinkerFlags(flag, {
-                host: 'freebsd-make-gcc-freebsd-x86'
-            });
             shouldDecorateLinkerFlags(flag, {
                 host: 'freebsd-make-gcc-freebsd-x64'
             });
@@ -151,10 +145,6 @@ describe('config-host-decorator', function () {
                 type: 'static-library'
             });
             shouldNotDecorateLinkerFlags(flag, {
-                host: 'freebsd-make-gcc-freebsd-x86',
-                type: 'static-library'
-            });
-            shouldNotDecorateLinkerFlags(flag, {
                 host: 'freebsd-make-gcc-freebsd-x64',
                 type: 'static-library'
             });
@@ -169,10 +159,6 @@ describe('config-host-decorator', function () {
             });
             shouldNotDecorateLinkerFlags(flag, {
                 host: 'freebsd-make-clang-freebsd-x64',
-                type: 'dynamic-library'
-            });
-            shouldNotDecorateLinkerFlags(flag, {
-                host: 'freebsd-make-gcc-freebsd-x86',
                 type: 'dynamic-library'
             });
             shouldNotDecorateLinkerFlags(flag, {
@@ -281,7 +267,6 @@ describe('config-host-decorator', function () {
         shouldLinkWithFlagGivenHost(flag, 'linux-make-gcc-linux-x86');
         shouldLinkWithFlagGivenHost(flag, 'freebsd');
         shouldLinkWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x86');
-        shouldLinkWithFlagGivenHost(flag, 'freebsd-make-gcc-freebsd-x86');
         shouldLinkWithFlagGivenHost(flag, 'darwin');
         shouldLinkWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x86');
         shouldLinkWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x86');
@@ -291,7 +276,6 @@ describe('config-host-decorator', function () {
         shouldCompileWithFlagGivenHost(flag, 'linux-make-gcc-linux-x86');
         shouldCompileWithFlagGivenHost(flag, 'freebsd');
         shouldCompileWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x86');
-        shouldCompileWithFlagGivenHost(flag, 'freebsd-make-gcc-freebsd-x86');
         shouldCompileWithFlagGivenHost(flag, 'darwin');
         shouldCompileWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x86');
         shouldCompileWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x86');
@@ -320,18 +304,6 @@ describe('config-host-decorator', function () {
             shouldNotDecorateLinkerFlags('-m64', {
                 type: 'static-library',
                 host: 'linux-make-gcc-linux-x64'
-            });
-        });
-    });
-
-    describe('To find 32-bit versions of libraries on FreeBSD', function () {
-        shouldCompileWithFlagGivenHost('-B/usr/lib32 -DCOMPAT_32BIT', 'freebsd-make-gcc-freebsd-x86');
-        shouldLinkWithFlagGivenHost('-L/usr/lib32', 'freebsd-make-gcc-freebsd-x86');
-
-        it('should not pass 32-bit search paths to ar', function () {
-            shouldNotDecorateLinkerFlags('-L/usr/lib32', {
-                type: 'static-library',
-                host: 'freebsd-make-gcc-freebsd-x86'
             });
         });
     });
