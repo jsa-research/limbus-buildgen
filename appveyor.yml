@@ -12,7 +12,7 @@
 version: 0.2.0+{build}
 
 install:
-    - ps: Install-Product node $env:BUILDGEN_NODE_VERSION
+    - ps: Install-Product node 4.4.0
     - npm --version
     - npm install
 
@@ -21,9 +21,10 @@ build_script:
 
 environment:
     matrix:
-          # AppVeyor does not seem to have 5.9.0 yet.
-        - BUILDGEN_NODE_VERSION: 4.4.0
-          BUILDGEN_TARGET_COMPILER: cl
+        - BUILDGEN_TARGET_COMPILER: cl
+          BUILDGEN_TARGET_ARCHITECTURE: x86
+        - BUILDGEN_TARGET_COMPILER: cl
+          BUILDGEN_TARGET_ARCHITECTURE: x64
 
 matrix:
     fast_finish: true
