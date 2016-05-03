@@ -19,7 +19,7 @@ env:
   - BUILDGEN_TARGET_COMPILER="clang" BUILDGEN_TARGET_ARCHITECTURE="x86"
   - BUILDGEN_TARGET_COMPILER="clang" BUILDGEN_TARGET_ARCHITECTURE="x64"
 
-before_install: . utility-scripts/install_linux_libc_i386.sh ; . utility-scripts/install_node.sh 5.9.0 ; . utility-scripts/echo_versions.sh
+before_install: . utility-scripts/install_debian_libc_i386.sh ; . utility-scripts/install_node.sh 5.9.0 ; . utility-scripts/echo_versions.sh
 install: npm install ; dependencies/fetch_dependencies.sh
 script: npm run test -- -t 20000 && npm run coverage-travis-ci
 after_script: npm run coverage-coveralls-io
