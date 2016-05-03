@@ -301,20 +301,20 @@ Unit- & integration tests are automatically run against several combinations of 
 #### Integration matrix
 | Target Host   | Build Status |  Node.js Versions   |
 | :------------ | :----------: |  :----------------- |
-| linux-make-clang-linux-x86 |||
+| linux-make-clang-linux-x86 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | linux-make-clang-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
-| linux-make-gcc-linux-x86 |||
+| linux-make-gcc-linux-x86 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | linux-make-gcc-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
-| darwin-make-clang-darwin-x86 |||
+| darwin-make-clang-darwin-x86 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | darwin-make-clang-darwin-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | darwin-make-gcc-darwin-x86 |||
 | darwin-make-gcc-darwin-x64 |||
-| win32-make-cl-win32-x86 |||
+| win32-make-cl-win32-x86 | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | 4.4.x |
 | win32-make-cl-win32-x64 | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | 4.4.x |
-| freebsd-make-clang-freebsd-x86 |||
-| freebsd-make-clang-freebsd-x64 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/node-clang/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/node-clang/ci-log.txt) | 5.10.x |
-| freebsd-make-gcc-freebsd-x86 |||
-| freebsd-make-gcc-freebsd-x64 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/node-gcc/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/node-gcc/ci-log.txt) | 5.10.x |
+| freebsd-make-clang-freebsd-x86 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/clang-x86/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/clang-x86/ci-log.txt) | 5.10.x |
+| freebsd-make-clang-freebsd-x64 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/clang-x64/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/clang-x64/ci-log.txt) | 5.10.x |
+| freebsd-make-gcc-freebsd-x86 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/gcc-x86/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/gcc-x86/ci-log.txt) | 5.10.x |
+| freebsd-make-gcc-freebsd-x64 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/gcc-x64/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/gcc-x64/ci-log.txt) | 5.10.x |
 
 <a name="building-from-source"></a>
 ## Building from source
