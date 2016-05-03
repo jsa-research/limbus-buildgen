@@ -11,9 +11,6 @@
 
 @echo off
 
-:: Exit script if the environment is already set up.
-nmake /? 2>NUL >NUL && echo Environment already set up! && exit /b
-
 :: Tries to set up development environment starting with the latest visual studio
 :: down to the oldest Windows SDK
 
@@ -21,17 +18,17 @@ nmake /? 2>NUL >NUL && echo Environment already set up! && exit /b
 
 set SETENV_ARGS=
 set SETENV_ARGS_STR=
-set VSDEVCMD_ARGS=
-set VSDEVCMD_ARGS_STR=
+set VCVARSALL_ARGS=
+set VCVARSALL_ARGS_STR=
 
 :: Append correct flags
 ECHO.%*| FIND /I "x64">Nul && (
   set SETENV_ARGS=/x64 %SETENV_ARGS%
-  set VSDEVCMD_ARGS=x86_amd64 %VSDEVCMD_ARGS%
+  set VCVARSALL_ARGS=x86_amd64 %VCVARSALL_ARGS%
 )
 ECHO.%*| FIND /I "x86">Nul && (
   set SETENV_ARGS=/x86 %SETENV_ARGS%
-  set VSDEVCMD_ARGS=x86 %VSDEVCMD_ARGS%
+  set VCVARSALL_ARGS=x86 %VCVARSALL_ARGS%
 )
 ECHO.%*| FIND /I "Release">Nul && (
   set SETENV_ARGS=/Release %SETENV_ARGS%
@@ -60,10 +57,31 @@ IF "%SETENV_ARGS%"=="" GOTO SKIP_SETENV_ARGS
 set SETENV_ARGS=%SETENV_ARGS:~0,-1%
 set SETENV_ARGS_STR=with SetEnv.cmd %SETENV_ARGS%
 :SKIP_SETENV_ARGS
-IF "%VSDEVCMD_ARGS%"=="" GOTO SKIP_VSDEVCMD_ARGS
-set VSDEVCMD_ARGS=%VSDEVCMD_ARGS:~0,-1%
-set VSDEVCMD_ARGS_STR=with VsDevCmd.bat %VSDEVCMD_ARGS%
-:SKIP_VSDEVCMD_ARGS
+IF "%VCVARSALL_ARGS%"=="" GOTO SKIP_VCVARSALL_ARGS
+set VCVARSALL_ARGS=%VCVARSALL_ARGS:~0,-1%
+set VCVARSALL_ARGS_STR=with vcvarsall.bat %VCVARSALL_ARGS%
+:SKIP_VCVARSALL_ARGS
 
 :: Actually call the implementations
-((call "%VS160COMNTOOLS%VsDevCmd.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 16.0 %VSDEVCMD_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v12.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 12.1 %SETENV_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v12\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 12 %SETENV_ARGS_STR%) || ((call "%VS150COMNTOOLS%VsDevCmd.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 15.0 %VSDEVCMD_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v11.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 11.1 %SETENV_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v11\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 11 %SETENV_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v10.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 10.1 %SETENV_ARGS_STR%) || ((call "%VS140COMNTOOLS%VsDevCmd.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 2015 %VSDEVCMD_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v10\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 10 [2015] %SETENV_ARGS_STR%) || ((call "%VS120COMNTOOLS%VsDevCmd.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 2013 %VSDEVCMD_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v8.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 8.1 [2013] %SETENV_ARGS_STR%) || ((call "%VS110COMNTOOLS%vsvars32.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 2012 %VSDEVCMD_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v8.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 8.0 [2012] %SETENV_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 7.1 [2010] %SETENV_ARGS_STR%) || ((call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 2010 %VSDEVCMD_ARGS_STR%)  || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v7.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 7.0 [2009] %SETENV_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio [2008] %VSDEVCMD_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v6.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 6.1 [2007] %SETENV_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft SDKs\Windows\v6.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 6.0 [2006] %SETENV_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft Visual Studio 8\VC\vcvarsall.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 2005 %VSDEVCMD_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft Visual Studio 7\VC\vcvarsall.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio .NET [2002] %VSDEVCMD_ARGS_STR%) || ((call "%programfiles(x86)%\Microsoft Visual Studio\vc98\bin\vcvars32.bat" %VSDEVCMD_ARGS% 2>NUL) && echo Using Visual Studio 6.0 [1998] %VSDEVCMD_ARGS_STR%)
+((call "%VS160COMNTOOLS%..\..\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio 16.0 %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v12.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 12.1 %SETENV_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v12\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 12 %SETENV_ARGS_STR% && exit /b 0)
+((call "%VS150COMNTOOLS%..\..\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio 15.0 %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v11.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 11.1 %SETENV_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v11\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 11 %SETENV_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v10.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 10.1 %SETENV_ARGS_STR% && exit /b 0)
+((call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio 2015 %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v10\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 10 [2015] %SETENV_ARGS_STR% && exit /b 0)
+((call "%VS120COMNTOOLS%..\..\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio 2013 %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v8.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 8.1 [2013] %SETENV_ARGS_STR% && exit /b 0)
+((call "%VS110COMNTOOLS%..\..\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio 2012 %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v8.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 8.0 [2012] %SETENV_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 7.1 [2010] %SETENV_ARGS_STR% && exit /b 0)
+((call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio 2010 %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v7.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 7.0 [2009] %SETENV_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio [2008] %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v6.1\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 6.1 [2007] %SETENV_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft SDKs\Windows\v6.0\Bin\SetEnv.cmd" %SETENV_ARGS% 2>NUL) && echo Using Windows SDK 6.0 [2006] %SETENV_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft Visual Studio 8\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio 2005 %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft Visual Studio 7\VC\vcvarsall.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio .NET [2002] %VCVARSALL_ARGS_STR% && exit /b 0)
+((call "%programfiles(x86)%\Microsoft Visual Studio\vc98\bin\vcvars32.bat" %VCVARSALL_ARGS% 2>NUL) && echo Using Visual Studio 6.0 [1998] %VCVARSALL_ARGS_STR% && exit /b 0)
