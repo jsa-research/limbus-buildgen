@@ -32,7 +32,7 @@ describe('Architectures', function () {
 
         if (process.platform === 'win32') {
             return builtExecutable.then(function (executable) {
-                return shell.exec('..\\utility-scripts\\setenv.bat && dumpbin /nologo /headers ' + executable + '.exe', {cwd: 'temp'});
+                return shell.exec('..\\utility-scripts\\setenv.bat ' + process.env.BUILDGEN_TARGET_ARCHITECTURE + '&& dumpbin /nologo /headers ' + executable + '.exe', {cwd: 'temp'});
             }).then(function (output) {
                 if (output.stdout.indexOf('PE32+') !== -1) {
                     util.hostArchitecture.should.equal('x64');
