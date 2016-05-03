@@ -135,7 +135,7 @@ exports.build = function (makefile, variables) {
         var command = '';
         if (exports.hostCompiler === 'cl') {
             command += variableDefinitions;
-            command += '..\\utility-scripts\\setenv.bat && ';
+            command += '..\\utility-scripts\\setenv.bat ' + exports.hostArchitecture + '&& ';
             command += 'nmake';
             if (variableDefinitions.length > 0) {
                 command += ' /E'

@@ -12,11 +12,7 @@
 # As compiling GCC takes a long time, this script installs GNU GCC 6 only if
 # the OS is OS X and BUILDGEN_TARGET_COMPILER is set to "gcc".
 
-if test "$BUILDGEN_TARGET_COMPILER" = "gcc" -a `uname -s | tr 'A-Z' 'a-z'` = "Darwin"
+if test `uname -s | tr 'A-Z' 'a-z'` = "linux"
 then
-    PRE_BUILD_DIR=`pwd`
-    brew tap homebrew/versions
-    brew update > /dev/null
-    brew install homebrew/versions/gcc6
-    cd $PRE_BUILD_DIR
+    sudo apt-get install gcc-multilib libc6-i386
 fi

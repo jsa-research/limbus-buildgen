@@ -25,6 +25,7 @@ describe('Configuration Validation', function () {
 
     it('should compile given a minimal artifact configuration', function () {
         return util.testConfiguration(minimal.projectWithArtifactWith({
+            host: util.host,
             files: ['main.c']
         }));
     });

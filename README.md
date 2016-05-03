@@ -302,11 +302,11 @@ Unit- & integration tests are automatically run against several combinations of 
 | Target Host   | Build Status |  Node.js Versions   |
 | :------------ | :----------: |  :----------------- |
 | linux-make-clang-linux-x86 |||
-| linux-make-clang-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| linux-make-clang-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | linux-make-gcc-linux-x86 |||
-| linux-make-gcc-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| linux-make-gcc-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | darwin-make-clang-darwin-x86 |||
-| darwin-make-clang-darwin-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| darwin-make-clang-darwin-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | darwin-make-gcc-darwin-x86 |||
 | darwin-make-gcc-darwin-x64 |||
 | win32-make-cl-win32-x86 |||
@@ -371,7 +371,6 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for 0.5.0-beta
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
-* Implement proper architecture support
 * Elevate host property to a project one
 * Rename `host` property to `toolchain`
 * Add configuration property to add/remove debug information during compilation
@@ -383,7 +382,6 @@ This release is intended to streamline the user experience, stabilize the Javasc
 This release will complete the continuous integration setup to make sure all features are tested properly.
 
 * Make sure GCC is tested against on OS X when running on CI
-* Compile against x86 on CI builds
 * Make CI scripts build the executable against the correct compiler and architecture
 * Continuous integration for all supported targets
 * Convert integration tests to acceptance tests using Gherkin syntax
