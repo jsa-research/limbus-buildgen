@@ -371,7 +371,6 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for 0.5.0-beta
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
-* Implement proper architecture support
 * Elevate host property to a project one
 * Rename `host` property to `toolchain`
 * Add configuration property to add/remove debug information during compilation
@@ -383,7 +382,6 @@ This release is intended to streamline the user experience, stabilize the Javasc
 This release will complete the continuous integration setup to make sure all features are tested properly.
 
 * Make sure GCC is tested against on OS X when running on CI
-* Compile against x86 on CI builds
 * Make CI scripts build the executable against the correct compiler and architecture
 * Continuous integration for all supported targets
 * Convert integration tests to acceptance tests using Gherkin syntax
