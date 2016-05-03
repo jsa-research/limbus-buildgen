@@ -314,7 +314,7 @@ describe('config-host-decorator', function () {
         it('should not pass architecture flags to ar', function () {
             shouldNotDecorateLinkerFlags('-m32', {
                 type: 'static-library',
-                host: 'linux-make-gcc-linux-x32'
+                host: 'linux-make-gcc-linux-x86'
             });
 
             shouldNotDecorateLinkerFlags('-m64', {
