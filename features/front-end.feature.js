@@ -36,7 +36,9 @@ describe('Front-end', function () {
     });
 
     it('should take a flag to specify the output build path', function () {
-        return util.writeConfiguration(minimal.project())
+        return util.writeConfiguration(minimal.projectWithArtifactWith({
+            host: util.host
+        }))
         .then(util.generateWithParameters('--outputPath platform'))
         .then(util.build('platform/Makefile'))
         .then(util.runBuiltExecutable())

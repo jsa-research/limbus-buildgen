@@ -29,12 +29,14 @@ describe('Compiling', function () {
 
     it('should pass compiler flags as is', function () {
         return util.testConfiguration(minimal.projectWithArtifactWith({
+            host: util.host,
             compilerFlags: util.hostCompiler === 'cl' ? '/X' : '-S'
         })).should.be.rejected();
     });
 
     it('should accept input files with paths', function () {
         return util.testConfiguration(minimal.projectWithArtifactWith({
+            host: util.host,
             files: ['./some_directory/main.c']
         }));
     });

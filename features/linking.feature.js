@@ -37,6 +37,7 @@ describe('Linking', function () {
 
     it('should compile and link correctly given several source files and includes', function () {
         return util.testConfiguration(minimal.projectWithArtifactWith({
+            host: util.host,
             files: [
                 'linked.c',
                 'source/mylibrary.c'
@@ -49,6 +50,7 @@ describe('Linking', function () {
 
     it('should link with libm by default', function () {
         return util.testConfiguration(minimal.projectWithArtifactWith({
+            host: util.host,
             files: [
                 'math.c'
             ]
@@ -57,6 +59,7 @@ describe('Linking', function () {
 
     it('should compile to an executable with outputName', function () {
         return util.writeConfiguration(minimal.projectWithArtifactWith({
+            host: util.host,
             outputName: 'my_executable'
         }))
         .then(util.generateWithParameters())
@@ -69,11 +72,13 @@ describe('Linking', function () {
         return util.testConfiguration(minimal.projectWith({
             artifacts: [
                 minimal.artifactWith({
+                    host: util.host,
                     type: 'static-library',
                     files: ['source/mylibrary.c'],
                     outputName: 'my_lib_name'
                 }),
                 minimal.artifactWith({
+                    host: util.host,
                     files: ['linked.c'],
                     libraries: ['my_lib_name'],
                     includePaths: ['include']
@@ -92,11 +97,13 @@ describe('Linking', function () {
         return util.testConfiguration(minimal.projectWith({
             artifacts: [
                 minimal.artifactWith({
+                    host: util.host,
                     type: 'static-library',
                     files: ['source/mylibrary.c'],
                     outputName: 'library'
                 }),
                 minimal.artifactWith({
+                    host: util.host,
                     files: ['linked.c'],
                     linkerFlags: linkLibraryForCompiler[util.hostCompiler],
                     includePaths: ['include']
@@ -109,17 +116,20 @@ describe('Linking', function () {
         return util.testConfiguration(minimal.projectWith({
             artifacts: [
                 minimal.artifactWith({
+                    host: util.host,
                     type: 'static-library',
                     files: ['source/mylibrary.c'],
                     outputName: 'my_lib_name'
                 }),
                 minimal.artifactWith({
+                    host: util.host,
                     type: 'dynamic-library',
                     files: ['source/mydynamiclibrary.c'],
                     libraries: ['my_lib_name'],
                     outputName: 'my_dyn_lib_name'
                 }),
                 minimal.artifactWith({
+                    host: util.host,
                     files: ['linked_dynamic.c'],
                     libraries: ['my_dyn_lib_name'],
                     includePaths: ['include']
@@ -132,12 +142,14 @@ describe('Linking', function () {
         return util.testConfiguration(minimal.projectWith({
             artifacts: [
                 minimal.artifactWith({
+                    host: util.host,
                     type: 'static-library',
                     files: ['source/mylibrary.c'],
                     outputName: 'my_lib_name',
                     outputPath: 'source'
                 }),
                 minimal.artifactWith({
+                    host: util.host,
                     files: ['linked.c'],
                     libraries: ['my_lib_name'],
                     includePaths: ['include'],
