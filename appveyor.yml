@@ -12,7 +12,7 @@
 version: 0.2.0+{build}
 
 install:
-    - ps: Install-Product node 4.4.0
+    - ps: Install-Product node 4.4
     - npm --version
     - npm install
 

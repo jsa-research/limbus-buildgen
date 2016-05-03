@@ -32,13 +32,10 @@ run_ci()
 
     mkdir -p $CI_SCRIPT_WWW_PATH
     echo Starting CI Build at $CI_DATE > $CI_LOG
-    echo BUILDGEN_NODE_VERSION: >> $CI_LOG
-    echo $BUILDGEN_NODE_VERSION >> $CI_LOG
-    echo >> $CI_LOG
     echo BUILDGEN_TARGET_COMPILER: >> $CI_LOG
     echo $BUILDGEN_TARGET_COMPILER >> $CI_LOG
     echo >> $CI_LOG
-    . utility-scripts/install_node.sh $BUILDGEN_NODE_VERSION >> $CI_LOG 2>&1
+    . utility-scripts/install_node.sh 5.10 >> $CI_LOG 2>&1
     . utility-scripts/echo_versions.sh >> $CI_LOG 2>&1
     echo Testing commit: >> $CI_LOG
     git log -n 1 >> $CI_LOG 2>&1
@@ -58,8 +55,6 @@ export BUILDGEN_TARGET_COMPILER
 
 ORIGINAL_CI_SCRIPT_WWW_PATH=$CI_SCRIPT_WWW_PATH
 
-# Use the current node version as nvm is not supported on FreeBSD
-BUILDGEN_NODE_VERSION=
 
 BUILDGEN_TARGET_COMPILER=clang
 run_ci
