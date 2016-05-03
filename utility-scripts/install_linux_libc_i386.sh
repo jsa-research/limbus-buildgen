@@ -12,7 +12,7 @@
 # As compiling GCC takes a long time, this script installs GNU GCC 6 only if
 # the OS is OS X and BUILDGEN_TARGET_COMPILER is set to "gcc".
 
-if test `uname` = "linux"
+if test `uname -s | tr 'A-Z' 'a-z'` = "linux"
 then
     sudo apt-get install gcc-multilib libc6-i386
 fi

@@ -12,7 +12,7 @@
 # As compiling GCC takes a long time, this script installs GNU GCC 6 only if
 # the OS is OS X and BUILDGEN_TARGET_COMPILER is set to "gcc".
 
-if test "$BUILDGEN_TARGET_COMPILER" = "gcc" -a `uname` = "Darwin"
+if test "$BUILDGEN_TARGET_COMPILER" = "gcc" -a `uname -s | tr 'A-Z' 'a-z'` = "Darwin"
 then
     PRE_BUILD_DIR=`pwd`
     brew tap homebrew/versions
