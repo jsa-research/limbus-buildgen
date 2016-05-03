@@ -171,7 +171,6 @@ The `host` property is used to specify how the artifacts will be built and for w
 |freebsd|FreeBSD|make|LLVM Clang|FreeBSD|IA-32|
 |freebsd-make-clang-freebsd-x86|FreeBSD|make|LLVM Clang|FreeBSD|IA-32|
 |freebsd-make-clang-freebsd-x64|FreeBSD|make|LLVM Clang|FreeBSD|AMD64|
-|freebsd-make-gcc-freebsd-x86|FreeBSD|make|GNU GCC|FreeBSD|IA-32|
 |freebsd-make-gcc-freebsd-x64|FreeBSD|make|GNU GCC|FreeBSD|AMD64|
 
 So for example, if you wanted to generate a makefile that builds on Mac OS X using the LLVM Clang compiler and also target Mac OS X on the IA-32 architecture you could use `darwin-make-clang-darwin-x86`. Or you could use `darwin` as these are the default settings.
@@ -313,7 +312,6 @@ Unit- & integration tests are automatically run against several combinations of 
 | win32-make-cl-win32-x64 | [![appveyor build status](http://img.shields.io/appveyor/ci/redien/limbus-buildgen.svg)](https://ci.appveyor.com/project/redien/limbus-buildgen/branch/master) | 4.4.x |
 | freebsd-make-clang-freebsd-x86 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/clang-x86/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/clang-x86/ci-log.txt) | 5.10.x |
 | freebsd-make-clang-freebsd-x64 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/clang-x64/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/clang-x64/ci-log.txt) | 5.10.x |
-| freebsd-make-gcc-freebsd-x86 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/gcc-x86/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/gcc-x86/ci-log.txt) | 5.10.x |
 | freebsd-make-gcc-freebsd-x64 | [![FreeBSD CI status](https://jesperoskarsson.se/limbus-buildgen-ci/gcc-x64/badge.svg)](https://jesperoskarsson.se/limbus-buildgen-ci/gcc-x64/ci-log.txt) | 5.10.x |
 
 <a name="building-from-source"></a>

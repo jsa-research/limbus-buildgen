@@ -24,7 +24,6 @@ module.exports.decorate = function (configuration) {
             artifact.host === 'darwin-make-clang-darwin-x86' ||
             artifact.host === 'linux-make-gcc-linux-x86' ||
             artifact.host === 'linux-make-clang-linux-x86' ||
-            artifact.host === 'freebsd-make-gcc-freebsd-x86' ||
             artifact.host === 'freebsd-make-clang-freebsd-x86') {
 
             if (artifact.type !== 'static-library') {
@@ -44,13 +43,6 @@ module.exports.decorate = function (configuration) {
                 artifact.linkerFlags = (artifact.linkerFlags || '') + ' -m64';
             }
             artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m64';
-        }
-
-        if (artifact.host === 'freebsd-make-gcc-freebsd-x86') {
-            if (artifact.type !== 'static-library') {
-                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -L/usr/lib32';
-            }
-            artifact.compilerFlags = (artifact.compilerFlags || '') + ' -B/usr/lib32 -DCOMPAT_32BIT';
         }
     }
 

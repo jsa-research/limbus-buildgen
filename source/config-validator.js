@@ -56,7 +56,6 @@ var validHosts = [
     'freebsd',
     'freebsd-make-clang-freebsd-x86',
     'freebsd-make-clang-freebsd-x64',
-    'freebsd-make-gcc-freebsd-x86',
     'freebsd-make-gcc-freebsd-x64',
 ];
 

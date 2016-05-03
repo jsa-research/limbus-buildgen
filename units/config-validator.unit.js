@@ -180,7 +180,6 @@ describe('config-validator', function () {
                 validateHost('freebsd');
                 validateHost('freebsd-make-clang-freebsd-x86');
                 validateHost('freebsd-make-clang-freebsd-x64');
-                validateHost('freebsd-make-gcc-freebsd-x86');
                 validateHost('freebsd-make-gcc-freebsd-x64');
             });
         });
