@@ -45,6 +45,13 @@ module.exports.decorate = function (configuration) {
             }
             artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m64';
         }
+
+        if (artifact.host === 'freebsd-make-gcc-freebsd-x86') {
+            if (artifact.type !== 'static-library') {
+                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -L/usr/lib32';
+            }
+            artifact.compilerFlags = (artifact.compilerFlags || '') + ' -B/usr/lib32 -DCOMPAT_32BIT';
+        }
     }
 
     return configuration;

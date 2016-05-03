@@ -323,4 +323,16 @@ describe('config-host-decorator', function () {
             });
         });
     });
+
+    describe('To find 32-bit versions of libraries on FreeBSD', function () {
+        shouldCompileWithFlagGivenHost('-B/usr/lib32 -DCOMPAT_32BIT', 'freebsd-make-gcc-freebsd-x86');
+        shouldLinkWithFlagGivenHost('-L/usr/lib32', 'freebsd-make-gcc-freebsd-x86');
+
+        it('should not pass 32-bit search paths to ar', function () {
+            shouldNotDecorateLinkerFlags('-L/usr/lib32', {
+                type: 'static-library',
+                host: 'freebsd-make-gcc-freebsd-x86'
+            });
+        });
+    });
 });
