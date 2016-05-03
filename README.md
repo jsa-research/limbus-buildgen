@@ -302,11 +302,11 @@ Unit- & integration tests are automatically run against several combinations of 
 | Target Host   | Build Status |  Node.js Versions   |
 | :------------ | :----------: |  :----------------- |
 | linux-make-clang-linux-x86 |||
-| linux-make-clang-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| linux-make-clang-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | linux-make-gcc-linux-x86 |||
-| linux-make-gcc-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| linux-make-gcc-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | darwin-make-clang-darwin-x86 |||
-| darwin-make-clang-darwin-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x, 4.4.x |
+| darwin-make-clang-darwin-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | darwin-make-gcc-darwin-x86 |||
 | darwin-make-gcc-darwin-x64 |||
 | win32-make-cl-win32-x86 |||
