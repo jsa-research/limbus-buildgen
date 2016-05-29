@@ -9,52 +9,73 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-module.exports.decorate = function (configuration) {
-    for (var artifactIndex = 0; artifactIndex < configuration.artifacts.length; artifactIndex += 1) {
-        var artifact = configuration.artifacts[artifactIndex];
+var hostNeedsRpath = function (host) {
+    return host !== 'win32' &&
+           host !== 'win32-make-cl-win32-x86' &&
+           host !== 'win32-make-cl-win32-x64' &&
+           host !== 'darwin' &&
+           host !== 'darwin-make-clang-darwin-x86' &&
+           host !== 'darwin-make-clang-darwin-x64' &&
+           host !== 'darwin-make-gcc-darwin-x86' &&
+           host !== 'darwin-make-gcc-darwin-x64';
+};
 
-        if (artifact.type === 'application') {
-            if (artifact.host !== 'win32' &&
-                artifact.host !== 'win32-make-cl-win32-x86' &&
-                artifact.host !== 'win32-make-cl-win32-x64' &&
-                artifact.host !== 'darwin' &&
-                artifact.host !== 'darwin-make-clang-darwin-x86' &&
-                artifact.host !== 'darwin-make-clang-darwin-x64' &&
-                artifact.host !== 'darwin-make-gcc-darwin-x86' &&
-                artifact.host !== 'darwin-make-gcc-darwin-x64') {
+var hostIs32Bit = function (host) {
+    return host === 'darwin' ||
+           host === 'linux' ||
+           host === 'freebsd' ||
+           host === 'darwin-make-gcc-darwin-x86' ||
+           host === 'darwin-make-clang-darwin-x86' ||
+           host === 'linux-make-gcc-linux-x86' ||
+           host === 'linux-make-clang-linux-x86' ||
+           host === 'freebsd-make-clang-freebsd-x86';
+};
 
-                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -lm -Wl,-rpath=.';
-            }
-        }
+var hostIs64Bit = function (host) {
+    return host === 'darwin-make-gcc-darwin-x64' ||
+           host === 'darwin-make-clang-darwin-x64' ||
+           host === 'linux-make-gcc-linux-x64' ||
+           host === 'linux-make-clang-linux-x64' ||
+           host === 'freebsd-make-gcc-freebsd-x64' ||
+           host === 'freebsd-make-clang-freebsd-x64';
+};
 
-        if (artifact.host === 'darwin' ||
-            artifact.host === 'linux' ||
-            artifact.host === 'freebsd' ||
-            artifact.host === 'darwin-make-gcc-darwin-x86' ||
-            artifact.host === 'darwin-make-clang-darwin-x86' ||
-            artifact.host === 'linux-make-gcc-linux-x86' ||
-            artifact.host === 'linux-make-clang-linux-x86' ||
-            artifact.host === 'freebsd-make-clang-freebsd-x86') {
-
-            if (artifact.type !== 'static-library') {
-                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -m32';
-            }
-            artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m32';
-        }
-
-        if (artifact.host === 'darwin-make-gcc-darwin-x64' ||
-            artifact.host === 'darwin-make-clang-darwin-x64' ||
-            artifact.host === 'linux-make-gcc-linux-x64' ||
-            artifact.host === 'linux-make-clang-linux-x64' ||
-            artifact.host === 'freebsd-make-gcc-freebsd-x64' ||
-            artifact.host === 'freebsd-make-clang-freebsd-x64') {
-
-            if (artifact.type !== 'static-library') {
-                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -m64';
-            }
-            artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m64';
-        }
+var addRpathToArtifactLinkerFlags = function (artifact) {
+    if (artifact.type === 'application') {
+        artifact.linkerFlags = (artifact.linkerFlags || '') + ' -lm -Wl,-rpath=.';
     }
+};
+
+var addArchitectureFlagToArtifactLinkerFlags = function (artifact, architecture) {
+    if (artifact.type !== 'static-library') {
+        artifact.linkerFlags = (artifact.linkerFlags || '') + ' -m' + architecture;
+    }
+};
+
+var addArchitectureFlagToArtifactCompilerFlags = function (artifact, architecture) {
+    artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m' + architecture;
+};
+
+module.exports.decorate = function (configuration) {
+    configuration.artifacts.forEach(function (artifact) {
+        var architecture;
+
+        if (hostNeedsRpath(artifact.host)) {
+            addRpathToArtifactLinkerFlags(artifact);
+        }
+
+        if (hostIs32Bit(artifact.host)) {
+            architecture = '32';
+            addArchitectureFlagToArtifactLinkerFlags(artifact, architecture);
+            addArchitectureFlagToArtifactCompilerFlags(artifact, architecture);
+        }
+
+        if (hostIs64Bit(artifact.host)) {
+            architecture = '64';
+            addArchitectureFlagToArtifactLinkerFlags(artifact, architecture);
+            addArchitectureFlagToArtifactCompilerFlags(artifact, architecture);
+        }
+    });
 
     return configuration;
 };
