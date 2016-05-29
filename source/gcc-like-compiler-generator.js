@@ -16,46 +16,72 @@ exports.variables = function (options) {
     };
 };
 
-exports.compilerCommand = function (options) {
-    var extraFlags = '';
+var compilerFlagsFromOptions = function (options) {
+    var flags = '';
+
     if (options.includePaths !== undefined) {
         var separator = ' -I';
-        extraFlags += separator + options.includePaths.join(separator);
+        flags += separator + options.includePaths.join(separator);
     }
+
     if (options.type === 'dynamic-library') {
-        extraFlags += ' -fpic';
+        flags += ' -fpic';
     }
+
     if (options.flags !== undefined) {
-        extraFlags += ' ' + options.flags;
+        flags += ' ' + options.flags;
     }
-    return '$(CC) -c ' + options.file + ' -o ' + options.file + '.o' + extraFlags;
+
+    return flags;
 };
 
-exports.linkerCommand = function (options) {
-    var extraFlags = '';
+exports.compilerCommand = function (options) {
+    return '$(CC) -c ' + options.file + ' -o ' + options.file + '.o' + compilerFlagsFromOptions(options);
+};
+
+var linkerFlagsFromOptions = function (options) {
     var separator;
+    var flags = '';
+
     if (options.libraries !== undefined) {
         separator = ' -L./ -l';
-        extraFlags += separator + options.libraries.join(separator);
+        flags += separator + options.libraries.join(separator);
     }
+
     if (options.libraryPaths !== undefined) {
         separator = ' -L';
-        extraFlags += separator + options.libraryPaths.join(separator);
+        flags += separator + options.libraryPaths.join(separator);
     }
+
     if (options.flags !== undefined) {
-        extraFlags += ' ' + options.flags;
+        flags += ' ' + options.flags;
     }
 
-    var outputPath = options.outputPath || '';
-    var objectFiles = options.files.join('.o ') + '.o';
+    return flags;
+};
 
-    if (options.type === 'static-library') {
-        return '$(AR) rcs' + extraFlags + ' ' + outputPath + 'lib' + options.outputName + '.a ' + objectFiles;
+var objectFilesFromFiles = function (files) {
+    return files.join('.o ') + '.o';
+};
 
-    } else if (options.type === 'dynamic-library') {
-        return '$(CC) -shared -o ' + outputPath + 'lib' + options.outputName + '.so ' + objectFiles + ' ' + extraFlags;
+var linkerCommandFromType = function (type, outputPath, outputName, objectFiles, flags) {
+    if (type === 'static-library') {
+        return '$(AR) rcs' + flags + ' ' + outputPath + 'lib' + outputName + '.a ' + objectFiles;
+
+    } else if (type === 'dynamic-library') {
+        return '$(CC) -shared -o ' + outputPath + 'lib' + outputName + '.so ' + objectFiles + ' ' + flags;
 
     } else {
-        return '$(CC) -o ' + outputPath + options.outputName + ' ' + objectFiles + ' ' + extraFlags;
+        return '$(CC) -o ' + outputPath + outputName + ' ' + objectFiles + ' ' + flags;
     }
+}
+
+exports.linkerCommand = function (options) {
+    return linkerCommandFromType(
+        options.type,
+        options.outputPath || '',
+        options.outputName,
+        objectFilesFromFiles(options.files),
+        linkerFlagsFromOptions(options)
+    );
 };
