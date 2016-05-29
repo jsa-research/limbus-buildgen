@@ -11,8 +11,8 @@
 
 var _ = require('./publicdash');
 
-var processPath = function (path) {
-    return path.replace(/\//g, '\\');
+var changeToValidPath = function (path) {
+    return (path || '').replace(/\//g, '\\');
 };
 
 exports.variables = function () {
@@ -22,51 +22,78 @@ exports.variables = function () {
     };
 };
 
-exports.compilerCommand = function (options) {
-    var extraFlags = '';
+var generateCompilerFlags = function (options) {
+    var flags = '';
     if (options.includePaths) {
-        extraFlags += ' /I' + _.map(options.includePaths, processPath).join(' /I');
+        flags += ' /I' + _.map(options.includePaths, changeToValidPath).join(' /I');
     }
     if (options.type === 'dynamic-library') {
-        extraFlags += ' /D_USRDLL /D_WINDLL';
+        flags += ' /D_USRDLL /D_WINDLL';
     }
     if (options.flags !== undefined) {
-        extraFlags += ' ' + options.flags;
+        flags += ' ' + options.flags;
     }
-
-    var processedFile = processPath(options.file);
-    return '$(CC) /nologo /c /Fo' + processedFile + '.obj' + extraFlags + ' ' + processedFile;
+    return flags + ' ';
 };
 
-exports.linkerCommand = function (options) {
-    var libraries = '';
-    if (options.libraries !== undefined) {
-        libraries += ' ' + options.libraries.join('.lib ') + '.lib';
-    }
+exports.compilerCommand = function (options) {
+    var compiledFile = changeToValidPath(options.file);
+    return '$(CC) /nologo /c /Fo' +
+           compiledFile + '.obj' +
+           generateCompilerFlags(options) +
+           compiledFile;
+};
 
-    var extraFlags = '';
+var generateLinkerFlags = function (options) {
+    var flags = '';
     if (options.libraryPaths !== undefined) {
         var separator = ' /LIBPATH:';
-        extraFlags += separator + options.libraryPaths.join(separator);
+        flags += separator + options.libraryPaths.join(separator);
     }
     if (options.flags !== undefined) {
-        extraFlags += ' ' + options.flags;
+        flags += ' ' + options.flags;
     }
+    return flags;
+};
 
-    var command,
-        outputNameSuffix;
-    if (options.type === 'static-library') {
-        command = '$(AR) /nologo /OUT:';
-        outputNameSuffix = '.lib';
-    } else if (options.type === 'dynamic-library') {
-        command = '$(CC) /nologo /LD /Fe';
-        outputNameSuffix = '.dll';
+var linkerCommandPrefixFromType = function (type) {
+    if (type === 'static-library') {
+        return '$(AR) /nologo /OUT:';
+    } else if (type === 'dynamic-library') {
+        return '$(CC) /nologo /LD /Fe';
     } else {
-        command = '$(CC) /nologo /Fe';
-        outputNameSuffix = '';
+        return '$(CC) /nologo /Fe';
     }
+};
 
-    var outputPath = options.outputPath || '';
+var outputNameSuffixFromType = function (type) {
+    if (type === 'static-library') {
+        return '.lib ';
+    } else if (type === 'dynamic-library') {
+        return '.dll ';
+    } else {
+        return ' ';
+    }
+};
 
-    return command + processPath(outputPath) + options.outputName + outputNameSuffix + ' ' + _.map(options.files, processPath).join('.obj ') + '.obj' + libraries + ' /link' + extraFlags;
+var librariesToLinkFromOptions = function (options) {
+    if (options.libraries !== undefined) {
+        return ' ' + options.libraries.join('.lib ') + '.lib';
+    } else {
+        return '';
+    }
+};
+
+var objectFilesFromFiles = function (files) {
+    return _.map(files, changeToValidPath).join('.obj ') + '.obj';
+}
+
+exports.linkerCommand = function (options) {
+    return linkerCommandPrefixFromType(options.type) +
+           changeToValidPath(options.outputPath) +
+           options.outputName +
+           outputNameSuffixFromType(options.type) +
+           objectFilesFromFiles(options.files) +
+           librariesToLinkFromOptions(options) +
+           ' /link' + generateLinkerFlags(options);
 };
