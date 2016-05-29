@@ -22,7 +22,7 @@ exports.variables = function () {
     };
 };
 
-var generateCompilerFlags = function (options) {
+var compilerFlagsFromOptions = function (options) {
     var flags = '';
     if (options.includePaths) {
         flags += ' /I' + _.map(options.includePaths, changeToValidPath).join(' /I');
@@ -40,7 +40,7 @@ exports.compilerCommand = function (options) {
     var compiledFile = changeToValidPath(options.file);
     return '$(CC) /nologo /c /Fo' +
            compiledFile + '.obj' +
-           generateCompilerFlags(options) +
+           compilerFlagsFromOptions(options) +
            compiledFile;
 };
 
