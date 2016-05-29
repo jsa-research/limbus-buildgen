@@ -9,8 +9,6 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var _ = require('./publicdash');
-
 exports.build = function (variables, configurations) {
     var targets = [];
     var variableString = '';

@@ -27,7 +27,7 @@ var mapArray = function (array, func) {
     return newArray;
 };
 
-exports.map = function (collection, func) {
+exports.map = function (collection) {
     if (Array.isArray(collection)) {
         return mapArray.apply(this, arguments);
     } else {
@@ -65,7 +65,7 @@ var filterMap = function (hashmap, func) {
     return newHashmap;
 };
 
-exports.filter = function (collection, func) {
+exports.filter = function (collection) {
     if (Array.isArray(collection)) {
         return filterArray.apply(this, arguments);
     } else {

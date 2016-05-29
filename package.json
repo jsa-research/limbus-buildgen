@@ -10,23 +10,25 @@
   "devDependencies": {
     "blanket": "^1.2.2",
     "coveralls": "^2.11.8",
+    "eslint": "^2.11.0",
     "lcov-result-merger": "^1.0.2",
     "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.2.0",
+    "promise": "^7.1.1",
     "should": "^8.2.2",
     "stream-to-c-header-char-array": "^1.1.0",
     "travis-cov": "^0.2.5",
-    "webpack": "^1.13.0",
-    "uglify-js": "^2.6.2"
+    "uglify-js": "^2.6.2",
+    "webpack": "^1.13.0"
   },
   "scripts": {
     "test": "mocha \"**/*.unit.js\" && npm run-script build && mocha -t 20000 \"**/*.feature.js\"",
     "coverage-travis-ci": "mocha -t 20000 --require blanket -R travis-cov \"**/*.unit.js\" \"**/*.feature.js\"",
     "coverage-coveralls-io": "./utility-scripts/coveralls.sh",
     "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" \"**/*.feature.js\" > generated/coverage.html",
-    "unit-test": "mocha \"**/*.unit.js\" ||echo",
-    "integration-test": "npm run-script build && mocha -t 20000 \"**/*.feature.js\" ||echo",
-    "pack-js": "webpack source/limbus-buildgen-cli.js generated/packed.js --config webpack.config.js && node -e \"var fs = require('fs'); console.log('module = {exports: {}};' + fs.readFileSync('generated/packed.js').toString());\" | uglifyjs - --compress --mangle | stream-to-c-header-char-array javascript_source > generated/packed_javascript_source.h",
+    "unit-test": "mocha \"**/*.unit.js\" || echo",
+    "integration-test": "npm run-script build && mocha -t 20000 \"**/*.feature.js\" || echo",
+    "pack-js": "webpack cli/limbus-buildgen-cli.js generated/packed.js --config webpack.config.js && node -e \"var fs = require('fs'); console.log('module = {exports: {}};' + fs.readFileSync('generated/packed.js').toString());\" | uglifyjs - --compress --mangle | stream-to-c-header-char-array javascript_source > generated/packed_javascript_source.h",
     "build": "npm run-script pack-js && make",
     "install": "make"
   },

@@ -15,7 +15,7 @@ var processPath = function (path) {
     return path.replace(/\//g, '\\');
 };
 
-exports.variables = function (options) {
+exports.variables = function () {
     return {
         CC: 'cl',
         AR: 'lib'
@@ -66,7 +66,7 @@ exports.linkerCommand = function (options) {
         outputNameSuffix = '';
     }
 
-    var outputPath = options.outputPath || '';
+    var outputPath = options.outputPath || '';
 
     return command + processPath(outputPath) + options.outputName + outputNameSuffix + ' ' + _.map(options.files, processPath).join('.obj ') + '.obj' + libraries + ' /link' + extraFlags;
 };

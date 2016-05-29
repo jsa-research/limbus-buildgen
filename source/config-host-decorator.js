@@ -13,7 +13,7 @@ module.exports.decorate = function (configuration) {
                 artifact.host !== 'darwin-make-gcc-darwin-x86' &&
                 artifact.host !== 'darwin-make-gcc-darwin-x64') {
 
-                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -lm -Wl,-rpath=.';
+                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -lm -Wl,-rpath=.';
             }
         }
 
@@ -27,9 +27,9 @@ module.exports.decorate = function (configuration) {
             artifact.host === 'freebsd-make-clang-freebsd-x86') {
 
             if (artifact.type !== 'static-library') {
-                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -m32';
+                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -m32';
             }
-            artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m32';
+            artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m32';
         }
 
         if (artifact.host === 'darwin-make-gcc-darwin-x64' ||
@@ -40,9 +40,9 @@ module.exports.decorate = function (configuration) {
             artifact.host === 'freebsd-make-clang-freebsd-x64') {
 
             if (artifact.type !== 'static-library') {
-                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -m64';
+                artifact.linkerFlags = (artifact.linkerFlags || '') + ' -m64';
             }
-            artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m64';
+            artifact.compilerFlags = (artifact.compilerFlags || '') + ' -m64';
         }
     }
 

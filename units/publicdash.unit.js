@@ -9,7 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var should = require('should');
+require('should');
 var _ = require('../source/publicdash');
 
 describe('_', function () {
@@ -59,7 +59,7 @@ describe('_', function () {
 
     describe('filter', function () {
         it('should return [] given [] and \\item index -> true', function () {
-            _.filter([], function (item, index) {
+            _.filter([], function () {
                 return true;
             }).should.match([]);
         });
@@ -69,7 +69,7 @@ describe('_', function () {
             }).should.match([1, 3]);
         });
         it('should return {} given {} and \\item key -> true', function () {
-            var result = _.filter({}, function (item, key) {
+            var result = _.filter({}, function () {
                 return true;
             });
             Array.isArray(result).should.be.false;

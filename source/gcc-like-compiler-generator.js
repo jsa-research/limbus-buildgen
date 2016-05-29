@@ -33,12 +33,13 @@ exports.compilerCommand = function (options) {
 
 exports.linkerCommand = function (options) {
     var extraFlags = '';
+    var separator;
     if (options.libraries !== undefined) {
-        var separator = ' -L./ -l';
+        separator = ' -L./ -l';
         extraFlags += separator + options.libraries.join(separator);
     }
     if (options.libraryPaths !== undefined) {
-        var separator = ' -L';
+        separator = ' -L';
         extraFlags += separator + options.libraryPaths.join(separator);
     }
     if (options.flags !== undefined) {

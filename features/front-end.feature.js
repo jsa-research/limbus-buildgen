@@ -9,7 +9,8 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var should = require('should');
+require('should');
+var Promise = require('promise');
 var util = require('./util.js');
 var shell = require('./shell.js');
 var minimal = require('../source/minimal-configuration');

@@ -9,7 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var buildgen = require('./limbus-buildgen');
+var buildgen = require('../source/limbus-buildgen');
 var fs = require('fs');
 
 var parsedArguments = parseArguments(process.argv.slice(1));
@@ -22,11 +22,10 @@ if (parsedArguments.host !== undefined) {
 
 try {
     var files = buildgen.generate(config);
-
     for (var path in files) {
         var file = files[path];
         if (file.isFile) {
-            fs.writeFileSync((parsedArguments.outputPath || '.') + '/' + path, file.contents);
+            fs.writeFileSync((parsedArguments.outputPath || '.') + '/' + path, file.contents);
         }
     }
 } catch (e) {
@@ -45,14 +44,14 @@ function parseArguments (processArguments) {
         },
         '--help': function () {
             console.log("\n" +
-                        "Usage: limbus-buildgen [flags] <path to JSON configuration file>\n" +
-                        "\n" +
-                        "Options:\n" +
-                        "\n" +
-                        "  --help                          output usage information\n" +
-                        "  --host <host>                   override the configured target host\n" +
-                        "  --outputPath <path>             specify the path where build files are written\n" +
-                        "                                  to (default: .)");
+                "Usage: limbus-buildgen [flags] <path to JSON configuration file>\n" +
+                "\n" +
+                "Options:\n" +
+                "\n" +
+                "  --help                          output usage information\n" +
+                "  --host <host>                   override the configured target host\n" +
+                "  --outputPath <path>             specify the path where build files are written\n" +
+                "                                  to (default: .)");
             process.exit(0);
         }
     };
@@ -82,7 +81,7 @@ function parseArguments (processArguments) {
 
     function argumentIsFlag (argument) {
         return argument.substr(0, 2) === '--';
-    };
+    }
 
     function getFlagValue (flags, index) {
         if (index + 1 >= flags.length) {
@@ -90,7 +89,7 @@ function parseArguments (processArguments) {
         }
 
         return flags[index + 1];
-    };
+    }
 
     function setConfigPath (path) {
         if (result.configPath === undefined) {
@@ -98,10 +97,10 @@ function parseArguments (processArguments) {
         } else {
             exitWithError('Too many arguments');
         }
-    };
-};
+    }
+}
 
 function exitWithError (error) {
     console.log(error);
     process.exit(-1);
-};
+}

@@ -9,6 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+var Promise = require('promise');
 var shell = require('./shell');
 var fs = require('fs');
 
@@ -109,7 +110,7 @@ var findExecutableFromConfiguration = function (configuration) {
 
 exports.generateWithParameters = function (parameters) {
     return function (configurationDetails) {
-        return shell.exec(exports.frontEndExecutable + (parameters ? ' ' + parameters : '') + ' ' + configurationDetails.configurationPath, {cwd: 'temp'})
+        return shell.exec(exports.frontEndExecutable + (parameters ? ' ' + parameters : '') + ' ' + configurationDetails.configurationPath, {cwd: 'temp'})
         .then(function () {
             return Promise.resolve({
                 makefile: 'Makefile',
@@ -164,7 +165,7 @@ exports.runBuiltExecutable = function (executableOverride) {
 };
 
 exports.matchOutput = function (matcher) {
-    matcher = matcher || /42/;
+    matcher = matcher || /42/;
 
     return function (output) {
         if (output.stdout.match(matcher)) {

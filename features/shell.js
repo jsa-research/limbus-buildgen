@@ -9,6 +9,8 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+var Promise = require('promise');
+
 exports.path = function (path) {
     return path ? path.replace(/\//g, require('path').sep) : path;
 };
