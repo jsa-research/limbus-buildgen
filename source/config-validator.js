@@ -78,18 +78,25 @@ var stringArrayProperties = [
     'libraries'
 ];
 
+var validResult = function () {
+    return { valid: true };
+};
+var errorResult = function (error, property) {
+    return {
+        valid: false,
+        error: error,
+        property: property
+    };
+};
+
 var ConfigValidator = function () {};
 
 var _ = require('./publicdash');
 
 var returnErrorOn = function (configuration, properties, error, predicate) {
     return _.reduce(properties, function (result, property) {
-        return predicate(property) ? {
-            valid: false,
-            error: error,
-            property: property
-        } : result;
-    }, {valid: true});
+        return predicate(property) ? errorResult(error, property) : result;
+    }, validResult());
 };
 
 var validateRequiredProperties = function (config) {
@@ -154,18 +161,12 @@ var validateUnknownProperties = function (requiredProperties, optionalProperties
             if (config.hasOwnProperty(property)) {
                 if (requiredProperties.indexOf(property) === -1 &&
                     optionalProperties.indexOf(property) === -1) {
-                    return {
-                        valid: false,
-                        error: error,
-                        property: property
-                    };
+                    return errorResult(error, property);
                 }
             }
         }
 
-        return {
-            valid: true
-        };
+        return validResult();
     };
 };
 
@@ -175,51 +176,31 @@ var validateForInvalidValues = function (config) {
     };
 
     if (!isValidValue(validTypes, config.type)) {
-        return {
-            valid: false,
-            error: 'invalid property',
-            property: 'type'
-        };
+        return errorResult('invalid property', 'type');
     }
 
     if (!isValidValue(validHosts, config.host)) {
-        return {
-            valid: false,
-            error: 'invalid property',
-            property: 'host'
-        };
+        return errorResult('invalid property', 'host');
     }
 
-    return {
-        valid: true
-    };
+    return validResult();
 };
 
 var validateFileExtensions = function (config) {
     return _.reduce(config.files, function (result, file) {
         if (result.valid && file.match(/\.\w/) === null) {
-            return {
-                valid: false,
-                error: 'no extension',
-                property: 'files'
-            };
+            return errorResult('no extension', 'files');
         }
         return result;
-    }, {valid: true});
+    }, validResult());
 };
 
 var validateMiscConstraints = function (config) {
     if (config.type === 'static-library' && (config.libraries !== undefined && config.libraries.length > 0)) {
-        return {
-            valid: false,
-            error: 'given libraries with static-library',
-            property: 'libraries'
-        };
+        return errorResult('given libraries with static-library', 'libraries');
     }
 
-    return {
-        valid: true
-    };
+    return validResult();
 };
 
 ConfigValidator.validate = function (config) {
@@ -247,7 +228,7 @@ ConfigValidator.validate = function (config) {
         }, startingResult);
     };
 
-    var projectValidation = validate(config, projectValidators, {valid: true});
+    var projectValidation = validate(config, projectValidators, validResult());
 
     return _.reduce(config.artifacts, function (result, artifact) {
         return result.valid ? validate(artifact, validators, result) : result;
