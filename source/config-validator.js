@@ -118,7 +118,7 @@ var validateStringProjectProperties = function (config) {
 
 var arrayContainsNonString = function (array) {
     var index;
-    for (index = 0; index < array.length; ++index) {
+    for (index = 0; index < array.length; index += 1) {
         var value = array[index];
         if (typeof value !== 'string') {
             return true;

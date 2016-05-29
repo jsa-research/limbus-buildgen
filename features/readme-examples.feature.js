@@ -21,6 +21,7 @@ var jsonExampleExpressions = [];
 var usageInformation;
 
 var readme = fs.readFileSync('README.md').toString();
+
 readme.replace(/```javascript([\s\S]+?)```/gi, function (match, example) {
     example = example.replace(/require\(\'limbus\-buildgen\'\)/g, "require('../source/limbus-buildgen')");
     javascriptExamples.push(example);

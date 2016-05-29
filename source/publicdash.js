@@ -20,7 +20,7 @@ var mapHashmap = function (hashmap, func) {
 
 var mapArray = function (array, func) {
     var newArray = [];
-    for (var i = 0; i < array.length; ++i) {
+    for (var i = 0; i < array.length; i += 1) {
         var item = array[i];
         newArray[i] = func(item, i);
     }
@@ -45,7 +45,7 @@ exports.reduce = function (collection, func, accumulator) {
 
 var filterArray = function (array, func) {
     var newArray = [];
-    for (var i = 0; i < array.length; ++i) {
+    for (var i = 0; i < array.length; i += 1) {
         var value = array[i];
         if (func(value, i)) {
             newArray.push(value);

@@ -22,7 +22,9 @@ if (parsedArguments.host !== undefined) {
 
 try {
     var files = buildgen.generate(config);
+
     for (var path in files) {
+
         var file = files[path];
         if (file.isFile) {
             fs.writeFileSync((parsedArguments.outputPath || '.') + '/' + path, file.contents);
@@ -65,6 +67,7 @@ function parseArguments (processArguments) {
 
         } else {
             var flagHandler = flagHandlers[argument];
+
             if (flagHandler) {
                 flagHandler(i);
             } else {

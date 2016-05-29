@@ -1,6 +1,6 @@
 
 module.exports.decorate = function (configuration) {
-    for (var artifactIndex = 0; artifactIndex < configuration.artifacts.length; artifactIndex++) {
+    for (var artifactIndex = 0; artifactIndex < configuration.artifacts.length; artifactIndex += 1) {
         var artifact = configuration.artifacts[artifactIndex];
 
         if (artifact.type === 'application') {

@@ -100,7 +100,7 @@ exports.writeConfiguration = function (configuration) {
 };
 
 var findExecutableFromConfiguration = function (configuration) {
-    for (var artifactIndex = 0; artifactIndex < configuration.artifacts.length; artifactIndex++) {
+    for (var artifactIndex = 0; artifactIndex < configuration.artifacts.length; artifactIndex += 1) {
         var artifact = configuration.artifacts[artifactIndex];
         if (artifact.type === 'application') {
             return (artifact.outputPath !== undefined && artifact.outputPath.length > 0 ? shell.path(artifact.outputPath + '/') : shell.path('./')) + artifact.outputName;

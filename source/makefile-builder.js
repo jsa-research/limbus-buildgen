@@ -23,7 +23,7 @@ exports.build = function (variables, configurations) {
         configurations = variables;
     }
 
-    for (var configurationIndex = 0; configurationIndex < configurations.length; configurationIndex++) {
+    for (var configurationIndex = 0; configurationIndex < configurations.length; configurationIndex += 1) {
         var configuration = configurations[configurationIndex];
 
         var dependency;

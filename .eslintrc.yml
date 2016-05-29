@@ -63,9 +63,7 @@ rules:
   max-statements: 'off'
   max-statements-per-line: 'off'
   new-parens: error
-  newline-after-var:
-      - error
-      - never
+  newline-after-var: 'off'
   newline-before-return: 'off'
   newline-per-chained-call: 'off'
   no-alert: 'off'

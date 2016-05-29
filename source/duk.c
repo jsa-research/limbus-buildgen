@@ -39,7 +39,7 @@ static int compile_and_execute(duk_context* context) {
     duk_push_global_object(context);
     duk_push_object(context);
     duk_push_array(context);
-    for (i = 0; i < argument_count; ++i) {
+    for (i = 0; i < argument_count; i += 1) {
         duk_push_string(context, arguments[i]);
         duk_put_prop_index(context, -2, i);
     }
