@@ -20,7 +20,7 @@
     "uglify-js": "^2.6.2"
   },
   "scripts": {
-    "test": "npm run-script build && mocha -t 20000 \"**/*.unit.js\" \"**/*.feature.js\"",
+    "test": "mocha \"**/*.unit.js\" && npm run-script build && mocha -t 20000 \"**/*.feature.js\"",
     "coverage-travis-ci": "mocha -t 20000 --require blanket -R travis-cov \"**/*.unit.js\" \"**/*.feature.js\"",
     "coverage-coveralls-io": "./utility-scripts/coveralls.sh",
     "coverage": "mocha --require blanket -R html-cov \"**/*.unit.js\" \"**/*.feature.js\" > generated/coverage.html",
