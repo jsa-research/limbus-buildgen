@@ -11,6 +11,7 @@
 
 var requiredProjectProperties = [
     'title',
+    'host',
     'artifacts'
 ];
 
@@ -19,7 +20,6 @@ var optionalProjectProperties = [];
 var requiredProperties = [
     'title',
     'type',
-    'host',
     'files',
     'outputName'
 ];
@@ -99,6 +99,18 @@ var returnErrorOn = function (configuration, properties, error, predicate) {
     }, validResult());
 };
 
+var isValidValue = function (validValues, value) {
+    return validValues.indexOf(value) !== -1;
+};
+
+var validateForInvalidProjectValues = function (config) {
+    if (!isValidValue(validHosts, config.host)) {
+        return errorResult('invalid project property', 'host');
+    }
+
+    return validResult();
+};
+
 var validateRequiredProperties = function (config) {
     return returnErrorOn(config, requiredProperties, 'missing required property', function (property) {
         return config[property] === undefined;
@@ -171,16 +183,8 @@ var validateUnknownProperties = function (requiredProperties, optionalProperties
 };
 
 var validateForInvalidValues = function (config) {
-    var isValidValue = function (validValues, value) {
-        return validValues.indexOf(value) !== -1;
-    };
-
     if (!isValidValue(validTypes, config.type)) {
         return errorResult('invalid property', 'type');
-    }
-
-    if (!isValidValue(validHosts, config.host)) {
-        return errorResult('invalid property', 'host');
     }
 
     return validResult();
@@ -219,6 +223,7 @@ ConfigValidator.validate = function (config) {
     var projectValidators = [
         validateUnknownProperties(requiredProjectProperties, optionalProjectProperties, 'unknown project property'),
         validateRequiredProjectProperties,
+        validateForInvalidProjectValues,
         validateStringProjectProperties
     ];
 

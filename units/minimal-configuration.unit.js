@@ -19,10 +19,10 @@ describe('minimal-configuration', function () {
 
             configuration.should.deepEqual({
                 title: 'project',
+                host: process.platform,
                 artifacts: [{
                     title: 'app',
                     type: 'application',
-                    host: process.platform,
                     files: ['main.c'],
                     outputName: 'app'
                 }]
@@ -38,10 +38,10 @@ describe('minimal-configuration', function () {
 
             configuration.should.deepEqual({
                 title: 'other title',
+                host: process.platform,
                 artifacts: [{
                     title: 'app',
                     type: 'application',
-                    host: process.platform,
                     files: ['main.c'],
                     outputName: 'app'
                 }]
@@ -57,10 +57,10 @@ describe('minimal-configuration', function () {
 
             configuration.should.deepEqual({
                 title: 'project',
+                host: process.platform,
                 artifacts: [{
                     title: 'other title',
                     type: 'application',
-                    host: process.platform,
                     files: ['main.c'],
                     outputName: 'app'
                 }]
@@ -77,7 +77,6 @@ describe('minimal-configuration', function () {
             configuration.should.deepEqual({
                 title: 'other title',
                 type: 'application',
-                host: process.platform,
                 files: ['main.c'],
                 outputName: 'app'
             });

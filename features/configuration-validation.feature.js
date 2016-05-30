@@ -24,9 +24,13 @@ describe('Configuration Validation', function () {
     });
 
     it('should compile given a minimal artifact configuration', function () {
-        return util.testConfiguration(minimal.projectWithArtifactWith({
+        return util.testConfiguration(minimal.projectWith({
             host: util.host,
-            files: ['main.c']
+            artifacts: [
+                minimal.artifactWith({
+                    files: ['main.c']
+                })
+            ]
         }));
     });
 
@@ -67,6 +71,12 @@ describe('Configuration Validation', function () {
             }), /missing required project property/i, /title/);
         });
 
+        it('should give error "missing required project property" with property "host" when missing a project host', function () {
+            return configShouldFailWith(minimal.projectWith({
+                host: undefined
+            }), /missing required project property/i, /host/);
+        });
+
         it('should give error "missing required project property" with property "artifacts" when missing an artifacts list', function () {
             return configShouldFailWith(minimal.projectWith({
                 artifacts: undefined
@@ -83,12 +93,6 @@ describe('Configuration Validation', function () {
             return configShouldFailWith(minimal.projectWithArtifactWith({
                 type: undefined
             }), /missing required property/i, /type/);
-        });
-
-        it('should give error "missing required property" with property "host" when missing a host', function () {
-            return configShouldFailWith(minimal.projectWithArtifactWith({
-                host: undefined
-            }), /missing required property/i, /host/);
         });
 
         it('should give error "missing required property" with property "files" when missing files', function () {
@@ -111,16 +115,16 @@ describe('Configuration Validation', function () {
     });
 
     describe('Invalid properties', function () {
+        it('should give error "invalid project property" with property "host" when host has an invalid value', function () {
+            return configShouldFailWith(minimal.projectWith({
+                host: 'invalid-host'
+            }), /invalid project property/i, /host/);
+        });
+
         it('should give error "invalid property" with property "type" when type has an invalid value', function () {
             return configShouldFailWith(minimal.projectWithArtifactWith({
                 type: 'invalid-type'
             }), /invalid property/i, /type/);
-        });
-
-        it('should give error "invalid property" with property "host" when host has an invalid value', function () {
-            return configShouldFailWith(minimal.projectWithArtifactWith({
-                host: 'invalid-host'
-            }), /invalid property/i, /host/);
         });
 
         it('should give error "project property is not a string" with property "title" when project title is not a string', function () {

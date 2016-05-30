@@ -105,7 +105,7 @@ var modifyConfig = function (configuration) {
 };
 
 var selectGenerator = function (configuration) {
-    var host = configuration.artifacts[0].host;
+    var host = configuration.host;
     return CompilerGeneratorSelector.select(host, compilers);
 };
 

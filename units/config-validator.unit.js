@@ -58,6 +58,15 @@ describe('config-validator', function () {
                 result.property.should.equal('title');
             });
 
+            it('should return {valid: false, error: "missing required project property", property: "host"} when missing a host', function () {
+                var result = ConfigValidator.validate(minimal.projectWith({
+                    host: undefined
+                }));
+                result.valid.should.be.false();
+                result.error.should.equal('missing required project property');
+                result.property.should.equal('host');
+            });
+
             it('should return {valid: false, error: "missing required project property", property: "artifacts"} when missing an artifacts list', function () {
                 var result = ConfigValidator.validate(minimal.projectWith({
                     artifacts: undefined
@@ -83,15 +92,6 @@ describe('config-validator', function () {
                 result.valid.should.be.false();
                 result.error.should.equal('missing required property');
                 result.property.should.equal('type');
-            });
-
-            it('should return {valid: false, error: "missing required property", property: "host"} when missing a host', function () {
-                var result = ConfigValidator.validate(minimal.projectWithArtifactWith({
-                    host: undefined
-                }));
-                result.valid.should.be.false();
-                result.error.should.equal('missing required property');
-                result.property.should.equal('host');
             });
 
             it('should return {valid: false, error: "missing required property", property: "files"} when missing source files', function () {
@@ -147,18 +147,18 @@ describe('config-validator', function () {
         });
 
         describe('Valid host values', function () {
-            it('should return {valid: false, error: "invalid property", property: "host"} when host is an invalid value', function () {
-                var result = ConfigValidator.validate(minimal.projectWithArtifactWith({
+            it('should return {valid: false, error: "invalid project property", property: "host"} when host is an invalid value', function () {
+                var result = ConfigValidator.validate(minimal.projectWith({
                     host: 'invalid-host'
                 }));
                 result.valid.should.be.false();
-                result.error.should.equal('invalid property');
+                result.error.should.equal('invalid project property');
                 result.property.should.equal('host');
             });
 
             it('should return {valid: true} when host is a valid value', function () {
                 var validateHost = function (host) {
-                    var result = ConfigValidator.validate(minimal.projectWithArtifactWith({
+                    var result = ConfigValidator.validate(minimal.projectWith({
                         host: host
                     }));
                     result.valid.should.be.true();

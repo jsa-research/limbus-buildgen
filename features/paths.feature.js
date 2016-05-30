@@ -26,26 +26,38 @@ describe('Paths', function () {
     });
 
     it('should use the outputPath', function () {
-        return util.testConfiguration(minimal.projectWithArtifactWith({
+        return util.testConfiguration(minimal.projectWith({
             host: util.host,
-            files: ['main.c'],
-            outputPath: 'abc'
+            artifacts: [
+                minimal.artifactWith({
+                    files: ['main.c'],
+                    outputPath: 'abc'
+                })
+            ]
         }));
     });
 
     it('should remove trailing path separators from outputPath', function () {
-        return util.testConfiguration(minimal.projectWithArtifactWith({
+        return util.testConfiguration(minimal.projectWith({
             host: util.host,
-            files: ['main.c'],
-            outputPath: 'abc/'
+            artifacts: [
+                minimal.artifactWith({
+                    files: ['main.c'],
+                    outputPath: 'abc/'
+                })
+            ]
         }));
     });
 
     it('should treat an empty outputPath as none was given', function () {
-        return util.testConfiguration(minimal.projectWithArtifactWith({
+        return util.testConfiguration(minimal.projectWith({
             host: util.host,
-            files: ['main.c'],
-            outputPath: ''
+            artifacts: [
+                minimal.artifactWith({
+                    files: ['main.c'],
+                    outputPath: ''
+                })
+            ]
         }));
     });
 });

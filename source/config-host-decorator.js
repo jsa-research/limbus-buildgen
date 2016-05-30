@@ -60,17 +60,17 @@ module.exports.decorate = function (configuration) {
     configuration.artifacts.forEach(function (artifact) {
         var architecture;
 
-        if (hostNeedsRpath(artifact.host)) {
+        if (hostNeedsRpath(configuration.host)) {
             addRpathToArtifactLinkerFlags(artifact);
         }
 
-        if (hostIs32Bit(artifact.host)) {
+        if (hostIs32Bit(configuration.host)) {
             architecture = '32';
             addArchitectureFlagToArtifactLinkerFlags(artifact, architecture);
             addArchitectureFlagToArtifactCompilerFlags(artifact, architecture);
         }
 
-        if (hostIs64Bit(artifact.host)) {
+        if (hostIs64Bit(configuration.host)) {
             architecture = '64';
             addArchitectureFlagToArtifactLinkerFlags(artifact, architecture);
             addArchitectureFlagToArtifactCompilerFlags(artifact, architecture);

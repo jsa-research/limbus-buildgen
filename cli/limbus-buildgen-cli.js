@@ -17,7 +17,7 @@ var parsedArguments = parseArguments(process.argv.slice(1));
 var config = JSON.parse(fs.readFileSync(parsedArguments.configPath));
 
 if (parsedArguments.host !== undefined) {
-    config.artifacts[0].host = parsedArguments.host;
+    config.host = parsedArguments.host;
 }
 
 try {

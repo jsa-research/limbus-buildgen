@@ -13,7 +13,6 @@ var minimalArtifact = function () {
     return {
         title: 'app',
         type: 'application',
-        host: process.platform,
         outputName: 'app',
         files: ['main.c']
     };
@@ -22,6 +21,7 @@ var minimalArtifact = function () {
 module.exports.project = function () {
     return {
         title: 'project',
+        host: process.platform,
         artifacts: [minimalArtifact()]
     };
 };

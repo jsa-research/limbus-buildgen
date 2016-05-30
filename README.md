@@ -67,10 +67,10 @@ The following configuration file specifies a makefile that compiles an executabl
 ```json
 {
     "title": "Project title",
+    "host": "darwin-make-clang-darwin-x64",
     "artifacts": [{
         "title": "Main executable",
         "type": "application",
-        "host": "darwin-make-clang-darwin-x64",
         "files": [
             "main.c"
         ],
@@ -103,11 +103,38 @@ The project configuration dictionary supports the following properties:
 |Property|Description|
 |:--:|:--|
 |[title](#configuration-project-title)|Specifies a title identifying the project.|
+|[host](#configuration-project-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
 |[artifacts](#configuration-project-artifacts)|Specifies a list of artifacts to build.|
 
 <a name="configuration-project-title"></a>
 ###### title
 An arbitrary string identifying the project. It is only used for naming the build files and does not affect the final executable or library built.
+
+<a name="configuration-project-host"></a>
+###### host
+The `host` property is used to specify how the makefile will be built and for which platforms.
+
+|Identifier|Build OS|Build System|Compiler|Target OS|Target Architecture|
+|:--|:--|:--|:--|:--|:--|
+|linux|Linux|make|GNU GCC|Linux|IA-32|
+|linux-make-clang-linux-x86|Linux|make|LLVM Clang|Linux|IA-32|
+|linux-make-clang-linux-x64|Linux|make|LLVM Clang|Linux|AMD64|
+|linux-make-gcc-linux-x86|Linux|make|GNU GCC|Linux|IA-32|
+|linux-make-gcc-linux-x64|Linux|make|GNU GCC|Linux|AMD64|
+|darwin|Mac OS X|make|LLVM Clang|Mac OS X|IA-32|
+|darwin-make-clang-darwin-x86|Mac OS X|make|LLVM Clang|Mac OS X|IA-32|
+|darwin-make-clang-darwin-x64|Mac OS X|make|LLVM Clang|Mac OS X|AMD64|
+|darwin-make-gcc-darwin-x86|Mac OS X|make|GNU GCC|Mac OS X|IA-32|
+|darwin-make-gcc-darwin-x64|Mac OS X|make|GNU GCC|Mac OS X|AMD64|
+|win32|Windows|nmake|Microsoft CL|Windows|IA-32|
+|win32-make-cl-win32-x86|Windows|nmake|Microsoft CL|Windows|IA-32|
+|win32-make-cl-win32-x64|Windows|nmake|Microsoft CL|Windows|AMD64|
+|freebsd|FreeBSD|make|LLVM Clang|FreeBSD|IA-32|
+|freebsd-make-clang-freebsd-x86|FreeBSD|make|LLVM Clang|FreeBSD|IA-32|
+|freebsd-make-clang-freebsd-x64|FreeBSD|make|LLVM Clang|FreeBSD|AMD64|
+|freebsd-make-gcc-freebsd-x64|FreeBSD|make|GNU GCC|FreeBSD|AMD64|
+
+So for example, if you wanted to generate a makefile that builds on Mac OS X using the LLVM Clang compiler and also target Mac OS X on the IA-32 architecture you could use `darwin-make-clang-darwin-x86`. Or you could use `darwin` as these are the default settings.
 
 <a name="configuration-project-artifacts"></a>
 ###### artifacts
@@ -121,7 +148,6 @@ The artifact configuration dictionaries support the following properties:
 |:--:|:--|
 |[title](#configuration-title)|Specifies a title identifying the built artifact.|
 |[type](#configuration-type)|Specifies the type of artifact to build.|
-|[host](#configuration-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
 |[files](#configuration-files)|Specifies a list of source files.|
 |[outputName](#configuration-outputName)|Specifies the name of the final executable.|
 
@@ -148,32 +174,6 @@ There are three types of artifacts which can be built:
 |application|An executable application|
 |static-library|A library that can be linked to at compile-time|
 |dynamic-library|A library that can be linked to at run-time|
-
-<a name="configuration-host"></a>
-###### host
-The `host` property is used to specify how the artifacts will be built and for which platforms.
-
-|Identifier|Build OS|Build System|Compiler|Target OS|Target Architecture|
-|:--|:--|:--|:--|:--|:--|
-|linux|Linux|make|GNU GCC|Linux|IA-32|
-|linux-make-clang-linux-x86|Linux|make|LLVM Clang|Linux|IA-32|
-|linux-make-clang-linux-x64|Linux|make|LLVM Clang|Linux|AMD64|
-|linux-make-gcc-linux-x86|Linux|make|GNU GCC|Linux|IA-32|
-|linux-make-gcc-linux-x64|Linux|make|GNU GCC|Linux|AMD64|
-|darwin|Mac OS X|make|LLVM Clang|Mac OS X|IA-32|
-|darwin-make-clang-darwin-x86|Mac OS X|make|LLVM Clang|Mac OS X|IA-32|
-|darwin-make-clang-darwin-x64|Mac OS X|make|LLVM Clang|Mac OS X|AMD64|
-|darwin-make-gcc-darwin-x86|Mac OS X|make|GNU GCC|Mac OS X|IA-32|
-|darwin-make-gcc-darwin-x64|Mac OS X|make|GNU GCC|Mac OS X|AMD64|
-|win32|Windows|nmake|Microsoft CL|Windows|IA-32|
-|win32-make-cl-win32-x86|Windows|nmake|Microsoft CL|Windows|IA-32|
-|win32-make-cl-win32-x64|Windows|nmake|Microsoft CL|Windows|AMD64|
-|freebsd|FreeBSD|make|LLVM Clang|FreeBSD|IA-32|
-|freebsd-make-clang-freebsd-x86|FreeBSD|make|LLVM Clang|FreeBSD|IA-32|
-|freebsd-make-clang-freebsd-x64|FreeBSD|make|LLVM Clang|FreeBSD|AMD64|
-|freebsd-make-gcc-freebsd-x64|FreeBSD|make|GNU GCC|FreeBSD|AMD64|
-
-So for example, if you wanted to generate a makefile that builds on Mac OS X using the LLVM Clang compiler and also target Mac OS X on the IA-32 architecture you could use `darwin-make-clang-darwin-x86`. Or you could use `darwin` as these are the default settings.
 
 <a name="configuration-files"></a>
 ###### files
@@ -256,10 +256,10 @@ var buildgen = require('limbus-buildgen');
 // title and an artifact configuration.
 var files = buildgen.generate({
     title: 'Project title',
+    host: 'darwin-make-clang-darwin-x64',
     artifacts: [{
         title: 'Main executable',
         type: 'application',
-        host: 'darwin-make-clang-darwin-x64',
         files: [
             'main.c'
         ],
@@ -369,7 +369,6 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for 0.5.0-beta
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
-* Elevate host property to a project one
 * Rename `host` property to `toolchain`
 * Add configuration property to add/remove debug information during compilation
 * Change shared library suffix to .dylib on darwin to reflect the actual library type generated

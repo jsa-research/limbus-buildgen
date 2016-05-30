@@ -27,7 +27,7 @@ describe('Front-end', function () {
     });
 
     it('should take a flag to specify the target host', function () {
-        return util.writeConfiguration(minimal.projectWithArtifactWith({
+        return util.writeConfiguration(minimal.projectWith({
             host: undefined
         }))
         .then(util.generateWithParameters('--host ' + util.host))
@@ -37,7 +37,7 @@ describe('Front-end', function () {
     });
 
     it('should take a flag to specify the output build path', function () {
-        return util.writeConfiguration(minimal.projectWithArtifactWith({
+        return util.writeConfiguration(minimal.projectWith({
             host: util.host
         }))
         .then(util.generateWithParameters('--outputPath platform'))

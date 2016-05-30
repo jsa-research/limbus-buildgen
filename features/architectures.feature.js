@@ -25,7 +25,7 @@ describe('Architectures', function () {
     });
 
     it('should compile for the correct architecture', function () {
-        var builtExecutable = util.writeConfiguration(minimal.projectWithArtifactWith({
+        var builtExecutable = util.writeConfiguration(minimal.projectWith({
             host: util.host
         }))
         .then(util.generateWithParameters())
