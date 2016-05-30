@@ -9,6 +9,8 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+'use strict';
+
 var Promise = require('promise');
 var shell = require('./shell');
 var fs = require('fs');

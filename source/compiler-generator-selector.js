@@ -9,6 +9,8 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+'use strict';
+
 var isClToolchain = function (toolchain) {
     return toolchain === 'win32' ||
            toolchain === 'win32-make-cl-win32-x86' ||
