@@ -9,41 +9,57 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-exports.build = function (variables, configurations) {
+var variableDefinitionsFromMap = function (variables) {
+    var definitions = '';
+    for (var variableName in variables) {
+        if (variables.hasOwnProperty(variableName)) {
+            definitions += variableName + '=' + variables[variableName] + '\n';
+        }
+    }
+    return definitions;
+};
+
+var targetDefinitionFromConfiguration = function (configuration, lastConfiguration, isLastConfiguration, isFirstConfiguration) {
+    var dependencies = '';
+    var name = configuration.name;
+
+    if (!isFirstConfiguration) {
+        dependencies = ' ' + lastConfiguration.name;
+    }
+
+    if (isLastConfiguration) {
+        name = 'all';
+    }
+
+    return name + ':' + dependencies +
+           '\n\t' + configuration.commands.join('\n\t') +
+           '\n';
+};
+
+exports.build = function (variablesMap, configurations) {
     var targets = [];
-    var variableString = '';
+    var variables = '';
 
-    if (!Array.isArray(variables)) {
-        for (var variableName in variables) {
-            if (variables.hasOwnProperty(variableName)) {
-                variableString += variableName + '=' + variables[variableName] + '\n';
-            }
-        }
+    if (!Array.isArray(variablesMap)) {
+        variables = variableDefinitionsFromMap(variablesMap);
     } else {
-        configurations = variables;
+        configurations = variablesMap;
     }
 
-    for (var configurationIndex = 0; configurationIndex < configurations.length; configurationIndex += 1) {
-        var configuration = configurations[configurationIndex];
+    configurations.forEach(function (configuration, configurationIndex) {
+        var isLastConfiguration = configurationIndex === configurations.length - 1;
+        var isFirstConfiguration = configurationIndex === 0;
+        var lastConfiguration = configurations[configurationIndex - 1];
 
-        var dependency;
-        if (configurationIndex > 0) {
-            dependency = configurations[configurationIndex - 1].name;
-        }
-
-        var name = configuration.name;
-        if (configurationIndex === configurations.length - 1) {
-            name = 'all';
-        }
-
-        targets.push(
-             name + ':' + (dependency ? ' ' + dependency : '')
-             + '\n\t' + configuration.commands.join('\n\t')
-             + '\n'
-        );
-    }
+        targets.push(targetDefinitionFromConfiguration(
+            configuration,
+            lastConfiguration,
+            isLastConfiguration,
+            isFirstConfiguration
+        ));
+    });
 
     targets.reverse();
 
-    return variableString + targets.join('');
+    return variables + targets.join('');
 };
