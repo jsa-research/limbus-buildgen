@@ -370,6 +370,7 @@ This will generate a file named `coverage.html` in the project root directory wh
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
 * Add configuration property to add/remove debug information during compilation
+* Add toolchains with default architecture
 * Change shared library suffix to .dylib on darwin to reflect the actual library type generated
 * Remove `/link` from CL linker commands and make user add it themselves to give more flexibility in which flags can be set
 * Make sure C++/Objective-C files compile correctly
