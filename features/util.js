@@ -13,31 +13,31 @@ var Promise = require('promise');
 var shell = require('./shell');
 var fs = require('fs');
 
-exports.hostCompiler = (process.env.BUILDGEN_TARGET_COMPILER ? process.env.BUILDGEN_TARGET_COMPILER : undefined);
-exports.hostArchitecture = (process.env.BUILDGEN_TARGET_ARCHITECTURE ? process.env.BUILDGEN_TARGET_ARCHITECTURE : undefined);
+exports.toolchainCompiler = (process.env.BUILDGEN_TARGET_COMPILER ? process.env.BUILDGEN_TARGET_COMPILER : undefined);
+exports.toolchainArchitecture = (process.env.BUILDGEN_TARGET_ARCHITECTURE ? process.env.BUILDGEN_TARGET_ARCHITECTURE : undefined);
 
-// Defines default values for hostCompiler based on platform.
-if (exports.hostCompiler === undefined) {
+// Defines default values for toolchainCompiler based on platform.
+if (exports.toolchainCompiler === undefined) {
     if (process.platform === 'win32') {
-        exports.hostCompiler = 'cl';
+        exports.toolchainCompiler = 'cl';
     } else if (process.platform === 'linux') {
-        exports.hostCompiler = 'gcc';
+        exports.toolchainCompiler = 'gcc';
     } else {
-        exports.hostCompiler = 'clang';
+        exports.toolchainCompiler = 'clang';
     }
 }
 
-// Defines default values for hostArchitecture based on platform architecture.
-if (exports.hostArchitecture === undefined) {
+// Defines default values for toolchainArchitecture based on platform architecture.
+if (exports.toolchainArchitecture === undefined) {
     if (process.arch === 'ia32') {
-        exports.hostArchitecture = 'x86';
+        exports.toolchainArchitecture = 'x86';
     } else {
-        exports.hostArchitecture = process.arch;
+        exports.toolchainArchitecture = process.arch;
     }
 }
 
-// Creates a host value that specifies the target compiler/architecture falling back to platform defaults if not specified.
-exports.host = process.platform + '-make-' + exports.hostCompiler + '-' + process.platform + '-' + exports.hostArchitecture;
+// Creates a toolchain value that specifies the target compiler/architecture falling back to platform defaults if not specified.
+exports.toolchain = process.platform + '-make-' + exports.toolchainCompiler + '-' + process.platform + '-' + exports.toolchainArchitecture;
 
 var writeFile = function (path, dataPromise) {
     return new Promise(function(resolve, reject) {
@@ -125,7 +125,7 @@ exports.build = function (makefile, variables) {
         var variableDefinitions = '';
         for (var variableName in variables) {
             if (variables.hasOwnProperty(variableName)) {
-                if (exports.hostCompiler === 'cl') {
+                if (exports.toolchainCompiler === 'cl') {
                     variableDefinitions += 'set ' + variableName + '=' + variables[variableName] + '&& ';
                 } else {
                     variableDefinitions += variableName + '=\'' + variables[variableName] + '\' ';
@@ -134,9 +134,9 @@ exports.build = function (makefile, variables) {
         }
 
         var command = '';
-        if (exports.hostCompiler === 'cl') {
+        if (exports.toolchainCompiler === 'cl') {
             command += variableDefinitions;
-            command += '..\\utility-scripts\\setenv.bat ' + exports.hostArchitecture + '&& ';
+            command += '..\\utility-scripts\\setenv.bat ' + exports.toolchainArchitecture + '&& ';
             command += 'nmake';
             if (variableDefinitions.length > 0) {
                 command += ' /E'

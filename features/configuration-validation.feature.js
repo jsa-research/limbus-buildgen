@@ -25,7 +25,7 @@ describe('Configuration Validation', function () {
 
     it('should compile given a minimal artifact configuration', function () {
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     files: ['main.c']
@@ -71,10 +71,10 @@ describe('Configuration Validation', function () {
             }), /missing required project property/i, /title/);
         });
 
-        it('should give error "missing required project property" with property "host" when missing a project host', function () {
+        it('should give error "missing required project property" with property "toolchain" when missing a project toolchain', function () {
             return configShouldFailWith(minimal.projectWith({
-                host: undefined
-            }), /missing required project property/i, /host/);
+                toolchain: undefined
+            }), /missing required project property/i, /toolchain/);
         });
 
         it('should give error "missing required project property" with property "artifacts" when missing an artifacts list', function () {
@@ -115,10 +115,10 @@ describe('Configuration Validation', function () {
     });
 
     describe('Invalid properties', function () {
-        it('should give error "invalid project property" with property "host" when host has an invalid value', function () {
+        it('should give error "invalid project property" with property "toolchain" when toolchain has an invalid value', function () {
             return configShouldFailWith(minimal.projectWith({
-                host: 'invalid-host'
-            }), /invalid project property/i, /host/);
+                toolchain: 'invalid-toolchain'
+            }), /invalid project property/i, /toolchain/);
         });
 
         it('should give error "invalid property" with property "type" when type has an invalid value', function () {

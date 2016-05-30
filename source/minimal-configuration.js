@@ -21,7 +21,7 @@ var minimalArtifact = function () {
 module.exports.project = function () {
     return {
         title: 'project',
-        host: process.platform,
+        toolchain: process.platform,
         artifacts: [minimalArtifact()]
     };
 };

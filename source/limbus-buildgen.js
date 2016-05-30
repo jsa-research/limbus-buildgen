@@ -11,7 +11,7 @@
 
 var ConfigValidator = require('./config-validator');
 var ConfigPathNormalizer = require('./config-path-normalizer');
-var ConfigHostDecorator = require('./config-host-decorator');
+var ConfigToolchainDecorator = require('./config-toolchain-decorator');
 
 var MakefileBuilder = require('./makefile-builder');
 
@@ -100,13 +100,13 @@ var validateConfig = function (configuration) {
 };
 
 var modifyConfig = function (configuration) {
-    ConfigHostDecorator.decorate(configuration);
+    ConfigToolchainDecorator.decorate(configuration);
     ConfigPathNormalizer.normalize(configuration.artifacts[0]);
 };
 
 var selectGenerator = function (configuration) {
-    var host = configuration.host;
-    return CompilerGeneratorSelector.select(host, compilers);
+    var toolchain = configuration.toolchain;
+    return CompilerGeneratorSelector.select(toolchain, compilers);
 };
 
 var generateMakefileFromConfiguration = function (configuration) {

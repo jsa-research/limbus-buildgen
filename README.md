@@ -51,7 +51,7 @@ Usage: limbus-buildgen [flags] <path to JSON configuration file>
 Options:
 
   --help                          output usage information
-  --host <host>                   override the configured target host
+  --toolchain <toolchain>         override the configured target toolchain
   --outputPath <path>             specify the path where build files are written
                                   to (default: .)
 
@@ -67,7 +67,7 @@ The following configuration file specifies a makefile that compiles an executabl
 ```json
 {
     "title": "Project title",
-    "host": "darwin-make-clang-darwin-x64",
+    "toolchain": "darwin-make-clang-darwin-x64",
     "artifacts": [{
         "title": "Main executable",
         "type": "application",
@@ -103,16 +103,16 @@ The project configuration dictionary supports the following properties:
 |Property|Description|
 |:--:|:--|
 |[title](#configuration-project-title)|Specifies a title identifying the project.|
-|[host](#configuration-project-host)|Specifies the target host, i.e. the desired OS & compiler that the makefile should compile with.|
+|[toolchain](#configuration-project-toolchain)|Specifies the target toolchain, i.e. the desired OS & compiler that the makefile should compile with.|
 |[artifacts](#configuration-project-artifacts)|Specifies a list of artifacts to build.|
 
 <a name="configuration-project-title"></a>
 ###### title
 An arbitrary string identifying the project. It is only used for naming the build files and does not affect the final executable or library built.
 
-<a name="configuration-project-host"></a>
-###### host
-The `host` property is used to specify how the makefile will be built and for which platforms.
+<a name="configuration-project-toolchain"></a>
+###### toolchain
+The `toolchain` property is used to specify how the makefile will be built and for which platforms.
 
 |Identifier|Build OS|Build System|Compiler|Target OS|Target Architecture|
 |:--|:--|:--|:--|:--|:--|
@@ -181,7 +181,7 @@ The `files` property takes an array of strings. Each string contains a [path](#p
 
 <a name="configuration-outputName"></a>
 ###### outputName
-The property `outputName` takes a string with the name of the final executable or library. Depending on the compiler and type, the name given by `outputName` is prepended, appended or both to form a file name according to the host's naming standard.
+The property `outputName` takes a string with the name of the final executable or library. Depending on the compiler and type, the name given by `outputName` is prepended, appended or both to form a file name according to the toolchain's naming standard.
 
 Given a configuration file with `"outputName": "file"` the following table shows the resulting file name:
 
@@ -256,7 +256,7 @@ var buildgen = require('limbus-buildgen');
 // title and an artifact configuration.
 var files = buildgen.generate({
     title: 'Project title',
-    host: 'darwin-make-clang-darwin-x64',
+    toolchain: 'darwin-make-clang-darwin-x64',
     artifacts: [{
         title: 'Main executable',
         type: 'application',
@@ -295,10 +295,10 @@ for (var path in files) {
 
 <a name="continuous-integration"></a>
 ## Continuous Integration
-Unit- & integration tests are automatically run against several combinations of target hosts, build configurations and Node.js versions at every push.
+Unit- & integration tests are automatically run against several combinations of target toolchains, build configurations and Node.js versions at every push.
 
 #### Integration matrix
-| Target Host   | Build Status |  Node.js Versions   |
+| Target Toolchain   | Build Status |  Node.js Versions   |
 | :------------ | :----------: |  :----------------- |
 | linux-make-clang-linux-x86 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
 | linux-make-clang-linux-x64 | [![travis-ci build status](https://travis-ci.org/redien/limbus-buildgen.svg?branch=master)](https://travis-ci.org/redien/limbus-buildgen) | 5.9.x |
@@ -369,7 +369,6 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for 0.5.0-beta
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
-* Rename `host` property to `toolchain`
 * Add configuration property to add/remove debug information during compilation
 * Change shared library suffix to .dylib on darwin to reflect the actual library type generated
 * Remove `/link` from CL linker commands and make user add it themselves to give more flexibility in which flags can be set
@@ -400,14 +399,14 @@ This release will implement the rest of the features to reach feature completene
 ##### Planned for 1.1.0
 This release will implement cross compilation to mobile devices.
 
-* Implement cross compilation support for iOS with host `darwin-xcode-clang-ios-all`
-* Implement cross compilation support for Android with hosts `linux-ndkbuild-ndk-android-all`, `darwin-ndkbuild-ndk-android-all` and `win32-ndkbuild-ndk-android-all`
+* Implement cross compilation support for iOS with toolchain `darwin-xcode-clang-ios-all`
+* Implement cross compilation support for Android with toolchains `linux-ndkbuild-ndk-android-all`, `darwin-ndkbuild-ndk-android-all` and `win32-ndkbuild-ndk-android-all`
 * Add architectures as appropriate
 
 ##### Planned for 1.2.0
 This release will implement cross compilation to web browsers through Emscripten.
 
-* Implement cross compilation support for asm.js with hosts `linux-make-emcc-asmjs`, `darwin-make-emcc-asmjs` and `win32-make-emcc-asmjs`
+* Implement cross compilation support for asm.js with toolchains `linux-make-emcc-asmjs`, `darwin-make-emcc-asmjs` and `win32-make-emcc-asmjs`
 
 ##### Further into the future
 Features which aren't needed for feature-completeness but are nice to have.

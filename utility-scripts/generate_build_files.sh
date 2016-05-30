@@ -10,7 +10,7 @@
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 generate_for_platform() {
-    ./generated/limbus-buildgen --outputPath generated/$1 --host $1 build_configs/build.json
+    ./generated/limbus-buildgen --outputPath generated/$1 --toolchain $1 build_configs/build.json
 }
 
 generate_for_platform linux

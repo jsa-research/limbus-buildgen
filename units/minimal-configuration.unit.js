@@ -19,7 +19,7 @@ describe('minimal-configuration', function () {
 
             configuration.should.deepEqual({
                 title: 'project',
-                host: process.platform,
+                toolchain: process.platform,
                 artifacts: [{
                     title: 'app',
                     type: 'application',
@@ -38,7 +38,7 @@ describe('minimal-configuration', function () {
 
             configuration.should.deepEqual({
                 title: 'other title',
-                host: process.platform,
+                toolchain: process.platform,
                 artifacts: [{
                     title: 'app',
                     type: 'application',
@@ -57,7 +57,7 @@ describe('minimal-configuration', function () {
 
             configuration.should.deepEqual({
                 title: 'project',
-                host: process.platform,
+                toolchain: process.platform,
                 artifacts: [{
                     title: 'other title',
                     type: 'application',

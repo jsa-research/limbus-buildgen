@@ -37,7 +37,7 @@ describe('Linking', function () {
 
     it('should compile and link correctly given several source files and includes', function () {
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     files: [
@@ -54,7 +54,7 @@ describe('Linking', function () {
 
     it('should link with libm by default', function () {
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     files: [
@@ -67,7 +67,7 @@ describe('Linking', function () {
 
     it('should compile to an executable with outputName', function () {
         return util.writeConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     outputName: 'my_executable'
@@ -82,7 +82,7 @@ describe('Linking', function () {
 
     it('should compile a static library and then be able to link to it', function () {
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     type: 'static-library',
@@ -106,7 +106,7 @@ describe('Linking', function () {
         };
 
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     type: 'static-library',
@@ -115,7 +115,7 @@ describe('Linking', function () {
                 }),
                 minimal.artifactWith({
                     files: ['linked.c'],
-                    linkerFlags: linkLibraryForCompiler[util.hostCompiler],
+                    linkerFlags: linkLibraryForCompiler[util.toolchainCompiler],
                     includePaths: ['include']
                 })
             ]
@@ -124,7 +124,7 @@ describe('Linking', function () {
 
     it('should compile a dynamic library and then be able to link to it', function () {
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     type: 'static-library',
@@ -148,7 +148,7 @@ describe('Linking', function () {
 
     it('should search libraryPaths to find libraries to link', function () {
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     type: 'static-library',

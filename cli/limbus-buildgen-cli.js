@@ -16,8 +16,8 @@ var parsedArguments = parseArguments(process.argv.slice(1));
 
 var config = JSON.parse(fs.readFileSync(parsedArguments.configPath));
 
-if (parsedArguments.host !== undefined) {
-    config.host = parsedArguments.host;
+if (parsedArguments.toolchain !== undefined) {
+    config.toolchain = parsedArguments.toolchain;
 }
 
 try {
@@ -38,8 +38,8 @@ function parseArguments (processArguments) {
     var result = {};
 
     var flagHandlers = {
-        '--host': function (i) {
-            result.host = getFlagValue(processArguments, i);
+        '--toolchain': function (i) {
+            result.toolchain = getFlagValue(processArguments, i);
         },
         '--outputPath': function (i) {
             result.outputPath = getFlagValue(processArguments, i);
@@ -51,7 +51,7 @@ function parseArguments (processArguments) {
                 "Options:\n" +
                 "\n" +
                 "  --help                          output usage information\n" +
-                "  --host <host>                   override the configured target host\n" +
+                "  --toolchain <toolchain>         override the configured target toolchain\n" +
                 "  --outputPath <path>             specify the path where build files are written\n" +
                 "                                  to (default: .)");
             process.exit(0);

@@ -11,7 +11,7 @@
 
 var requiredProjectProperties = [
     'title',
-    'host',
+    'toolchain',
     'artifacts'
 ];
 
@@ -39,7 +39,7 @@ var validTypes = [
     'static-library'
 ];
 
-var validHosts = [
+var validToolchains = [
     'linux',
     'linux-make-clang-linux-x86',
     'linux-make-clang-linux-x64',
@@ -104,8 +104,8 @@ var isValidValue = function (validValues, value) {
 };
 
 var validateForInvalidProjectValues = function (config) {
-    if (!isValidValue(validHosts, config.host)) {
-        return errorResult('invalid project property', 'host');
+    if (!isValidValue(validToolchains, config.toolchain)) {
+        return errorResult('invalid project property', 'toolchain');
     }
 
     return validResult();

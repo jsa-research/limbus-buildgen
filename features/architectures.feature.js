@@ -26,20 +26,20 @@ describe('Architectures', function () {
 
     it('should compile for the correct architecture', function () {
         var builtExecutable = util.writeConfiguration(minimal.projectWith({
-            host: util.host
+            toolchain: util.toolchain
         }))
         .then(util.generateWithParameters())
         .then(util.build());
 
         if (process.platform === 'win32') {
             return builtExecutable.then(function (executable) {
-                return shell.exec('..\\utility-scripts\\setenv.bat ' + util.hostArchitecture + '&& dumpbin /nologo /headers ' + executable + '.exe', {cwd: 'temp'});
+                return shell.exec('..\\utility-scripts\\setenv.bat ' + util.toolchainArchitecture + '&& dumpbin /nologo /headers ' + executable + '.exe', {cwd: 'temp'});
             }).then(function (output) {
                 if (output.stdout.indexOf('PE32+') !== -1) {
-                    util.hostArchitecture.should.equal('x64');
+                    util.toolchainArchitecture.should.equal('x64');
 
                 } else if (output.stdout.indexOf('PE32') !== -1) {
-                    util.hostArchitecture.should.equal('x86');
+                    util.toolchainArchitecture.should.equal('x86');
 
                 } else {
                     return Promise.reject('Unknown platform:\n' + output.stdout);
@@ -50,10 +50,10 @@ describe('Architectures', function () {
                 return shell.exec('file ' + executable, {cwd: 'temp'});
             }).then(function (output) {
                 if (output.stdout.indexOf('64-bit') !== -1) {
-                    util.hostArchitecture.should.equal('x64');
+                    util.toolchainArchitecture.should.equal('x64');
 
                 } else if (output.stdout.indexOf('86') !== -1) {
-                    util.hostArchitecture.should.equal('x86');
+                    util.toolchainArchitecture.should.equal('x86');
 
                 } else {
                     return Promise.reject('Unknown platform:\n' + output.stdout);

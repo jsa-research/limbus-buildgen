@@ -22,10 +22,10 @@ var compilers = {
     'cl': cl
 };
 
-var testSelectionFor = function (compiler, hosts) {
-    hosts.forEach(function (host) {
-        it('should be selected given ' + host, function () {
-            CompilerGeneratorSelector.select(host, compilers).should.be.exactly(compiler);
+var testSelectionFor = function (compiler, toolchains) {
+    toolchains.forEach(function (toolchain) {
+        it('should be selected given ' + toolchain, function () {
+            CompilerGeneratorSelector.select(toolchain, compilers).should.be.exactly(compiler);
         });
     });
 };
@@ -34,7 +34,7 @@ describe('compiler-generator-selector', function () {
     describe('linkerCommand', function () {
         describe('GNU GCC', function () {
             var compiler = gcc;
-            var hosts = [
+            var toolchains = [
                 'linux',
                 'linux-make-gcc-linux-x86',
                 'linux-make-gcc-linux-x64',
@@ -43,12 +43,12 @@ describe('compiler-generator-selector', function () {
                 'darwin-make-gcc-darwin-x64'
             ];
 
-            testSelectionFor(compiler, hosts);
+            testSelectionFor(compiler, toolchains);
         });
 
         describe('LLVM Clang', function () {
             var compiler = clang;
-            var hosts = [
+            var toolchains = [
                 'freebsd',
                 'darwin',
                 'linux-make-clang-linux-x86',
@@ -59,18 +59,18 @@ describe('compiler-generator-selector', function () {
                 'darwin-make-clang-darwin-x64'
             ];
 
-            testSelectionFor(compiler, hosts);
+            testSelectionFor(compiler, toolchains);
         });
 
         describe('Microsoft CL', function () {
             var compiler = cl;
-            var hosts = [
+            var toolchains = [
                 'win32',
                 'win32-make-cl-win32-x86',
                 'win32-make-cl-win32-x64'
             ];
 
-            testSelectionFor(compiler, hosts);
+            testSelectionFor(compiler, toolchains);
         });
     });
 });

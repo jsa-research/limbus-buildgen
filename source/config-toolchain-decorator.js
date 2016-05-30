@@ -9,35 +9,35 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var hostNeedsRpath = function (host) {
-    return host !== 'win32' &&
-           host !== 'win32-make-cl-win32-x86' &&
-           host !== 'win32-make-cl-win32-x64' &&
-           host !== 'darwin' &&
-           host !== 'darwin-make-clang-darwin-x86' &&
-           host !== 'darwin-make-clang-darwin-x64' &&
-           host !== 'darwin-make-gcc-darwin-x86' &&
-           host !== 'darwin-make-gcc-darwin-x64';
+var toolchainNeedsRpath = function (toolchain) {
+    return toolchain !== 'win32' &&
+           toolchain !== 'win32-make-cl-win32-x86' &&
+           toolchain !== 'win32-make-cl-win32-x64' &&
+           toolchain !== 'darwin' &&
+           toolchain !== 'darwin-make-clang-darwin-x86' &&
+           toolchain !== 'darwin-make-clang-darwin-x64' &&
+           toolchain !== 'darwin-make-gcc-darwin-x86' &&
+           toolchain !== 'darwin-make-gcc-darwin-x64';
 };
 
-var hostIs32Bit = function (host) {
-    return host === 'darwin' ||
-           host === 'linux' ||
-           host === 'freebsd' ||
-           host === 'darwin-make-gcc-darwin-x86' ||
-           host === 'darwin-make-clang-darwin-x86' ||
-           host === 'linux-make-gcc-linux-x86' ||
-           host === 'linux-make-clang-linux-x86' ||
-           host === 'freebsd-make-clang-freebsd-x86';
+var toolchainIs32Bit = function (toolchain) {
+    return toolchain === 'darwin' ||
+           toolchain === 'linux' ||
+           toolchain === 'freebsd' ||
+           toolchain === 'darwin-make-gcc-darwin-x86' ||
+           toolchain === 'darwin-make-clang-darwin-x86' ||
+           toolchain === 'linux-make-gcc-linux-x86' ||
+           toolchain === 'linux-make-clang-linux-x86' ||
+           toolchain === 'freebsd-make-clang-freebsd-x86';
 };
 
-var hostIs64Bit = function (host) {
-    return host === 'darwin-make-gcc-darwin-x64' ||
-           host === 'darwin-make-clang-darwin-x64' ||
-           host === 'linux-make-gcc-linux-x64' ||
-           host === 'linux-make-clang-linux-x64' ||
-           host === 'freebsd-make-gcc-freebsd-x64' ||
-           host === 'freebsd-make-clang-freebsd-x64';
+var toolchainIs64Bit = function (toolchain) {
+    return toolchain === 'darwin-make-gcc-darwin-x64' ||
+           toolchain === 'darwin-make-clang-darwin-x64' ||
+           toolchain === 'linux-make-gcc-linux-x64' ||
+           toolchain === 'linux-make-clang-linux-x64' ||
+           toolchain === 'freebsd-make-gcc-freebsd-x64' ||
+           toolchain === 'freebsd-make-clang-freebsd-x64';
 };
 
 var addRpathToArtifactLinkerFlags = function (artifact) {
@@ -60,17 +60,17 @@ module.exports.decorate = function (configuration) {
     configuration.artifacts.forEach(function (artifact) {
         var architecture;
 
-        if (hostNeedsRpath(configuration.host)) {
+        if (toolchainNeedsRpath(configuration.toolchain)) {
             addRpathToArtifactLinkerFlags(artifact);
         }
 
-        if (hostIs32Bit(configuration.host)) {
+        if (toolchainIs32Bit(configuration.toolchain)) {
             architecture = '32';
             addArchitectureFlagToArtifactLinkerFlags(artifact, architecture);
             addArchitectureFlagToArtifactCompilerFlags(artifact, architecture);
         }
 
-        if (hostIs64Bit(configuration.host)) {
+        if (toolchainIs64Bit(configuration.toolchain)) {
             architecture = '64';
             addArchitectureFlagToArtifactLinkerFlags(artifact, architecture);
             addArchitectureFlagToArtifactCompilerFlags(artifact, architecture);

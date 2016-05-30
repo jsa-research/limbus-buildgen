@@ -58,13 +58,13 @@ describe('config-validator', function () {
                 result.property.should.equal('title');
             });
 
-            it('should return {valid: false, error: "missing required project property", property: "host"} when missing a host', function () {
+            it('should return {valid: false, error: "missing required project property", property: "toolchain"} when missing a toolchain', function () {
                 var result = ConfigValidator.validate(minimal.projectWith({
-                    host: undefined
+                    toolchain: undefined
                 }));
                 result.valid.should.be.false();
                 result.error.should.equal('missing required project property');
-                result.property.should.equal('host');
+                result.property.should.equal('toolchain');
             });
 
             it('should return {valid: false, error: "missing required project property", property: "artifacts"} when missing an artifacts list', function () {
@@ -146,41 +146,41 @@ describe('config-validator', function () {
             });
         });
 
-        describe('Valid host values', function () {
-            it('should return {valid: false, error: "invalid project property", property: "host"} when host is an invalid value', function () {
+        describe('Valid toolchain values', function () {
+            it('should return {valid: false, error: "invalid project property", property: "toolchain"} when toolchain is an invalid value', function () {
                 var result = ConfigValidator.validate(minimal.projectWith({
-                    host: 'invalid-host'
+                    toolchain: 'invalid-toolchain'
                 }));
                 result.valid.should.be.false();
                 result.error.should.equal('invalid project property');
-                result.property.should.equal('host');
+                result.property.should.equal('toolchain');
             });
 
-            it('should return {valid: true} when host is a valid value', function () {
-                var validateHost = function (host) {
+            it('should return {valid: true} when toolchain is a valid value', function () {
+                var validateToolchain = function (toolchain) {
                     var result = ConfigValidator.validate(minimal.projectWith({
-                        host: host
+                        toolchain: toolchain
                     }));
                     result.valid.should.be.true();
                 };
 
-                validateHost('linux');
-                validateHost('linux-make-clang-linux-x86');
-                validateHost('linux-make-clang-linux-x64');
-                validateHost('linux-make-gcc-linux-x86');
-                validateHost('linux-make-gcc-linux-x64');
-                validateHost('darwin');
-                validateHost('darwin-make-clang-darwin-x86');
-                validateHost('darwin-make-clang-darwin-x64');
-                validateHost('darwin-make-gcc-darwin-x86');
-                validateHost('darwin-make-gcc-darwin-x64');
-                validateHost('win32');
-                validateHost('win32-make-cl-win32-x86');
-                validateHost('win32-make-cl-win32-x64');
-                validateHost('freebsd');
-                validateHost('freebsd-make-clang-freebsd-x86');
-                validateHost('freebsd-make-clang-freebsd-x64');
-                validateHost('freebsd-make-gcc-freebsd-x64');
+                validateToolchain('linux');
+                validateToolchain('linux-make-clang-linux-x86');
+                validateToolchain('linux-make-clang-linux-x64');
+                validateToolchain('linux-make-gcc-linux-x86');
+                validateToolchain('linux-make-gcc-linux-x64');
+                validateToolchain('darwin');
+                validateToolchain('darwin-make-clang-darwin-x86');
+                validateToolchain('darwin-make-clang-darwin-x64');
+                validateToolchain('darwin-make-gcc-darwin-x86');
+                validateToolchain('darwin-make-gcc-darwin-x64');
+                validateToolchain('win32');
+                validateToolchain('win32-make-cl-win32-x86');
+                validateToolchain('win32-make-cl-win32-x64');
+                validateToolchain('freebsd');
+                validateToolchain('freebsd-make-clang-freebsd-x86');
+                validateToolchain('freebsd-make-clang-freebsd-x64');
+                validateToolchain('freebsd-make-gcc-freebsd-x64');
             });
         });
 

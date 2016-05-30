@@ -29,10 +29,10 @@ describe('Compiling', function () {
 
     it('should pass compiler flags as is', function () {
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
-                    compilerFlags: util.hostCompiler === 'cl' ? '/X' : '-S'
+                    compilerFlags: util.toolchainCompiler === 'cl' ? '/X' : '-S'
                 })
             ]
         })).should.be.rejected();
@@ -40,7 +40,7 @@ describe('Compiling', function () {
 
     it('should accept input files with paths', function () {
         return util.testConfiguration(minimal.projectWith({
-            host: util.host,
+            toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
                     files: ['./some_directory/main.c']

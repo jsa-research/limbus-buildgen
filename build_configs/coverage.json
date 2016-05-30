@@ -3,7 +3,7 @@
     "artifacts": [{
         "title": "Instrumented executable",
         "type": "application",
-        "host": "linux",
+        "toolchain": "linux",
         "files": [
             "dependencies/duktape-1.4.0/src/duktape.c",
             "source/duk.c",

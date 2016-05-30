@@ -10,71 +10,71 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 require('should');
-var ConfigHostDecorator = require('../source/config-host-decorator');
+var ConfigToolchainDecorator = require('../source/config-toolchain-decorator');
 var minimal = require('../source/minimal-configuration');
 
-var shouldDecorateLinkerFlags = function (flags, host) {
-    var configuration = minimal.projectWith({ host: host });
-    ConfigHostDecorator.decorate(configuration);
+var shouldDecorateLinkerFlags = function (flags, toolchain) {
+    var configuration = minimal.projectWith({ toolchain: toolchain });
+    ConfigToolchainDecorator.decorate(configuration);
     configuration.artifacts[0].linkerFlags.should.containEql(flags);
 };
 
-var shouldNotDecorateLinkerFlags = function (flags, host, type) {
+var shouldNotDecorateLinkerFlags = function (flags, toolchain, type) {
     var configuration = minimal.projectWith({
-        host: host,
+        toolchain: toolchain,
         artifacts: [minimal.artifactWith({ type: type })]
     });
-    ConfigHostDecorator.decorate(configuration);
+    ConfigToolchainDecorator.decorate(configuration);
     if (configuration.artifacts[0].linkerFlags !== undefined) {
         configuration.artifacts[0].linkerFlags.should.not.containEql(flags);
     }
 };
 
-var shouldNotDecorateAnything = function (host) {
-    var configuration = minimal.projectWith({ host: host });
-    ConfigHostDecorator.decorate(configuration);
-    configuration.should.deepEqual(minimal.projectWith({ host: host }));
+var shouldNotDecorateAnything = function (toolchain) {
+    var configuration = minimal.projectWith({ toolchain: toolchain });
+    ConfigToolchainDecorator.decorate(configuration);
+    configuration.should.deepEqual(minimal.projectWith({ toolchain: toolchain }));
 };
 
-var shouldLinkWithFlagGivenHost = function (flag, host) {
-    it('should link with ' + flag + ' given ' + host, function () {
-        shouldDecorateLinkerFlags(flag, host);
+var shouldLinkWithFlagGivenToolchain = function (flag, toolchain) {
+    it('should link with ' + flag + ' given ' + toolchain, function () {
+        shouldDecorateLinkerFlags(flag, toolchain);
     });
 };
 
-var shouldCompileWithFlagGivenHost = function (flag, host) {
-    it('should compile with ' + flag + ' given ' + host, function () {
-        var configuration = minimal.projectWith({ host: host });
-        ConfigHostDecorator.decorate(configuration);
+var shouldCompileWithFlagGivenToolchain = function (flag, toolchain) {
+    it('should compile with ' + flag + ' given ' + toolchain, function () {
+        var configuration = minimal.projectWith({ toolchain: toolchain });
+        ConfigToolchainDecorator.decorate(configuration);
         configuration.artifacts[0].compilerFlags.should.containEql(flag);
     });
 };
 
-describe('config-host-decorator', function () {
+describe('config-toolchain-decorator', function () {
     it('should decorate all artifacts', function () {
         var configuration = minimal.projectWith({
-            host: 'linux',
+            toolchain: 'linux',
             artifacts: [
                 minimal.artifactWith({}),
                 minimal.artifactWith({})
             ]
         });
-        ConfigHostDecorator.decorate(configuration);
+        ConfigToolchainDecorator.decorate(configuration);
         configuration.artifacts[1].linkerFlags.should.containEql('-lm');
     });
 
     it('should keep any existing linkerFlags', function () {
         var configuration = minimal.projectWith({
-            host: 'linux',
+            toolchain: 'linux',
             artifacts: [
                 minimal.artifactWith({ linkerFlags: '-linkflag' })
             ]
         });
-        ConfigHostDecorator.decorate(configuration);
+        ConfigToolchainDecorator.decorate(configuration);
         configuration.artifacts[0].linkerFlags.should.containEql('-linkflag');
     });
 
-    describe('configuration where host OS is win32', function () {
+    describe('configuration where toolchain OS is win32', function () {
         it('should not decorate', function () {
             shouldNotDecorateAnything('win32');
             shouldNotDecorateAnything('win32-make-cl-win32-x86');
@@ -82,7 +82,7 @@ describe('config-host-decorator', function () {
         });
     });
 
-    describe('configuration where host OS is freebsd', function () {
+    describe('configuration where toolchain OS is freebsd', function () {
         it('should link with libm by default', function () {
             var flag = '-lm';
             shouldDecorateLinkerFlags(flag, 'freebsd');
@@ -115,7 +115,7 @@ describe('config-host-decorator', function () {
         });
     });
 
-    describe('configuration where host OS is linux', function () {
+    describe('configuration where toolchain OS is linux', function () {
         it('should link with libm by default', function () {
             var flag = '-lm';
 
@@ -155,38 +155,38 @@ describe('config-host-decorator', function () {
 
     describe('Architecture flags', function () {
         var flag = '-m32';
-        shouldLinkWithFlagGivenHost(flag, 'linux');
-        shouldLinkWithFlagGivenHost(flag, 'linux-make-clang-linux-x86');
-        shouldLinkWithFlagGivenHost(flag, 'linux-make-gcc-linux-x86');
-        shouldLinkWithFlagGivenHost(flag, 'freebsd');
-        shouldLinkWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x86');
-        shouldLinkWithFlagGivenHost(flag, 'darwin');
-        shouldLinkWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x86');
-        shouldLinkWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x86');
+        shouldLinkWithFlagGivenToolchain(flag, 'linux');
+        shouldLinkWithFlagGivenToolchain(flag, 'linux-make-clang-linux-x86');
+        shouldLinkWithFlagGivenToolchain(flag, 'linux-make-gcc-linux-x86');
+        shouldLinkWithFlagGivenToolchain(flag, 'freebsd');
+        shouldLinkWithFlagGivenToolchain(flag, 'freebsd-make-clang-freebsd-x86');
+        shouldLinkWithFlagGivenToolchain(flag, 'darwin');
+        shouldLinkWithFlagGivenToolchain(flag, 'darwin-make-clang-darwin-x86');
+        shouldLinkWithFlagGivenToolchain(flag, 'darwin-make-gcc-darwin-x86');
 
-        shouldCompileWithFlagGivenHost(flag, 'linux');
-        shouldCompileWithFlagGivenHost(flag, 'linux-make-clang-linux-x86');
-        shouldCompileWithFlagGivenHost(flag, 'linux-make-gcc-linux-x86');
-        shouldCompileWithFlagGivenHost(flag, 'freebsd');
-        shouldCompileWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x86');
-        shouldCompileWithFlagGivenHost(flag, 'darwin');
-        shouldCompileWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x86');
-        shouldCompileWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x86');
+        shouldCompileWithFlagGivenToolchain(flag, 'linux');
+        shouldCompileWithFlagGivenToolchain(flag, 'linux-make-clang-linux-x86');
+        shouldCompileWithFlagGivenToolchain(flag, 'linux-make-gcc-linux-x86');
+        shouldCompileWithFlagGivenToolchain(flag, 'freebsd');
+        shouldCompileWithFlagGivenToolchain(flag, 'freebsd-make-clang-freebsd-x86');
+        shouldCompileWithFlagGivenToolchain(flag, 'darwin');
+        shouldCompileWithFlagGivenToolchain(flag, 'darwin-make-clang-darwin-x86');
+        shouldCompileWithFlagGivenToolchain(flag, 'darwin-make-gcc-darwin-x86');
 
         flag = '-m64';
-        shouldLinkWithFlagGivenHost(flag, 'linux-make-clang-linux-x64');
-        shouldLinkWithFlagGivenHost(flag, 'linux-make-gcc-linux-x64');
-        shouldLinkWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x64');
-        shouldLinkWithFlagGivenHost(flag, 'freebsd-make-gcc-freebsd-x64');
-        shouldLinkWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x64');
-        shouldLinkWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x64');
+        shouldLinkWithFlagGivenToolchain(flag, 'linux-make-clang-linux-x64');
+        shouldLinkWithFlagGivenToolchain(flag, 'linux-make-gcc-linux-x64');
+        shouldLinkWithFlagGivenToolchain(flag, 'freebsd-make-clang-freebsd-x64');
+        shouldLinkWithFlagGivenToolchain(flag, 'freebsd-make-gcc-freebsd-x64');
+        shouldLinkWithFlagGivenToolchain(flag, 'darwin-make-clang-darwin-x64');
+        shouldLinkWithFlagGivenToolchain(flag, 'darwin-make-gcc-darwin-x64');
 
-        shouldCompileWithFlagGivenHost(flag, 'linux-make-clang-linux-x64');
-        shouldCompileWithFlagGivenHost(flag, 'linux-make-gcc-linux-x64');
-        shouldCompileWithFlagGivenHost(flag, 'freebsd-make-clang-freebsd-x64');
-        shouldCompileWithFlagGivenHost(flag, 'freebsd-make-gcc-freebsd-x64');
-        shouldCompileWithFlagGivenHost(flag, 'darwin-make-clang-darwin-x64');
-        shouldCompileWithFlagGivenHost(flag, 'darwin-make-gcc-darwin-x64');
+        shouldCompileWithFlagGivenToolchain(flag, 'linux-make-clang-linux-x64');
+        shouldCompileWithFlagGivenToolchain(flag, 'linux-make-gcc-linux-x64');
+        shouldCompileWithFlagGivenToolchain(flag, 'freebsd-make-clang-freebsd-x64');
+        shouldCompileWithFlagGivenToolchain(flag, 'freebsd-make-gcc-freebsd-x64');
+        shouldCompileWithFlagGivenToolchain(flag, 'darwin-make-clang-darwin-x64');
+        shouldCompileWithFlagGivenToolchain(flag, 'darwin-make-gcc-darwin-x64');
 
         it('should not pass architecture flags to ar', function () {
             shouldNotDecorateLinkerFlags('-m32', 'linux-make-gcc-linux-x86', 'static-library');

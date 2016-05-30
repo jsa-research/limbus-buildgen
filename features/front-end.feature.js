@@ -26,11 +26,11 @@ describe('Front-end', function () {
         return util.afterEach();
     });
 
-    it('should take a flag to specify the target host', function () {
+    it('should take a flag to specify the target toolchain', function () {
         return util.writeConfiguration(minimal.projectWith({
-            host: undefined
+            toolchain: undefined
         }))
-        .then(util.generateWithParameters('--host ' + util.host))
+        .then(util.generateWithParameters('--toolchain ' + util.toolchain))
         .then(util.build())
         .then(util.runBuiltExecutable())
         .then(util.matchOutput());
@@ -38,7 +38,7 @@ describe('Front-end', function () {
 
     it('should take a flag to specify the output build path', function () {
         return util.writeConfiguration(minimal.projectWith({
-            host: util.host
+            toolchain: util.toolchain
         }))
         .then(util.generateWithParameters('--outputPath platform'))
         .then(util.build('platform/Makefile'))
@@ -70,10 +70,10 @@ describe('Front-end', function () {
 
     it('should fail with "Flag <flag> is missing a value" if a flag requiring a value is missing one', function () {
         return Promise.all([
-            shell.exec(util.frontEndExecutable + ' --host', {cwd: 'temp'}).then(function () {
+            shell.exec(util.frontEndExecutable + ' --toolchain', {cwd: 'temp'}).then(function () {
                 return Promise.reject(new Error('Did not fail'));
             }, function (error) {
-                return error.stdout.should.containEql('Flag --host is missing a value');
+                return error.stdout.should.containEql('Flag --toolchain is missing a value');
             }),
             shell.exec(util.frontEndExecutable + ' --outputPath', {cwd: 'temp'}).then(function () {
                 return Promise.reject(new Error('Did not fail'));
@@ -85,7 +85,7 @@ describe('Front-end', function () {
 
     it('should fail if the config file is not valid JSON', function () {
         return util.testConfiguration(
-            "{ title: 'app', type: 'application', host: 'linux', files: ['test.c'], outputName: 'name' }"
+            "{ title: 'app', type: 'application', toolchain: 'linux', files: ['test.c'], outputName: 'name' }"
         ).should.be.rejected();
     });
 
