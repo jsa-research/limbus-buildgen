@@ -45,7 +45,7 @@ var generateWithExample = function (example) {
         return util.writeFile('temp/example.js', Promise.resolve(example));
     })
     .then(function () {
-        return shell.exec('node ' + shell.path('example.js'), {cwd: './temp'});
+        return shell.exec('node ' + shell.path('example.js'), { cwd: './temp' });
     });
 };
 

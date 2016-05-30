@@ -17,19 +17,19 @@ var ConfigPathNormalizer = require('../source/config-path-normalizer');
 describe('config-path-normalizer', function () {
     describe('normalize', function () {
         it('should add a trailing slash to outputPath if none exists', function () {
-            var config = {outputPath: 'path'};
+            var config = { outputPath: 'path' };
             ConfigPathNormalizer.normalize(config);
             config.outputPath.should.equal('path/');
         });
 
         it('should not add a trailing slash if one already exists', function () {
-            var config = {outputPath: 'path/'};
+            var config = { outputPath: 'path/' };
             ConfigPathNormalizer.normalize(config);
             config.outputPath.should.equal('path/');
         });
 
         it('should not add a slash if outputPath is empty', function () {
-            var config = {outputPath: ''};
+            var config = { outputPath: '' };
             ConfigPathNormalizer.normalize(config);
             config.outputPath.should.equal('');
         });

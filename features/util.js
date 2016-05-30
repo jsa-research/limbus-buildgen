@@ -133,7 +133,7 @@ exports.generateWithParameters = function (parameters) {
     }
 
     return function (configurationDetails) {
-        return shell.exec(exports.frontEndExecutable + parameters + ' ' + configurationDetails.configurationPath, {cwd: 'temp'})
+        return shell.exec(exports.frontEndExecutable + parameters + ' ' + configurationDetails.configurationPath, { cwd: 'temp' })
         .then(function () {
             return Promise.resolve({
                 makefile: 'Makefile',
@@ -171,7 +171,7 @@ exports.build = function (makefile, variables) {
             command += '-f ' + (makefile || buildDetails.makefile);
         }
 
-        return shell.exec(command, {cwd: 'temp'})
+        return shell.exec(command, { cwd: 'temp' })
         .then(function () {
             return Promise.resolve(buildDetails.executable);
         });
@@ -184,7 +184,7 @@ exports.runBuiltExecutable = function (executableOverride) {
         if (executable === undefined) {
             return Promise.reject(new Error('No executable given to execute in test!'));
         }
-        return shell.exec(executable, {cwd: 'temp'});
+        return shell.exec(executable, { cwd: 'temp' });
     };
 };
 

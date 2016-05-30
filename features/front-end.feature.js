@@ -49,7 +49,7 @@ describe('Front-end', function () {
     });
 
     it('should fail with "Too many arguments" if too many non-flag arguments are passed', function () {
-        return shell.exec(util.frontEndExecutable + ' file.json file2.json', {cwd: 'temp'}).then(function () {
+        return shell.exec(util.frontEndExecutable + ' file.json file2.json', { cwd: 'temp' }).then(function () {
             return Promise.reject(new Error('Did not fail'));
         }, function (error) {
             return error.stdout.should.containEql('Too many arguments');
@@ -57,7 +57,7 @@ describe('Front-end', function () {
     });
 
     it('should fail with "No configuration file" if no config file is provided', function () {
-        return shell.exec(util.frontEndExecutable, {cwd: 'temp'}).then(function () {
+        return shell.exec(util.frontEndExecutable, { cwd: 'temp' }).then(function () {
             return Promise.reject(new Error('Did not fail'));
         }, function (error) {
             return error.stdout.should.containEql('No configuration file');
@@ -65,19 +65,19 @@ describe('Front-end', function () {
     });
 
     it('should output usage information if given the --help flag', function () {
-        return shell.exec(util.frontEndExecutable + ' --help', {cwd: 'temp'}).then(function (result) {
+        return shell.exec(util.frontEndExecutable + ' --help', { cwd: 'temp' }).then(function (result) {
             return result.stdout.should.containEql('Usage:');
         });
     });
 
     it('should fail with "Flag <flag> is missing a value" if a flag requiring a value is missing one', function () {
         return Promise.all([
-            shell.exec(util.frontEndExecutable + ' --toolchain', {cwd: 'temp'}).then(function () {
+            shell.exec(util.frontEndExecutable + ' --toolchain', { cwd: 'temp' }).then(function () {
                 return Promise.reject(new Error('Did not fail'));
             }, function (error) {
                 return error.stdout.should.containEql('Flag --toolchain is missing a value');
             }),
-            shell.exec(util.frontEndExecutable + ' --outputPath', {cwd: 'temp'}).then(function () {
+            shell.exec(util.frontEndExecutable + ' --outputPath', { cwd: 'temp' }).then(function () {
                 return Promise.reject(new Error('Did not fail'));
             }, function (error) {
                 return error.stdout.should.containEql('Flag --outputPath is missing a value');

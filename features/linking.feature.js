@@ -30,7 +30,7 @@ describe('Linking', function () {
                 'include/mylibrary.h',
                 'source/mydynamiclibrary.c',
                 'include/mydynamiclibrary.h',
-                'math.c',
+                'math.c'
             ], 'features/linking/', 'temp/');
         });
     });

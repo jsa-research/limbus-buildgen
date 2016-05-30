@@ -58,7 +58,7 @@ var validToolchains = [
     'freebsd',
     'freebsd-make-clang-freebsd-x86',
     'freebsd-make-clang-freebsd-x64',
-    'freebsd-make-gcc-freebsd-x64',
+    'freebsd-make-gcc-freebsd-x64'
 ];
 
 var stringProjectProperties = [

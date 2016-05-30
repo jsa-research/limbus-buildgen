@@ -35,7 +35,7 @@ describe('Architectures', function () {
 
         if (process.platform === 'win32') {
             return builtExecutable.then(function (executable) {
-                return shell.exec('..\\utility-scripts\\setenv.bat ' + util.toolchainArchitecture + '&& dumpbin /nologo /headers ' + executable + '.exe', {cwd: 'temp'});
+                return shell.exec('..\\utility-scripts\\setenv.bat ' + util.toolchainArchitecture + '&& dumpbin /nologo /headers ' + executable + '.exe', { cwd: 'temp' });
             }).then(function (output) {
                 if (output.stdout.indexOf('PE32+') !== -1) {
                     util.toolchainArchitecture.should.equal('x64');
@@ -51,7 +51,7 @@ describe('Architectures', function () {
             });
         } else {
             return builtExecutable.then(function (executable) {
-                return shell.exec('file ' + executable, {cwd: 'temp'});
+                return shell.exec('file ' + executable, { cwd: 'temp' });
             }).then(function (output) {
                 if (output.stdout.indexOf('64-bit') !== -1) {
                     util.toolchainArchitecture.should.equal('x64');

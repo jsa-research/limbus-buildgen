@@ -25,9 +25,9 @@ describe('_', function () {
         });
 
         it('should return {first: "3first", second: "6second"} given {first: 1, second: 2} and \\item key -> (item * 3) + key', function () {
-            dash.map({first: 1, second: 2}, function (item, key) {
+            dash.map({ first: 1, second: 2 }, function (item, key) {
                 return item * 3 + key;
-            }).should.match({first: '3first', second: '6second'});
+            }).should.match({ first: '3first', second: '6second' });
         });
 
         it('should return [] given an empty array and \\item -> item * 3', function () {
@@ -53,7 +53,7 @@ describe('_', function () {
         });
 
         it('should return "1first2second" given {first: 1, second: 2}, (\\accumulator item key -> accumulator + item + key) and ""', function () {
-            dash.reduce({first: 1, second: 2}, sumArguments, '').should.equal('1first2second');
+            dash.reduce({ first: 1, second: 2 }, sumArguments, '').should.equal('1first2second');
         });
 
         it('should return "" given [], (\\accumulator item key -> accumulator + item + index) and ""', function () {

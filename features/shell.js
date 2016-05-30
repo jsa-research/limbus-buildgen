@@ -39,7 +39,7 @@ exports.exec = function (command, options) {
                     error.stderr = stderr;
                     reject(error);
                 } else {
-                    resolve({stdout: stdout, stderr: stderr});
+                    resolve({ stdout: stdout, stderr: stderr });
                 }
             });
     });
@@ -51,7 +51,7 @@ exports.rm = function (path, workingDirectory) {
         rm = 'rmdir /S /Q ';
     }
 
-    return exports.exec(rm + exports.path(path), {cwd: workingDirectory});
+    return exports.exec(rm + exports.path(path), { cwd: workingDirectory });
 };
 
 exports.cp = function (source, destination, workingDirectory) {
@@ -60,11 +60,11 @@ exports.cp = function (source, destination, workingDirectory) {
         cp = 'copy /Y ';
     }
 
-    return exports.exec(cp + exports.path(source) + ' ' + exports.path(destination), {cwd: workingDirectory});
+    return exports.exec(cp + exports.path(source) + ' ' + exports.path(destination), { cwd: workingDirectory });
 };
 
 exports.mkdir = function (path, workingDirectory) {
-    return exports.exec('mkdir ' + exports.path(path), {cwd: workingDirectory});
+    return exports.exec('mkdir ' + exports.path(path), { cwd: workingDirectory });
 };
 
 exports.copyFiles = function (files, inputDirectory, outputDirectory) {

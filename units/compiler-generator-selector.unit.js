@@ -14,9 +14,9 @@
 require('should');
 var CompilerGeneratorSelector = require('../source/compiler-generator-selector');
 
-var gcc = {name: 'gcc'};
-var clang = {name: 'clang'};
-var cl = {name: 'cl'};
+var gcc = { name: 'gcc' };
+var clang = { name: 'clang' };
+var cl = { name: 'cl' };
 
 var compilers = {
     'gcc': gcc,
