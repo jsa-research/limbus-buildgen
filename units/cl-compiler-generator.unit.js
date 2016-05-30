@@ -131,7 +131,7 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'static-library',
                 outputName: 'name',
-                files: [ 'file.c' ]
+                files: ['file.c']
             });
 
             linkerCommand.should.match(/^\$\(AR\) /);
@@ -142,7 +142,7 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'dynamic-library',
                 outputName: 'name',
-                files: [ 'file.c' ]
+                files: ['file.c']
             });
 
             linkerCommand.should.match(/^\$\(CC\) /);
@@ -216,7 +216,7 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'executable',
-                files: [ 'file.c' ],
+                files: ['file.c'],
                 libraryPaths: [
                     'path',
                     'other_path'
@@ -230,7 +230,7 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'executable',
-                files: [ 'file.c' ],
+                files: ['file.c'],
                 libraries: [
                     'mylibrary',
                     'anotherlibrary'
@@ -257,7 +257,7 @@ describe('cl-compiler-generator', function () {
             var linkerCommand = ClCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
-                files: [ 'file.c' ],
+                files: ['file.c'],
                 flags: '-flags'
             });
 
@@ -269,7 +269,7 @@ describe('cl-compiler-generator', function () {
                 type: 'application',
                 outputName: 'name',
                 outputPath: 'some/directory/',
-                files: [ 'file.c' ]
+                files: ['file.c']
             });
 
             linkerCommand.should.containEql('some\\directory\\name');

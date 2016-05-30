@@ -10,14 +10,16 @@
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 var Promise = require('promise');
+var pathModule = require('path');
+var childProcess = require('child_process');
 
 exports.path = function (path) {
-    return path ? path.replace(/\//g, require('path').sep) : path;
+    return path ? path.replace(/\//g, pathModule.sep) : path;
 };
 
 exports.exec = function (command, options) {
     return new Promise(function(resolve, reject) {
-        require('child_process').exec(
+        childProcess.exec(
             command,
             {
                 cwd: (options && options.cwd) ? exports.path(options.cwd) : undefined
@@ -57,9 +59,9 @@ exports.mkdir = function (path, workingDirectory) {
     return exports.exec('mkdir ' + exports.path(path), {cwd: workingDirectory});
 };
 
-exports.copyFiles = function (files, inputDirectory, outputDirectory, workingDirectory) {
+exports.copyFiles = function (files, inputDirectory, outputDirectory) {
     var copyFilePromise = function (file) {
-        return exports.cp(inputDirectory + file, outputDirectory + file, workingDirectory);
+        return exports.cp(inputDirectory + file, outputDirectory + file, undefined);
     };
 
     var filePromise = Promise.resolve();

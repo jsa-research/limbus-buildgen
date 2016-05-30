@@ -18,12 +18,12 @@ var shell = require('./shell.js');
 var javascriptExamples = [];
 var jsonExamples = [];
 var jsonExampleExpressions = [];
-var usageInformation;
+var usageInformation = '';
 
 var readme = fs.readFileSync('README.md').toString();
 
 readme.replace(/```javascript([\s\S]+?)```/gi, function (match, example) {
-    example = example.replace(/require\(\'limbus\-buildgen\'\)/g, "require('../source/limbus-buildgen')");
+    example = example.replace(/require\('limbus\-buildgen'\)/g, "require('../source/limbus-buildgen')");
     javascriptExamples.push(example);
     return match;
 });
@@ -32,7 +32,7 @@ readme.replace(/```json([\s\S]+?)```/gi, function (match, example) {
     jsonExampleExpressions.push("require('../source/limbus-buildgen').generate(" + example + ");");
     return match;
 });
-readme.replace(/```(\s+Usage\:[\s\S]+?)```/, function (match, info) {
+readme.replace(/```(\s+Usage:[\s\S]+?)```/, function (match, info) {
     usageInformation = info;
     return match;
 });

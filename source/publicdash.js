@@ -12,17 +12,19 @@
 var mapHashmap = function (hashmap, func) {
     var newHashmap = {};
     for (var key in hashmap) {
-        var item = hashmap[key];
-        newHashmap[key] = func(item, key);
+        if (hashmap.hasOwnProperty(key)) {
+            var item = hashmap[key];
+            newHashmap[key] = func(item, key);
+        }
     }
     return newHashmap;
 };
 
 var mapArray = function (array, func) {
     var newArray = [];
-    for (var i = 0; i < array.length; i += 1) {
-        var item = array[i];
-        newArray[i] = func(item, i);
+    for (var index = 0; index < array.length; index += 1) {
+        var item = array[index];
+        newArray[index] = func(item, index);
     }
     return newArray;
 };
@@ -37,17 +39,19 @@ exports.map = function (collection) {
 
 exports.reduce = function (collection, func, accumulator) {
     for (var key in collection) {
-        var item = collection[key];
-        accumulator = func(accumulator, item, key);
+        if (collection.hasOwnProperty(key)) {
+            var item = collection[key];
+            accumulator = func(accumulator, item, key);
+        }
     }
     return accumulator;
 };
 
 var filterArray = function (array, func) {
     var newArray = [];
-    for (var i = 0; i < array.length; i += 1) {
-        var value = array[i];
-        if (func(value, i)) {
+    for (var index = 0; index < array.length; index += 1) {
+        var value = array[index];
+        if (func(value, index)) {
             newArray.push(value);
         }
     }
@@ -57,9 +61,11 @@ var filterArray = function (array, func) {
 var filterMap = function (hashmap, func) {
     var newHashmap = {};
     for (var key in hashmap) {
-        var value = hashmap[key];
-        if (func(value, key)) {
-            newHashmap[key] = value;
+        if (hashmap.hasOwnProperty(key)) {
+            var value = hashmap[key];
+            if (func(value, key)) {
+                newHashmap[key] = value;
+            }
         }
     }
     return newHashmap;
@@ -79,9 +85,9 @@ exports.snakeCase = function (string) {
     }).toLowerCase();
 };
 
-exports.compose = function (a, b) {
-    return function (x) {
-        return a(b(x));
+exports.compose = function (first, second) {
+    return function (value) {
+        return first(second(value));
     };
 };
 

@@ -40,7 +40,7 @@ exports.compilerCommand = function (options) {
 };
 
 var linkerFlagsFromOptions = function (options) {
-    var separator;
+    var separator = '';
     var flags = '';
 
     if (options.libraries !== undefined) {
@@ -64,24 +64,24 @@ var objectFilesFromFiles = function (files) {
     return files.join('.o ') + '.o';
 };
 
-var linkerCommandFromType = function (type, outputPath, outputName, objectFiles, flags) {
-    if (type === 'static-library') {
-        return '$(AR) rcs' + flags + ' ' + outputPath + 'lib' + outputName + '.a ' + objectFiles;
+var linkerCommandFromOptions = function (options) {
+    if (options.type === 'static-library') {
+        return '$(AR) rcs' + options.flags + ' ' + options.outputPath + 'lib' + options.outputName + '.a ' + options.objectFiles;
 
-    } else if (type === 'dynamic-library') {
-        return '$(CC) -shared -o ' + outputPath + 'lib' + outputName + '.so ' + objectFiles + ' ' + flags;
+    } else if (options.type === 'dynamic-library') {
+        return '$(CC) -shared -o ' + options.outputPath + 'lib' + options.outputName + '.so ' + options.objectFiles + ' ' + options.flags;
 
     } else {
-        return '$(CC) -o ' + outputPath + outputName + ' ' + objectFiles + ' ' + flags;
+        return '$(CC) -o ' + options.outputPath + options.outputName + ' ' + options.objectFiles + ' ' + options.flags;
     }
 }
 
 exports.linkerCommand = function (options) {
-    return linkerCommandFromType(
-        options.type,
-        options.outputPath || '',
-        options.outputName,
-        objectFilesFromFiles(options.files),
-        linkerFlagsFromOptions(options)
-    );
+    return linkerCommandFromOptions({
+        type: options.type,
+        outputPath: options.outputPath || '',
+        outputName: options.outputName,
+        objectFiles: objectFilesFromFiles(options.files),
+        flags: linkerFlagsFromOptions(options)
+    });
 };

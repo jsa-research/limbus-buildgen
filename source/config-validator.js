@@ -91,10 +91,10 @@ var errorResult = function (error, property) {
 
 var ConfigValidator = function () {};
 
-var _ = require('./publicdash');
+var dash = require('./publicdash');
 
-var returnErrorOn = function (configuration, properties, error, predicate) {
-    return _.reduce(properties, function (result, property) {
+var returnErrorOn = function (properties, error, predicate) {
+    return dash.reduce(properties, function (result, property) {
         return predicate(property) ? errorResult(error, property) : result;
     }, validResult());
 };
@@ -112,32 +112,31 @@ var validateForInvalidProjectValues = function (config) {
 };
 
 var validateRequiredProperties = function (config) {
-    return returnErrorOn(config, requiredProperties, 'missing required property', function (property) {
+    return returnErrorOn(requiredProperties, 'missing required property', function (property) {
         return config[property] === undefined;
     });
 };
 
 var validateRequiredProjectProperties = function (config) {
-    return returnErrorOn(config, requiredProjectProperties, 'missing required project property', function (property) {
+    return returnErrorOn(requiredProjectProperties, 'missing required project property', function (property) {
         return config[property] === undefined;
     });
 };
 
 var validateStringProperties = function (config) {
-    return returnErrorOn(config, stringProperties, 'property is not a string', function (property) {
+    return returnErrorOn(stringProperties, 'property is not a string', function (property) {
         return config[property] !== undefined && typeof config[property] !== 'string';
     });
 };
 
 var validateStringProjectProperties = function (config) {
-    return returnErrorOn(config, stringProjectProperties, 'project property is not a string', function (property) {
+    return returnErrorOn(stringProjectProperties, 'project property is not a string', function (property) {
         return config[property] !== undefined && typeof config[property] !== 'string';
     });
 };
 
 var arrayContainsNonString = function (array) {
-    var index;
-    for (index = 0; index < array.length; index += 1) {
+    for (var index = 0; index < array.length; index += 1) {
         var value = array[index];
         if (typeof value !== 'string') {
             return true;
@@ -147,14 +146,14 @@ var arrayContainsNonString = function (array) {
 };
 
 var validateStringArrayProperties = function (config) {
-    return returnErrorOn(config, stringArrayProperties, 'property is not a string array', function (property) {
+    return returnErrorOn(stringArrayProperties, 'property is not a string array', function (property) {
         return config[property] !== undefined &&
             (!Array.isArray(config[property]) || arrayContainsNonString(config[property]));
     });
 };
 
 var validateFilenames = function (config) {
-    return returnErrorOn(config, ['outputName'], 'cannot be path', function (property) {
+    return returnErrorOn(['outputName'], 'cannot be path', function (property) {
         return config[property].match(/[\/\\]/) !== null ||
             config[property] === '.' ||
             config[property] === '..';
@@ -162,7 +161,7 @@ var validateFilenames = function (config) {
 };
 
 var validateFileArrays = function (config) {
-    return returnErrorOn(config, ['files'], 'no input files', function (property) {
+    return returnErrorOn(['files'], 'no input files', function (property) {
         return config[property].length === 0;
     });
 };
@@ -191,7 +190,7 @@ var validateForInvalidValues = function (config) {
 };
 
 var validateFileExtensions = function (config) {
-    return _.reduce(config.files, function (result, file) {
+    return dash.reduce(config.files, function (result, file) {
         if (result.valid && file.match(/\.\w/) === null) {
             return errorResult('no extension', 'files');
         }
@@ -228,14 +227,14 @@ ConfigValidator.validate = function (config) {
     ];
 
     var validate = function (config, validators, startingResult) {
-        return _.reduce(validators, function (result, validator) {
+        return dash.reduce(validators, function (result, validator) {
             return result.valid ? validator(config) : result;
         }, startingResult);
     };
 
     var projectValidation = validate(config, projectValidators, validResult());
 
-    return _.reduce(config.artifacts, function (result, artifact) {
+    return dash.reduce(config.artifacts, function (result, artifact) {
         return result.valid ? validate(artifact, validators, result) : result;
     }, projectValidation);
 };

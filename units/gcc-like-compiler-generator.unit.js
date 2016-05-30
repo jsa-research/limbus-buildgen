@@ -102,7 +102,7 @@ describe('gcc-like-compiler-generator', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
-                files: [ 'test.c' ]
+                files: ['test.c']
             });
 
             linkerCommand.should.match(/^\$\(CC\) /);
@@ -149,7 +149,7 @@ describe('gcc-like-compiler-generator', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
-                files: [ 'test.c' ],
+                files: ['test.c'],
                 libraryPaths: [
                     'path',
                     'other_path'
@@ -164,7 +164,7 @@ describe('gcc-like-compiler-generator', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
-                files: [ 'test.c' ],
+                files: ['test.c'],
                 libraries: [
                     'mylibrary',
                     'anotherlibrary'
@@ -179,7 +179,7 @@ describe('gcc-like-compiler-generator', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'static-library',
                 outputName: 'name',
-                files: [ 'test.c' ]
+                files: ['test.c']
             });
 
             linkerCommand.should.containEql('$(AR) rcs libname.a');
@@ -189,7 +189,7 @@ describe('gcc-like-compiler-generator', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'dynamic-library',
                 outputName: 'name',
-                files: [ 'test.c' ]
+                files: ['test.c']
             });
 
             linkerCommand.should.match(/^\$\(CC\) /);
@@ -201,7 +201,7 @@ describe('gcc-like-compiler-generator', function () {
             var linkerCommand = GccCompilerGenerator.linkerCommand({
                 type: 'application',
                 outputName: 'name',
-                files: [ 'test.c' ],
+                files: ['test.c'],
                 flags: '-flags'
             });
 
@@ -213,7 +213,7 @@ describe('gcc-like-compiler-generator', function () {
                 type: 'application',
                 outputName: 'name',
                 outputPath: 'some/directory/',
-                files: [ 'test.c' ]
+                files: ['test.c']
             });
 
             linkerCommand.should.containEql('some/directory/name');

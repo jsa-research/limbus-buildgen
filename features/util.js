@@ -106,6 +106,7 @@ var findExecutableFromConfiguration = function (configuration) {
             return (artifact.outputPath !== undefined && artifact.outputPath.length > 0 ? shell.path(artifact.outputPath + '/') : shell.path('./')) + artifact.outputName;
         }
     }
+    return undefined;
 };
 
 exports.generateWithParameters = function (parameters) {

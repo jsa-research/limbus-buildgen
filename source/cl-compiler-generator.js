@@ -9,7 +9,7 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-var _ = require('./publicdash');
+var dash = require('./publicdash');
 
 var changeToValidPath = function (path) {
     return (path || '').replace(/\//g, '\\');
@@ -25,7 +25,7 @@ exports.variables = function () {
 var compilerFlagsFromOptions = function (options) {
     var flags = '';
     if (options.includePaths) {
-        flags += ' /I' + _.map(options.includePaths, changeToValidPath).join(' /I');
+        flags += ' /I' + dash.map(options.includePaths, changeToValidPath).join(' /I');
     }
     if (options.type === 'dynamic-library') {
         flags += ' /D_USRDLL /D_WINDLL';
@@ -85,7 +85,7 @@ var librariesToLinkFromOptions = function (options) {
 };
 
 var objectFilesFromFiles = function (files) {
-    return _.map(files, changeToValidPath).join('.obj ') + '.obj';
+    return dash.map(files, changeToValidPath).join('.obj ') + '.obj';
 }
 
 exports.linkerCommand = function (options) {

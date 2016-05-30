@@ -37,9 +37,11 @@ describe('Architectures', function () {
             }).then(function (output) {
                 if (output.stdout.indexOf('PE32+') !== -1) {
                     util.toolchainArchitecture.should.equal('x64');
+                    return Promise.resolve();
 
                 } else if (output.stdout.indexOf('PE32') !== -1) {
                     util.toolchainArchitecture.should.equal('x86');
+                    return Promise.resolve();
 
                 } else {
                     return Promise.reject('Unknown platform:\n' + output.stdout);
@@ -51,9 +53,11 @@ describe('Architectures', function () {
             }).then(function (output) {
                 if (output.stdout.indexOf('64-bit') !== -1) {
                     util.toolchainArchitecture.should.equal('x64');
+                    return Promise.resolve();
 
                 } else if (output.stdout.indexOf('86') !== -1) {
                     util.toolchainArchitecture.should.equal('x86');
+                    return Promise.resolve();
 
                 } else {
                     return Promise.reject('Unknown platform:\n' + output.stdout);

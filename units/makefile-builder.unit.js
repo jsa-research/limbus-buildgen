@@ -60,7 +60,7 @@ describe('makefile-builder', function () {
         it('should take an object with variables to define', function () {
             var makefile = MakefileBuilder.build({
                 VAR: 'value'
-            },[
+            }, [
                 {name: 'all', commands: ["VAR"]},
             ]);
             makefile.should.equal(
@@ -74,7 +74,7 @@ describe('makefile-builder', function () {
             var makefile = MakefileBuilder.build({
                 VAR: 'value',
                 SECONDVAR: 'value2'
-            },[
+            }, [
                 {name: 'all', commands: ["VAR"]},
             ]);
             makefile.should.equal(

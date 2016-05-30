@@ -58,7 +58,7 @@ var addArchitectureFlagToArtifactCompilerFlags = function (artifact, architectur
 
 module.exports.decorate = function (configuration) {
     configuration.artifacts.forEach(function (artifact) {
-        var architecture;
+        var architecture = '';
 
         if (toolchainNeedsRpath(configuration.toolchain)) {
             addRpathToArtifactLinkerFlags(artifact);

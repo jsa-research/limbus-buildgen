@@ -19,20 +19,20 @@ var variableDefinitionsFromMap = function (variables) {
     return definitions;
 };
 
-var targetDefinitionFromConfiguration = function (configuration, lastConfiguration, isLastConfiguration, isFirstConfiguration) {
+var targetDefinitionFromConfiguration = function (options) {
     var dependencies = '';
-    var name = configuration.name;
+    var name = options.configuration.name;
 
-    if (!isFirstConfiguration) {
-        dependencies = ' ' + lastConfiguration.name;
+    if (!options.isFirstConfiguration) {
+        dependencies = ' ' + options.lastConfiguration.name;
     }
 
-    if (isLastConfiguration) {
+    if (options.isLastConfiguration) {
         name = 'all';
     }
 
     return name + ':' + dependencies +
-           '\n\t' + configuration.commands.join('\n\t') +
+           '\n\t' + options.configuration.commands.join('\n\t') +
            '\n';
 };
 
@@ -51,12 +51,12 @@ exports.build = function (variablesMap, configurations) {
         var isFirstConfiguration = configurationIndex === 0;
         var lastConfiguration = configurations[configurationIndex - 1];
 
-        targets.push(targetDefinitionFromConfiguration(
-            configuration,
-            lastConfiguration,
-            isLastConfiguration,
-            isFirstConfiguration
-        ));
+        targets.push(targetDefinitionFromConfiguration({
+            configuration: configuration,
+            lastConfiguration: lastConfiguration,
+            isLastConfiguration: isLastConfiguration,
+            isFirstConfiguration: isFirstConfiguration
+        }));
     });
 
     targets.reverse();
