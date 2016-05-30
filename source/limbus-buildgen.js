@@ -46,9 +46,9 @@ var compilers = {
     }
 };
 
-var generateTargets = function (generate, configuration) {
+var generateTargets = function (generate, artifacts) {
     var targets = [];
-    configuration.artifacts.forEach(function (artifact) {
+    artifacts.forEach(function (artifact) {
         var commands = [];
 
         artifact.files.forEach(function (file) {
@@ -83,28 +83,46 @@ var generateTargets = function (generate, configuration) {
     return targets;
 };
 
-module.exports.generate = function (configuration) {
+var generateVariables = function (generate) {
+    return generate.variables({ compiler: generate.name });
+};
+
+var fileFromContents = function (contents) {
+    return { isFile: true, contents: contents };
+};
+
+var validateConfig = function (configuration) {
     var validationResult = ConfigValidator.validate(configuration);
 
     if (validationResult.valid === false) {
         throw new Error(validationResult.error + ': ' + validationResult.property);
     }
+};
 
+var modifyConfig = function (configuration) {
     ConfigHostDecorator.decorate(configuration);
     ConfigPathNormalizer.normalize(configuration.artifacts[0]);
+};
 
+var selectGenerator = function (configuration) {
     var host = configuration.artifacts[0].host;
-    var generate = CompilerGeneratorSelector.select(host, compilers);
+    return CompilerGeneratorSelector.select(host, compilers);
+};
 
-    var variables = generate.variables({
-        compiler: generate.name
-    });
-    var targets = generateTargets(generate, configuration);
+var generateMakefileFromConfiguration = function (configuration) {
+    var generator = selectGenerator(configuration);
+    var variables = generateVariables(generator);
+    var targets = generateTargets(generator, configuration.artifacts);
+    return MakefileBuilder.build(variables, targets);
+};
+
+module.exports.generate = function (configuration) {
+    validateConfig(configuration);
+    modifyConfig(configuration);
+
+    var makefile = generateMakefileFromConfiguration(configuration);
 
     return {
-        'Makefile': {
-            isFile: true,
-            contents: MakefileBuilder.build(variables, targets)
-        }
+        'Makefile': fileFromContents(makefile)
     };
 };
