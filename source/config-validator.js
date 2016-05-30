@@ -89,13 +89,17 @@ var errorResult = function (error, property) {
     };
 };
 
-var ConfigValidator = function () {};
+var ConfigValidator = {};
 
 var dash = require('./publicdash');
 
 var returnErrorOn = function (properties, error, predicate) {
     return dash.reduce(properties, function (result, property) {
-        return predicate(property) ? errorResult(error, property) : result;
+        if (predicate(property)) {
+            return errorResult(error, property);
+        } else {
+            return result;
+        }
     }, validResult());
 };
 
@@ -228,14 +232,22 @@ ConfigValidator.validate = function (config) {
 
     var validate = function (config, validators, startingResult) {
         return dash.reduce(validators, function (result, validator) {
-            return result.valid ? validator(config) : result;
+            if (result.valid) {
+                return validator(config);
+            } else {
+                return result;
+            }
         }, startingResult);
     };
 
     var projectValidation = validate(config, projectValidators, validResult());
 
     return dash.reduce(config.artifacts, function (result, artifact) {
-        return result.valid ? validate(artifact, validators, result) : result;
+        if (result.valid) {
+            return validate(artifact, validators, result);
+        } else {
+            return result;
+        }
     }, projectValidation);
 };
 

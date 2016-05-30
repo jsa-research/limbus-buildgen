@@ -72,14 +72,14 @@ rules:
   max-nested-callbacks: error
   max-params: error
   max-statements: 'off'
-  max-statements-per-line: 'off'
+  max-statements-per-line: error
   new-parens: error
   newline-after-var: 'off'
   newline-before-return: 'off'
-  newline-per-chained-call: 'off'
-  no-alert: 'off'
+  newline-per-chained-call: error
+  no-alert: error
   no-array-constructor: error
-  no-bitwise: 'off'
+  no-bitwise: error
   no-caller: error
   no-catch-shadow: error
   no-confusing-arrow: error
@@ -88,19 +88,20 @@ rules:
   no-div-regex: error
   no-duplicate-imports: error
   no-else-return: 'off'
-  no-empty-function: 'off'
-  no-eq-null: 'off'
+  no-empty-function: error
+  no-eq-null: error
   no-eval:
     - error
     - allowIndirect: true
   no-extend-native: 'off'
+  no-extra-semi: error
   no-extra-bind: error
   no-extra-label: error
-  no-extra-parens: 'off'
+  no-extra-parens: error
   no-floating-decimal: error
-  no-implicit-globals: 'off'
-  no-implied-eval: 'off'
-  no-inline-comments: 'off'
+  no-implicit-globals: error
+  no-implied-eval: error
+  no-inline-comments: error
   no-inner-declarations:
     - error
     - functions
@@ -113,7 +114,7 @@ rules:
   no-loop-func: error
   no-magic-numbers: 'off'
   no-mixed-requires: error
-  no-multi-spaces: 'off'
+  no-multi-spaces: error
   no-multi-str: error
   no-multiple-empty-lines: error
   no-native-reassign: error
@@ -142,19 +143,19 @@ rules:
   no-sequences: error
   no-shadow: 'off'
   no-shadow-restricted-names: error
-  no-spaced-func: 'off'
+  no-spaced-func: error
   no-sync: 'off'
-  no-ternary: 'off'
+  no-ternary: error
   no-throw-literal: error
-  no-trailing-spaces: 'off'
+  no-trailing-spaces: error
   no-undef-init: error
   no-undefined: 'off'
-  no-underscore-dangle: 'off'
+  no-underscore-dangle: error
   no-unmodified-loop-condition: error
   no-unneeded-ternary: error
   no-unsafe-finally: error
-  no-unused-expressions: 'off'
-  no-use-before-define: 'off'
+  no-unused-expressions: error
+  no-use-before-define: error
   no-useless-call: error
   no-useless-computed-key: error
   no-useless-concat: error
@@ -170,11 +171,11 @@ rules:
   object-property-newline: 'off'
   object-shorthand: 'off'
   one-var: 'off'
-  one-var-declaration-per-line: 'off'
+  one-var-declaration-per-line: error
   operator-assignment:
     - error
     - always
-  operator-linebreak: 'off'
+  operator-linebreak: error
   padded-blocks: 'off'
   prefer-arrow-callback: 'off'
   prefer-const: error
@@ -183,16 +184,20 @@ rules:
   prefer-spread: 'off'
   prefer-template: 'off'
   quote-props: 'off'
-  quotes: 'off'
+  quotes:
+    - error
+    - single
+    - avoidEscape: true
+      allowTemplateLiterals: true
   radix: error
   require-jsdoc: 'off'
   require-yield: error
-  semi: 'off'
-  semi-spacing: 'off'
+  semi: error
+  semi-spacing: error
   sort-imports: error
   sort-vars: 'off'
   space-before-blocks: 'off'
-  space-before-function-paren: 'off'
+  space-before-function-paren: error
   space-in-parens:
     - error
     - never

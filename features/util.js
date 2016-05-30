@@ -13,8 +13,13 @@ var Promise = require('promise');
 var shell = require('./shell');
 var fs = require('fs');
 
-exports.toolchainCompiler = (process.env.BUILDGEN_TARGET_COMPILER ? process.env.BUILDGEN_TARGET_COMPILER : undefined);
-exports.toolchainArchitecture = (process.env.BUILDGEN_TARGET_ARCHITECTURE ? process.env.BUILDGEN_TARGET_ARCHITECTURE : undefined);
+if (process.env.BUILDGEN_TARGET_COMPILER) {
+    exports.toolchainCompiler = process.env.BUILDGEN_TARGET_COMPILER;
+}
+
+if (process.env.BUILDGEN_TARGET_ARCHITECTURE) {
+    exports.toolchainArchitecture = process.env.BUILDGEN_TARGET_ARCHITECTURE;
+}
 
 // Defines default values for toolchainCompiler based on platform.
 if (exports.toolchainCompiler === undefined) {
@@ -40,7 +45,7 @@ if (exports.toolchainArchitecture === undefined) {
 exports.toolchain = process.platform + '-make-' + exports.toolchainCompiler + '-' + process.platform + '-' + exports.toolchainArchitecture;
 
 var writeFile = function (path, dataPromise) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         dataPromise.then(function (data) {
             fs.writeFile(path, data, function (error) {
                 if (error) {
@@ -55,7 +60,7 @@ var writeFile = function (path, dataPromise) {
 exports.writeFile = writeFile;
 
 var readFile = function (path) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         fs.readFile(path, function (error, data) {
             if (error) {
                 reject(error);
@@ -70,11 +75,14 @@ exports.readFile = readFile;
 exports.frontEndExecutable = shell.path('../generated/limbus-buildgen');
 
 exports.beforeEach = function () {
-    return shell.mkdir('temp').then(function () {
+    return shell.mkdir('temp')
+    .then(function () {
         return shell.mkdir('temp/source');
-    }).then(function () {
+    })
+    .then(function () {
         return shell.cp('source/*.js', 'temp/source/');
-    }).then(function () {
+    })
+    .then(function () {
         return shell.copyFiles([
             'main.c'
         ], 'features/common/', 'temp/');
@@ -102,23 +110,35 @@ exports.writeConfiguration = function (configuration) {
 var findExecutableFromConfiguration = function (configuration) {
     for (var artifactIndex = 0; artifactIndex < configuration.artifacts.length; artifactIndex += 1) {
         var artifact = configuration.artifacts[artifactIndex];
+
+        var finalPath = shell.path('./');
+        if (artifact.outputPath !== undefined && artifact.outputPath.length > 0) {
+            finalPath = shell.path(artifact.outputPath + '/');
+        }
+
         if (artifact.type === 'application') {
-            return (artifact.outputPath !== undefined && artifact.outputPath.length > 0 ? shell.path(artifact.outputPath + '/') : shell.path('./')) + artifact.outputName;
+            return finalPath + artifact.outputName;
         }
     }
     return undefined;
 };
 
 exports.generateWithParameters = function (parameters) {
+    if (parameters) {
+        parameters = ' ' + parameters;
+    } else {
+        parameters = '';
+    }
+
     return function (configurationDetails) {
-        return shell.exec(exports.frontEndExecutable + (parameters ? ' ' + parameters : '') + ' ' + configurationDetails.configurationPath, {cwd: 'temp'})
+        return shell.exec(exports.frontEndExecutable + parameters + ' ' + configurationDetails.configurationPath, {cwd: 'temp'})
         .then(function () {
             return Promise.resolve({
                 makefile: 'Makefile',
                 executable: findExecutableFromConfiguration(configurationDetails.configuration)
             });
         });
-    }
+    };
 };
 
 exports.build = function (makefile, variables) {
@@ -140,7 +160,7 @@ exports.build = function (makefile, variables) {
             command += '..\\utility-scripts\\setenv.bat ' + exports.toolchainArchitecture + '&& ';
             command += 'nmake';
             if (variableDefinitions.length > 0) {
-                command += ' /E'
+                command += ' /E';
             }
             command += ' /f ' + (makefile || buildDetails.makefile);
         } else {
@@ -149,7 +169,8 @@ exports.build = function (makefile, variables) {
             command += '-f ' + (makefile || buildDetails.makefile);
         }
 
-        return shell.exec(command, {cwd: 'temp'}).then(function () {
+        return shell.exec(command, {cwd: 'temp'})
+        .then(function () {
             return Promise.resolve(buildDetails.executable);
         });
     };

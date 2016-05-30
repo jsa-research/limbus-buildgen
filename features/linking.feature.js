@@ -16,9 +16,11 @@ var minimal = require('../source/minimal-configuration');
 
 describe('Linking', function () {
     beforeEach(function () {
-        return util.beforeEach().then(function () {
+        return util.beforeEach()
+        .then(function () {
             return shell.mkdir('temp/include');
-        }).then(function () {
+        })
+        .then(function () {
             return shell.copyFiles([
                 'linked.c',
                 'linked_dynamic.c',

@@ -89,13 +89,13 @@ describe('Front-end', function () {
         ).should.be.rejected();
     });
 
-    it('should fail with "Unknown flag \'<flag>\'" if given an unknown flag', function () {
+    it('should fail with \'Unknown flag "<flag>"\' if given an unknown flag', function () {
         return util.writeConfiguration(minimal.project())
         .then(util.generateWithParameters('--some-flag value'))
         .then(function () {
             return Promise.reject(new Error('Did not fail'));
         }, function (error) {
-            return error.message.should.containEql("Unknown flag '--some-flag'");
-        })
+            return error.message.should.containEql('Unknown flag "--some-flag"');
+        });
     });
 });

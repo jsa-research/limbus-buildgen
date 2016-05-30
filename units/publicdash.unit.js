@@ -24,13 +24,13 @@ describe('_', function () {
 
         it('should return {first: "3first", second: "6second"} given {first: 1, second: 2} and \\item key -> (item * 3) + key', function () {
             dash.map({first: 1, second: 2}, function (item, key) {
-                return (item * 3) + key;
+                return item * 3 + key;
             }).should.match({first: '3first', second: '6second'});
         });
 
         it('should return [] given an empty array and \\item -> item * 3', function () {
             var result = dash.map([], timesThree);
-            Array.isArray(result).should.be.true;
+            Array.isArray(result).should.be.true();
             result.should.match([]);
         });
 
@@ -43,7 +43,7 @@ describe('_', function () {
 
     describe('reduce', function () {
         var sumArguments = function (accumulator, item, key) {
-            return accumulator + item + key
+            return accumulator + item + key;
         };
 
         it('should return "" given {}, (\\accumulator item key -> accumulator + item + key) and ""', function () {
@@ -78,7 +78,7 @@ describe('_', function () {
             var result = dash.filter({}, function () {
                 return true;
             });
-            Array.isArray(result).should.be.false;
+            Array.isArray(result).should.be.false();
             result.should.match({});
         });
     });
@@ -107,30 +107,30 @@ describe('_', function () {
 
     describe('isNull', function () {
         it('should return true if given null', function () {
-            dash.isNull(null).should.be.true;
+            dash.isNull(null).should.be.true();
         });
 
         it('should return false if given any other value', function () {
-            dash.isNull(undefined).should.be.false;
-            dash.isNull(0).should.be.false;
-            dash.isNull([]).should.be.false;
-            dash.isNull({}).should.be.false;
+            dash.isNull(undefined).should.be.false();
+            dash.isNull(0).should.be.false();
+            dash.isNull([]).should.be.false();
+            dash.isNull({}).should.be.false();
         });
     });
 
     describe('negate', function () {
         it('should return true if given a falsy value', function () {
-            dash.negate(false).should.be.true;
-            dash.negate(null).should.be.true;
-            dash.negate(undefined).should.be.true;
-            dash.negate(0).should.be.true;
-            dash.negate(NaN).should.be.true;
+            dash.negate(false).should.be.true();
+            dash.negate(null).should.be.true();
+            dash.negate(undefined).should.be.true();
+            dash.negate(0).should.be.true();
+            dash.negate(NaN).should.be.true();
         });
         it('should return false if given a truthy value', function () {
-            dash.negate(true).should.be.false;
-            dash.negate(1).should.be.false;
-            dash.negate([]).should.be.false;
-            dash.negate({}).should.be.false;
+            dash.negate(true).should.be.false();
+            dash.negate(1).should.be.false();
+            dash.negate([]).should.be.false();
+            dash.negate({}).should.be.false();
         });
     });
 

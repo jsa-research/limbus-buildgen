@@ -16,9 +16,11 @@ var minimal = require('../source/minimal-configuration');
 
 describe('Compiling', function () {
     beforeEach(function () {
-        return util.beforeEach().then(function () {
+        return util.beforeEach()
+        .then(function () {
             return shell.mkdir('temp/some_directory');
-        }).then(function () {
+        })
+        .then(function () {
             return shell.cp('temp/main.c', 'temp/some_directory/');
         });
     });
@@ -28,11 +30,17 @@ describe('Compiling', function () {
     });
 
     it('should pass compiler flags as is', function () {
+        var flags = '-S';
+
+        if (util.toolchainCompiler === 'cl') {
+            flags = '/X';
+        }
+
         return util.testConfiguration(minimal.projectWith({
             toolchain: util.toolchain,
             artifacts: [
                 minimal.artifactWith({
-                    compilerFlags: util.toolchainCompiler === 'cl' ? '/X' : '-S'
+                    compilerFlags: flags
                 })
             ]
         })).should.be.rejected();

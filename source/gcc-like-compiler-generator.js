@@ -74,7 +74,7 @@ var linkerCommandFromOptions = function (options) {
     } else {
         return '$(CC) -o ' + options.outputPath + options.outputName + ' ' + options.objectFiles + ' ' + options.flags;
     }
-}
+};
 
 exports.linkerCommand = function (options) {
     return linkerCommandFromOptions({

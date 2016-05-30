@@ -14,16 +14,22 @@ var pathModule = require('path');
 var childProcess = require('child_process');
 
 exports.path = function (path) {
-    return path ? path.replace(/\//g, pathModule.sep) : path;
+    if (path) {
+        return path.replace(/\//g, pathModule.sep);
+    } else {
+        return undefined;
+    }
 };
 
 exports.exec = function (command, options) {
-    return new Promise(function(resolve, reject) {
+    var currentWorkingDirectory = '.';
+    if (options && options.cwd) {
+        currentWorkingDirectory = exports.path(options.cwd);
+    }
+    return new Promise(function (resolve, reject) {
         childProcess.exec(
             command,
-            {
-                cwd: (options && options.cwd) ? exports.path(options.cwd) : undefined
-            },
+            { cwd: currentWorkingDirectory },
             function (error, stdout, stderr) {
                 if (error) {
                     error.message += stdout + stderr;

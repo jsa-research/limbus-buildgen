@@ -33,7 +33,7 @@ var isGccToolchain = function (toolchain) {
            toolchain === 'freebsd-make-gcc-freebsd-x64' ||
            toolchain === 'darwin-make-gcc-darwin-x86' ||
            toolchain === 'darwin-make-gcc-darwin-x64';
-}
+};
 
 module.exports.select = function (toolchain, compilerDictionary) {
     if (isClToolchain(toolchain)) {

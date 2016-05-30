@@ -86,7 +86,7 @@ var librariesToLinkFromOptions = function (options) {
 
 var objectFilesFromFiles = function (files) {
     return dash.map(files, changeToValidPath).join('.obj ') + '.obj';
-}
+};
 
 exports.linkerCommand = function (options) {
     return linkerCommandPrefixFromType(options.type) +

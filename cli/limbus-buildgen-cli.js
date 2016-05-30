@@ -1,5 +1,5 @@
 
-// limbus-buildgen - A "build anywhere" C/C++ makefile/project generator.
+// limbus-buildgen - A 'build anywhere' C/C++ makefile/project generator.
 // Written in 2014-2016 by Jesper Oskarsson jesosk@gmail.com
 //
 // To the extent possible under law, the author(s) have dedicated all copyright
@@ -17,6 +17,14 @@ var exitWithError = function (error) {
     process.exit(-1);
 };
 
+var getFlagValue = function (flags, index) {
+    if (index + 1 >= flags.length) {
+        exitWithError('Flag ' + flags[index] + ' is missing a value');
+    }
+
+    return flags[index + 1];
+};
+
 var flagHandlers = {
     '--toolchain': function (result, processArguments, index) {
         result.toolchain = getFlagValue(processArguments, index);
@@ -25,15 +33,15 @@ var flagHandlers = {
         result.outputPath = getFlagValue(processArguments, index);
     },
     '--help': function () {
-        console.log("\n" +
-            "Usage: limbus-buildgen [flags] <path to JSON configuration file>\n" +
-            "\n" +
-            "Options:\n" +
-            "\n" +
-            "  --help                          output usage information\n" +
-            "  --toolchain <toolchain>         override the configured target toolchain\n" +
-            "  --outputPath <path>             specify the path where build files are written\n" +
-            "                                  to (default: .)");
+        console.log('\n' +
+            'Usage: limbus-buildgen [flags] <path to JSON configuration file>\n' +
+            '\n' +
+            'Options:\n' +
+            '\n' +
+            '  --help                          output usage information\n' +
+            '  --toolchain <toolchain>         override the configured target toolchain\n' +
+            '  --outputPath <path>             specify the path where build files are written\n' +
+            '                                  to (default: .)');
         process.exit(0);
     }
 };
@@ -41,14 +49,6 @@ var flagHandlers = {
 var argumentIsFlag = function (argument) {
     return argument.substr(0, 2) === '--';
 };
-
-var getFlagValue = function (flags, index) {
-    if (index + 1 >= flags.length) {
-        exitWithError('Flag ' + flags[index] + ' is missing a value');
-    }
-
-    return flags[index + 1];
-}
 
 var parseArguments = function (processArguments) {
     var result = {};
@@ -70,13 +70,13 @@ var parseArguments = function (processArguments) {
             if (flagHandler) {
                 flagHandler(result, processArguments, index);
             } else {
-                exitWithError("Unknown flag '" + argument + "'");
+                exitWithError('Unknown flag "' + argument + '"');
             }
         }
     }
 
     if (!result.configPath) {
-        exitWithError("No configuration file");
+        exitWithError('No configuration file');
     }
 
     return result;

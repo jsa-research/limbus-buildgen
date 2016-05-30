@@ -35,7 +35,8 @@ describe('Configuration Validation', function () {
     });
 
     var configShouldFailWith = function (config, expectedError, property) {
-        return util.testConfiguration(config).then(function () {
+        return util.testConfiguration(config)
+        .then(function () {
             return Promise.reject(new Error('Did not fail'));
         }, function (error) {
             return Promise.all([
@@ -190,15 +191,18 @@ describe('Configuration Validation', function () {
 
     describe('File extensions', function () {
         it('should give error "no extension" with property "files" when a file in files has no extension', function () {
-            return Promise.resolve().then(function () {
+            return Promise.resolve()
+            .then(function () {
                 return configShouldFailWith(minimal.projectWithArtifactWith({
                     files: ['other-file']
                 }), /no extension/i, /files/);
-            }).then(function () {
+            })
+            .then(function () {
                 return configShouldFailWith(minimal.projectWithArtifactWith({
                     files: ['main.c', 'other-file']
                 }), /no extension/i, /files/);
-            }).then(function () {
+            })
+            .then(function () {
                 return configShouldFailWith(minimal.projectWithArtifactWith({
                     files: ['main.']
                 }), /no extension/i, /files/);
@@ -212,15 +216,20 @@ describe('Configuration Validation', function () {
                 }), /cannot be path/i, /outputName/);
             };
 
-            return Promise.resolve().then(function () {
+            return Promise.resolve()
+            .then(function () {
                 return invalidOutputName('app/');
-            }).then(function () {
+            })
+            .then(function () {
                 return invalidOutputName('/app');
-            }).then(function () {
+            })
+            .then(function () {
                 return invalidOutputName('/');
-            }).then(function () {
+            })
+            .then(function () {
                 return invalidOutputName('.');
-            }).then(function () {
+            })
+            .then(function () {
                 return invalidOutputName('..');
             });
         });

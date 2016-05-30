@@ -30,16 +30,16 @@ module.exports.projectWith = function (properties) {
     var project = module.exports.project();
     Object.assign(project, properties);
     return project;
-}
+};
 
 module.exports.projectWithArtifactWith = function (properties) {
     var project = module.exports.project();
     Object.assign(project.artifacts[0], properties);
     return project;
-}
+};
 
 module.exports.artifactWith = function (properties) {
     var artifact = minimalArtifact();
     Object.assign(artifact, properties);
     return artifact;
-}
+};
