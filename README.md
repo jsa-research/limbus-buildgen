@@ -382,6 +382,7 @@ This release will complete the continuous integration setup to make sure all fea
 * Continuous integration for all supported targets
 * Convert integration tests to acceptance tests using Gherkin syntax
 * Look into installing node and npm versions through npm itself
+* Replace Blanket.js as it is no longer maintained.
 
 ##### Towards 1.0.0
 This release will implement the rest of the features to reach feature completeness.
