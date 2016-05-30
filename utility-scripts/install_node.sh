@@ -9,7 +9,7 @@
 # You should have received a copy of the CC0 Public Domain Dedication along with this software.
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-rm -fR nvm
-git clone https://github.com/creationix/nvm.git ./nvm && cd nvm && git checkout `git describe --abbrev=0 --tags` && cd ..
-. ./nvm/nvm.sh
+rm -fR dependencies/nvm
+git clone https://github.com/creationix/nvm.git ./dependencies/nvm && cd dependencies/nvm && git checkout `git describe --abbrev=0 --tags` && cd ../..
+. ./dependencies/nvm/nvm.sh
 nvm install $1
