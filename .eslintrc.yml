@@ -99,6 +99,7 @@ rules:
   no-extra-label: error
   no-extra-parens: error
   no-floating-decimal: error
+  no-func-assign: error
   no-implicit-globals: error
   no-implied-eval: error
   no-inline-comments: error
@@ -107,6 +108,7 @@ rules:
     - functions
   no-invalid-this: error
   no-iterator: error
+  no-irregular-whitespace: error
   no-label-var: error
   no-labels: error
   no-lone-blocks: error
@@ -155,6 +157,7 @@ rules:
   no-unneeded-ternary: error
   no-unsafe-finally: error
   no-unused-expressions: error
+  no-unreachable: error
   no-use-before-define: error
   no-useless-call: error
   no-useless-computed-key: error
