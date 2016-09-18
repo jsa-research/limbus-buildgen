@@ -370,12 +370,13 @@ This will generate a file named `coverage.html` in the project root directory wh
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
 * Add configuration property to add/remove debug information during compilation
+* Change toolchain property to toolchains and allow entering several toolchains
 * Add toolchains with default architecture
 * Change shared library suffix to .dylib on darwin to reflect the actual library type generated
 * Remove `/link` from CL linker commands and make user add it themselves to give more flexibility in which flags can be set
 * Make sure C++/Objective-C files compile correctly
 
-##### Towards 0.9.0-beta
+##### Towards 0.6.0-beta
 This release will complete the continuous integration setup to make sure all features are tested properly.
 
 * Make sure GCC is tested against on OS X when running on CI
@@ -414,7 +415,6 @@ This release will implement cross compilation to web browsers through Emscripten
 Features which aren't needed for feature-completeness but are nice to have.
 
 * Cross compilation to Windows using MinGW
-* Modify makefile to find compilers and use whichever is available.
 * Support for more compiler suites:
     - AMD's Open64
     - Intel's C++ compiler
