@@ -26,26 +26,34 @@ extract_tar_xz() {
     tar -xJf "$1.tar.xz" && rm "$1.tar.xz"
 }
 
-VERIFY_MD5() {
-    test "$(md5 duktape-$duktape_version.tar.xz)" = "MD5 (duktape-$duktape_version.tar.xz) = $1"
-    return $?
-}
+if type md5sum >/dev/null 2>&1
+then
+    VERIFY_MD5() {
+        echo "$1  duktape-$duktape_version.tar.xz" | md5sum -s -b -c -
+        return $?
+    }
+else
+    VERIFY_MD5() {
+        test "$(md5 duktape-$duktape_version.tar.xz)" = "MD5 (duktape-$duktape_version.tar.xz) = $1"
+        return $?
+    }
+fi
 
 if type sha512sum >/dev/null 2>&1
 then
     VERIFY_SHA512() {
-        echo "$1  duktape-$duktape_version.tar.xz" | sha256sum --status -b -c -
+        echo "$1  duktape-$duktape_version.tar.xz" | sha512sum -s -b -c -
         return $?
     }
 elif type shasum >/dev/null 2>&1
 then
     VERIFY_SHA512() {
-        echo "$1  duktape-$duktape_version.tar.xz" | shasum -a 512 --status -b -c -
+        echo "$1  duktape-$duktape_version.tar.xz" | shasum -a 512 -s -b -c -
         return $?
     }
 else
     VERIFY_SHA512() {
-        echo No SHA512 utility, skipping verification!
+        echo WARNING: No SHA512 utility, skipping verification!
     }
 fi
 
@@ -54,7 +62,7 @@ verify_checksums() {
     then
         echo "MD5 checksum verified."
     else
-        echo "Error: MD5 checksum did not match!"
+        echo "ERROR: MD5 checksum did not match!"
         exit 2
     fi
 
@@ -62,7 +70,7 @@ verify_checksums() {
     then
         echo "SHA512 checksum verified."
     else
-        echo "Error: SHA512 checksum did not match!"
+        echo "ERROR: SHA512 checksum did not match!"
         exit 2
     fi
 }
