@@ -29,7 +29,7 @@ extract_tar_xz() {
 if type md5sum >/dev/null 2>&1
 then
     VERIFY_MD5() {
-        echo "$1  duktape-$duktape_version.tar.xz" | md5sum -b -c -
+        echo "$1  duktape-$duktape_version.tar.xz" | md5sum -c -
         return $?
     }
 else
@@ -42,13 +42,13 @@ fi
 if type sha512sum >/dev/null 2>&1
 then
     VERIFY_SHA512() {
-        echo "$1  duktape-$duktape_version.tar.xz" | sha512sum -b -c -
+        echo "$1  duktape-$duktape_version.tar.xz" | sha512sum -c -
         return $?
     }
 elif type shasum >/dev/null 2>&1
 then
     VERIFY_SHA512() {
-        echo "$1  duktape-$duktape_version.tar.xz" | shasum -a 512 -b -c -
+        echo "$1  duktape-$duktape_version.tar.xz" | shasum -a 512 -c -
         return $?
     }
 else
