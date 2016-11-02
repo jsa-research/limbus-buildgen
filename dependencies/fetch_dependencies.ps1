@@ -10,7 +10,7 @@
 # If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 # Versions
-$duktape_version="1.4.0"
+$duktape_version="1.5.1"
 
 # Global variables
 $current_directory = (Get-Location).ToString()

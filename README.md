@@ -331,7 +331,7 @@ There are very few dependencies and they are downloaded automatically when built
 
 <a name="build-download-dependencies-manually"></a>
 #### Download dependencies manually
-Duktape is used for Javascript execution. You can download the Duktape 1.4.0 release package from `http://duktape.org/` and extract it into `dependencies/duktape-1.4.0`.
+Duktape is the Javascript VM used. You can download the Duktape 1.5.1 release package from [https://github.com/svaarala/duktape/releases](https://github.com/svaarala/duktape/releases) and extract it into `dependencies/duktape-1.5.1`.
 
 <a name="development"></a>
 ## Development
