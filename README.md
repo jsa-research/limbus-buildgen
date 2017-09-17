@@ -369,6 +369,7 @@ This will generate a file named `coverage.html` in the project root directory wh
 #### Planned for 0.5.0-beta
 This release is intended to streamline the user experience, stabilize the Javascript API and produce a done release that is not fully feature-complete. It will take the project from an alpha phase into beta.
 
+* Remove Node version from integration matrix. This could be confusing since Node is not actually used in the final executable, only the test harness.
 * Add configuration property to add/remove debug information during compilation
 * Change toolchain property to toolchains and allow entering several toolchains
 * Add toolchains with default architecture
